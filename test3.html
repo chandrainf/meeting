@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Meeting App</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .video-container {
+      flex: 1;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+    .participant {
+      width: calc(100% / 4 - 10px);
+      height: calc(100% / 4 - 10px);
+      margin: 5px;
+      position: relative;
+    }
+    .participant video {
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+    .control-bar {
+      height: 60px;
+      background: #333;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+    .control-bar button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .modal-content {
+      max-height: calc(100vh - 160px);
+      overflow-y: auto;
+    }
+    .active-modal {
+      display: flex !important;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" class="container-fluid d-flex flex-column p-0">
+    <div class="video-container row" id="videoContainer">
+      <!-- Participant Videos will be dynamically added here -->
+    </div>
+    <div class="control-bar d-flex justify-content-around align-items-center">
+      <button id="micButton">Mic</button>
+      <button id="videoButton">Video</button>
+      <button id="participantsButton" data-bs-toggle="modal" data-bs-target="#participantsModal">Participants</button>
+      <button id="chatButton" data-bs-toggle="modal" data-bs-target="#chatModal">Chat</button>
+      <button id="raiseHandButton">Raise Hand</button>
+      <button id="shareScreenButton">Share Screen</button>
+      <button id="fullScreenButton">Full Screen</button>
+      <div class="dropdown">
+        <button id="settingsButton" class="btn btn-secondary dropdown-toggle" type="button" id="settingsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          Settings
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="settingsDropdown">
+          <li><a class="dropdown-item" href="#" id="changeVideoQuality">Change Video Quality</a></li>
+          <li><a class="dropdown-item" href="#" id="startRecording">Start Recording</a></li>
+          <li><a class="dropdown-item" href="#" id="fullScreenOption">Full Screen</a></li>
+          <li><a class="dropdown-item" href="#" id="changeLayout">Change Layout</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Participants Modal -->
+  <div class="modal fade" id="participantsModal" tabindex="-1" aria-labelledby="participantsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="participantsModalLabel">Participants</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <input type="text" class="form-control" placeholder="Search Participants">
+          </div>
+          <ul class="list-group" id="participantsList">
+            <!-- Participant details will be dynamically added here -->
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary">Invite</button>
+          <button type="button" class="btn btn-danger">Mute All</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Modal -->
+  <div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="chatModalLabel">Chat</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Chat messages will be dynamically added here -->
+        </div>
+        <div class="modal-footer">
+          <input type="file" id="attachFile" hidden>
+          <button type="button" class="btn btn-secondary" onclick="document.getElementById('attachFile').click()">Attach File</button>
+          <button type="button" class="btn btn-primary">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const videoContainer = document.getElementById('videoContainer');
+      const participantsList = document.getElementById('participantsList');
+      let micEnabled = true;
+      let videoEnabled = true;
+
+      // Dummy Participants
+      for (let i = 1; i <= 16; i++) {
+        addParticipant(`Participant ${i}`);
+      }
+
+      function addParticipant(name) {
+        const participantDiv = document.createElement('div');
+        participantDiv.className = 'col-3 participant';
+        participantDiv.innerHTML = `
+          <video autoplay></video>
+          <div class="position-absolute bottom-0 start-0 p-1 text-white bg-dark">${name}</div>
+          <div class="position-absolute top-0 end-0 p-1 text-white bg-dark">🔊</div>
+        `;
+        videoContainer.appendChild(participantDiv);
+
+        const participantItem = document.createElement('li');
+        participantItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+        participantItem.innerHTML = `
+          <div>
+            <img src="https://via.placeholder.com/30" class="rounded-circle me-2" alt="${name}">
+            ${name}
+          </div>
+          <div>
+            <span class="badge bg-primary rounded-pill me-2">🎥</span>
+            <span class="badge bg-primary rounded-pill me-2">🔊</span>
+            <button class="btn btn-sm btn-secondary">⚙</button>
+          </div>
+        `;
+        participantsList.appendChild(participantItem);
+      }
+
+      document.getElementById('micButton').addEventListener('click', () => {
+        micEnabled = !micEnabled;
+        document.getElementById('micButton').textContent = micEnabled ? 'Mic' : 'Unmute';
+      });
+
+      document.getElementById('videoButton').addEventListener('click', () => {
+        videoEnabled = !videoEnabled;
+        document.getElementById('videoButton').textContent = videoEnabled ? 'Video' : 'Show Video';
+      });
+
+      document.getElementById('raiseHandButton').addEventListener('click', () => {
+        alert('Hand Raised');
+      });
+
+      document.getElementById('shareScreenButton').addEventListener('click', () => {
+        alert('Screen Sharing Started');
+      });
+
+      document.getElementById('fullScreenButton').addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen();
+        } else {
+          if (document.exitFullscreen) {
+            document.exitFullscreen();
+          }
+        }
+      });
+
+      document.getElementById('changeVideoQuality').addEventListener('click', () => {
+        alert('Change Video Quality');
+      });
+
+      document.getElementById('startRecording').addEventListener('click', () => {
+        alert('Recording Started');
+      });
+
+      document.getElementById('fullScreenOption').addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen();
+        } else {
+          if (document.exitFullscreen) {
+            document.exitFullscreen();
+          }
+        }
+      });
+
+      document.getElementById('changeLayout').addEventListener('click', () => {
+        alert('Change Layout');
+      });
+    });
+  </script>
+</body>
+</html>
