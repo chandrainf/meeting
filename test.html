@@ -1,743 +1,1125 @@
-<style>
-    .video-conference {
-      background-color: #0b0d0f;
-      display: flex;
-      flex-direction: column;
-      padding: 10px;
-    }
-    
-    .video-grid {
-      display: flex;
-      gap: 20px;
-    }
-    
-    @media (max-width: 991px) {
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      rel="shortcut icon"
+      href="/assets/compiled/svg/favicon.svg"
+      type="image/x-icon"
+    />
+    <link
+      rel="shortcut icon"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAiCAYAAADRcLDBAAAEs2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjMzIgogICBleGlmOlBpeGVsWURpbWVuc2lvbj0iMzQiCiAgIGV4aWY6Q29sb3JTcGFjZT0iMSIKICAgdGlmZjpJbWFnZVdpZHRoPSIzMyIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMzQiCiAgIHRpZmY6UmVzb2x1dGlvblVuaXQ9IjIiCiAgIHRpZmY6WFJlc29sdXRpb249Ijk2LjAiCiAgIHRpZmY6WVJlc29sdXRpb249Ijk2LjAiCiAgIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiCiAgIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIKICAgeG1wOk1vZGlmeURhdGU9IjIwMjItMDMtMzFUMTA6NTA6MjMrMDI6MDAiCiAgIHhtcDpNZXRhZGF0YURhdGU9IjIwMjItMDMtMzFUMTA6NTA6MjMrMDI6MDAiPgogICA8eG1wTU06SGlzdG9yeT4KICAgIDxyZGY6U2VxPgogICAgIDxyZGY6bGkKICAgICAgc3RFdnQ6YWN0aW9uPSJwcm9kdWNlZCIKICAgICAgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWZmaW5pdHkgRGVzaWduZXIgMS4xMC4xIgogICAgICBzdEV2dDp3aGVuPSIyMDIyLTAzLTMxVDEwOjUwOjIzKzAyOjAwIi8+CiAgICA8L3JkZjpTZXE+CiAgIDwveG1wTU06SGlzdG9yeT4KICA8L3JkZjpEZXNjcmlwdGlvbj4KIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+Cjw/eHBhY2tldCBlbmQ9InIiPz5V57uAAAABgmlDQ1BzUkdCIElFQzYxOTY2LTIuMQAAKJF1kc8rRFEUxz9maORHo1hYKC9hISNGTWwsRn4VFmOUX5uZZ36oeTOv954kW2WrKLHxa8FfwFZZK0WkZClrYoOe87ypmWTO7dzzud97z+nec8ETzaiaWd4NWtYyIiNhZWZ2TvE946WZSjqoj6mmPjE1HKWkfdxR5sSbgFOr9Ll/rXoxYapQVik8oOqGJTwqPL5i6Q5vCzeo6dii8KlwpyEXFL519LjLLw6nXP5y2IhGBsFTJ6ykijhexGra0ITl5bRqmWU1fx/nJTWJ7PSUxBbxJkwijBBGYYwhBgnRQ7/MIQIE6ZIVJfK7f/MnyUmuKrPOKgZLpEhj0SnqslRPSEyKnpCRYdXp/9++msneoFu9JgwVT7b91ga+LfjetO3PQ9v+PgLvI1xkC/m5A+h7F32zoLXug38dzi4LWnwHzjeg8UGPGbFfySvuSSbh9QRqZ6H+Gqrm3Z7l9zm+h+iafNUV7O5Bu5z3L/wAdthn7QIme0YAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAJTSURBVFiF7Zi9axRBGIefEw2IdxFBRQsLWUTBaywSK4ubdSGVIY1Y6HZql8ZKCGIqwX/AYLmCgVQKfiDn7jZeEQMWfsSAHAiKqPiB5mIgELWYOW5vzc3O7niHhT/YZvY37/swM/vOzJbIqVq9uQ04CYwCI8AhYAlYAB4Dc7HnrOSJWcoJcBS4ARzQ2F4BZ2LPmTeNuykHwEWgkQGAet9QfiMZjUSt3hwD7psGTWgs9pwH1hC1enMYeA7sKwDxBqjGnvNdZzKZjqmCAKh+U1kmEwi3IEBbIsugnY5avTkEtIAtFhBrQCX2nLVehqyRqFoCAAwBh3WGLAhbgCRIYYinwLolwLqKUwwi9pxV4KUlxKKKUwxC6ZElRCPLYAJxGfhSEOCz6m8HEXvOB2CyIMSk6m8HoXQTmMkJcA2YNTHm3congOvATo3tE3A29pxbpnFzQSiQPcB55IFmFNgFfEQeahaAGZMpsIJIAZWAHcDX2HN+2cT6r39GxmvC9aPNwH5gO1BOPFuBVWAZue0vA9+A12EgjPadnhCuH1WAE8ivYAQ4ohKaagV4gvxi5oG7YSA2vApsCOH60WngKrA3R9IsvQUuhIGY00K4flQG7gHH/mLytB4C42EgfrQb0mV7us8AAMeBS8mGNMR4nwHamtBB7B4QRNdaS0M8GxDEog7iyoAguvJ0QYSBuAOcAt71Kfl7wA8DcTvZ2KtOlJEr+ByyQtqqhTyHTIeB+ONeqi3brh+VgIN0fohUgWGggizZFTplu12yW8iy/YLOGWMpDMTPXnl+Az9vj2HERYqPAAAAAElFTkSuQmCC"
+      type="image/png"
+    />
+
+    <link rel="stylesheet" href="/assets/compiled/css/app.css" />
+    <link rel="stylesheet" href="/assets/compiled/css/app-dark.css" />
+    <link rel="stylesheet" href="/assets/compiled/css/iconly.css" />
+
+    <link rel="stylesheet" href="/assets/compiled/css/style.css" />
+
+    <style>
+      .body {
+        font-family: Arial, sans-serif;
+      }
+      .video-conference {
+        background-color: #0b0d0f;
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+      }
+
       .video-grid {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0;
+        display: flex;
+        gap: 20px;
       }
-    }
-    
-    .video-column {
-      display: flex;
-      flex-direction: column;
-      line-height: normal;
-      width: 81%;
-    }
-    
-    @media (max-width: 991px) {
+
+      /* @media (max-width: 991px) {
+        .video-grid {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 0;
+        }
+      } */
+
       .video-column {
-        width: 100%;
-      }
-    }
-    
-    .video-container {
-      display: flex;
-      flex-grow: 1;
-      flex-direction: column;
-    }
-    
-    @media (max-width: 991px) {
-      .video-container {
-        max-width: 100%;
-        margin-top: 10px;
-      }
-    }
-    
-    .video-row {
-      display: flex;
-      gap: 20px;
-    }
-    
-    @media (max-width: 991px) {
-      .video-row {
+        display: flex;
         flex-direction: column;
-        align-items: stretch;
-        gap: 0;
+        line-height: normal;
+        width: 81%;
       }
-    }
-    
-    .video-item {
-      display: flex;
-      flex-direction: column;
-      line-height: normal;
-      width: 33%;
-      margin-left: 0;
-    }
-    
-    @media (max-width: 991px) {
+
+      /* @media (max-width: 991px) {
+        .video-column {
+          width: 100%;
+        }
+      } */
+
+      .video-container {
+        display: flex;
+        flex-grow: 1;
+        flex-direction: column;
+      }
+
+      /* @media (max-width: 991px) {
+        .video-container {
+          max-width: 100%;
+          margin-top: 10px;
+        }
+      } */
+
+      .video-row {
+        display: flex;
+        gap: 20px;
+      }
+
+      /* @media (max-width: 991px) {
+        .video-row {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 0;
+        }
+      } */
+
       .video-item {
-        width: 100%;
+        display: flex;
+        flex-direction: column;
+        line-height: normal;
+        width: 33%;
+        margin-left: 0;
       }
-    }
-    
-    .video-frame {
-      display: flex;
-      flex-direction: column;
-      align-self: stretch;
-      overflow: hidden;
-      border: 4px solid rgba(253, 224, 71, 1);
-      position: relative;
-      min-height: 478px;
-      flex-grow: 1;
-    }
-    
-    @media (max-width: 991px) {
+
+      /* @media (max-width: 991px) {
+        .video-item {
+          width: 100%;
+        }
+      } */
+
       .video-frame {
-        max-width: 100%;
-        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        align-self: stretch;
+        overflow: hidden;
+        border: 4px solid rgba(253, 224, 71, 1);
+        position: relative;
+        min-height: 478px;
+        flex-grow: 1;
       }
-    }
-    
-    .video-image {
-      position: absolute;
-      inset: 0;
-      height: 100%;
-      width: 100%;
-      object-fit: cover;
-      object-position: center;
-    }
-    
-    .video-control {
-      position: relative;
-      align-items: center;
-      border-radius: 0 10px;
-      backdrop-filter: blur(15.17715835571289px);
-      border: 2px solid rgba(0, 0, 0, 0.5);
-      background-color: rgba(0, 0, 0, 0.5);
-      align-self: flex-end;
-      display: flex;
-      width: 44px;
-      justify-content: center;
-      height: 44px;
-      padding: 0 10px;
-    }
-    
-    .video-control-icon {
-      aspect-ratio: 1;
-      object-fit: auto;
-      object-position: center;
-      width: 100%;
-    }
-    
-    .video-info {
-      position: relative;
-      border-radius: 0 9.106px 0 0;
-      backdrop-filter: blur(15.17715835571289px);
-      border: 2px solid rgba(0, 0, 0, 0.5);
-      background-color: rgba(0, 0, 0, 0.5);
-      align-self: flex-start;
-      display: flex;
-      margin-top: 399px;
-      gap: 4px;
-      font-size: 16px;
-      color: #fff;
-      font-weight: 400;
-      padding: 8px 10px;
-    }
-    
-    @media (max-width: 991px) {
-      .video-info {
-        margin-top: 40px;
+
+      /* @media (max-width: 991px) {
+        .video-frame {
+          max-width: 100%;
+          margin-top: 10px;
+        }
+      } */
+
+      .video-image {
+        position: absolute;
+        inset: 0;
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        object-position: center;
       }
-    }
-    
-    .video-info-icon {
-      aspect-ratio: 1;
-      object-fit: auto;
-      object-position: center;
-      width: 18px;
-      align-self: flex-start;
-    }
-    
-    .video-info-text {
-      font-feature-settings: "clig" off, "liga" off;
-      font-family: Plus Jakarta Sans, sans-serif;
-    }
-    
-    .participant-list {
-      display: flex;
-      flex-direction: column;
-      line-height: normal;
-      width: 19%;
-      margin-left: 20px;
-    }
-    
-    @media (max-width: 991px) {
-      .participant-list {
+
+      .video-control {
+        position: relative;
+        align-items: center;
+        border-radius: 0 10px;
+        backdrop-filter: blur(15.17715835571289px);
+        border: 2px solid rgba(0, 0, 0, 0.5);
+        background-color: rgba(0, 0, 0, 0.5);
+        align-self: flex-end;
+        display: flex;
+        width: 44px;
+        justify-content: center;
+        height: 44px;
+        padding: 0 10px;
+      }
+
+      .video-control-icon {
+        aspect-ratio: 1;
+        object-fit: auto;
+        object-position: center;
         width: 100%;
       }
-    }
-    
-    .participant-container {
-      justify-content: space-between;
-      border-radius: 10px;
-      border: 1px solid rgba(48, 54, 64, 1);
-      background-color: #15181e;
-      display: flex;
-      width: 100%;
-      flex-grow: 1;
-      flex-direction: column;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    
-    @media (max-width: 991px) {
+
+      .video-info {
+        position: relative;
+        border-radius: 0 9.106px 0 0;
+        backdrop-filter: blur(15.17715835571289px);
+        border: 2px solid rgba(0, 0, 0, 0.5);
+        background-color: rgba(0, 0, 0, 0.5);
+        align-self: flex-start;
+        display: flex;
+        margin-top: 399px;
+        gap: 4px;
+        font-size: 16px;
+        color: #fff;
+        font-weight: 400;
+        padding: 8px 10px;
+      }
+
+      /* @media (max-width: 991px) {
+        .video-info {
+          margin-top: 40px;
+        }
+      } */
+
+      .video-info-icon {
+        aspect-ratio: 1;
+        object-fit: auto;
+        object-position: center;
+        width: 18px;
+        align-self: flex-start;
+      }
+
+      .video-info-text {
+        font-feature-settings: "clig" off, "liga" off;
+        font-family: Plus Jakarta Sans, sans-serif;
+      }
+
+      .participant-list {
+        display: flex;
+        flex-direction: column;
+        line-height: normal;
+        width: 19%;
+        margin-left: 20px;
+      }
+
+      /* @media (max-width: 991px) {
+        .participant-list {
+          width: 100%;
+        }
+      } */
+
       .participant-container {
-        margin-top: 10px;
+        justify-content: space-between;
+        border-radius: 10px;
+        border: 1px solid rgba(48, 54, 64, 1);
+        background-color: #15181e;
+        display: flex;
+        width: 100%;
+        flex-grow: 1;
+        flex-direction: column;
+        margin: 0 auto;
+        padding: 20px;
       }
-    }
-    
-    .participant-header {
-      justify-content: space-between;
-      display: flex;
-      gap: 20px;
-      font-size: 16px;
-      color: #fff;
-      font-weight: 400;
-    }
-    
-    .participant-count {
-      font-family: Inter, sans-serif;
-    }
-    
-    .participant-header-icon {
-      aspect-ratio: 1;
-      object-fit: auto;
-      object-position: center;
-      width: 100%;
-      flex: 1;
-    }
-    
-    .participant-search {
-      border-radius: 5px;
-      border: 1px solid rgba(48, 54, 64, 1);
-      background-color: #191f29;
-      display: flex;
-      margin-top: 20px;
-      gap: 10px;
-      font-size: 14px;
-      color: #8e8e8e;
-      font-weight: 400;
-      padding: 10px;
-    }
-    
-    .participant-search-icon {
-      aspect-ratio: 1;
-      object-fit: auto;
-      object-position: center;
-      width: 20px;
-    }
-    
-    .participant-search-text {
-      font-family: Inter, sans-serif;
-      margin: auto 0;
-    }
-    
-    .participant-item {
-      justify-content: space-between;
-      display: flex;
-      margin-top: 20px;
-      gap: 8px;
-    }
-    
-    .participant-info {
-      display: flex;
-      gap: 10px;
-      font-weight: 400;
-    }
-    
-    .participant-avatar {
-      justify-content: center;
-      align-items: center;
-      border-radius: 42px;
-      background-color: #e78895;
-      color: #fff;
-      width: 32px;
-      height: 32px;
-      padding: 10px;
-      font: 16px Inter, sans-serif;
-    }
-    
-    @media (max-width: 991px) {
+
+      /* @media (max-width: 991px) {
+        .participant-container {
+          margin-top: 10px;
+        }
+      } */
+
+      .participant-header {
+        justify-content: space-between;
+        display: flex;
+        gap: 20px;
+        font-size: 16px;
+        color: #fff;
+        font-weight: 400;
+      }
+
+      .participant-count {
+        font-family: Inter, sans-serif;
+      }
+
+      .participant-header-icon {
+        aspect-ratio: 1;
+        object-fit: auto;
+        object-position: center;
+        width: 100%;
+        flex: 1;
+      }
+
+      .participant-search {
+        border-radius: 5px;
+        border: 1px solid rgba(48, 54, 64, 1);
+        background-color: #191f29;
+        display: flex;
+        margin-top: 20px;
+        gap: 10px;
+        font-size: 14px;
+        color: #8e8e8e;
+        font-weight: 400;
+        padding: 10px;
+      }
+
+      .participant-search-icon {
+        aspect-ratio: 1;
+        object-fit: auto;
+        object-position: center;
+        width: 20px;
+      }
+
+      .participant-search-text {
+        font-family: Inter, sans-serif;
+        margin: auto 0;
+      }
+
+      .participant-item {
+        justify-content: space-between;
+        display: flex;
+        margin-top: 20px;
+        gap: 8px;
+      }
+
+      .participant-info {
+        display: flex;
+        gap: 10px;
+        font-weight: 400;
+      }
+
       .participant-avatar {
-        white-space: initial;
+        justify-content: center;
+        align-items: center;
+        border-radius: 42px;
+        background-color: #e78895;
+        color: #fff;
+        width: 32px;
+        height: 32px;
+        padding: 10px;
+        font: 16px Inter, sans-serif;
       }
-    }
-    
-    .participant-details {
-      justify-content: space-between;
-      display: flex;
-      gap: 10px;
-      flex: 1;
-      margin: auto 0;
-    }
-    
-    .participant-name {
-      color: #fff;
-      margin: auto 0;
-      font: 14px Inter, sans-serif;
-    }
-    
-    .participant-role {
-      font-feature-settings: "clig" off, "liga" off;
-      border-radius: 100px;
-      border: 1px solid rgba(45, 140, 255, 0.1);
-      background-color: rgba(45, 140, 255, 0.1);
-      color: #2d8cff;
-      justify-content: center;
-      padding: 4px 8px;
-      font: 12px Plus Jakarta Sans, sans-serif;
-    }
-    
-    .participant-actions {
-      display: flex;
-      gap: 10px;
-      margin: auto 0;
-    }
-    
-    .participant-action-icon {
-      aspect-ratio: 1;
-      object-fit: auto;
-      object-position: center;
-      width: 20px;
-    }
-    
-    .participant-controls {
-      justify-content: space-between;
-      display: flex;
-      margin-top: 183px;
-      gap: 10px;
-    }
-    
-    @media (max-width: 991px) {
+
+      /* @media (max-width: 991px) {
+        .participant-avatar {
+          white-space: initial;
+        }
+      } */
+
+      .participant-details {
+        justify-content: space-between;
+        display: flex;
+        gap: 10px;
+        flex: 1;
+        margin: auto 0;
+      }
+
+      .participant-name {
+        color: #fff;
+        margin: auto 0;
+        font: 14px Inter, sans-serif;
+      }
+
+      .participant-role {
+        font-feature-settings: "clig" off, "liga" off;
+        border-radius: 100px;
+        border: 1px solid rgba(45, 140, 255, 0.1);
+        background-color: rgba(45, 140, 255, 0.1);
+        color: #2d8cff;
+        justify-content: center;
+        padding: 4px 8px;
+        font: 12px Plus Jakarta Sans, sans-serif;
+      }
+
+      .participant-actions {
+        display: flex;
+        gap: 10px;
+        margin: auto 0;
+      }
+
+      .participant-action-icon {
+        aspect-ratio: 1;
+        object-fit: auto;
+        object-position: center;
+        width: 20px;
+      }
+
       .participant-controls {
-        margin-top: 40px;
+        justify-content: space-between;
+        display: flex;
+        margin-top: 183px;
+        gap: 10px;
       }
-    }
-    
-    .invite-button {
-      justify-content: center;
-      border-radius: 5px;
-      background-color: #0047d1;
-      color: #fff;
-      padding: 10px;
-      font: 400 14px Inter, sans-serif;
-    }
-    
-    @media (max-width: 991px) {
+
+      /* @media (max-width: 991px) {
+        .participant-controls {
+          margin-top: 40px;
+        }
+      } */
+
       .invite-button {
-        white-space: initial;
+        justify-content: center;
+        border-radius: 5px;
+        background-color: #0047d1;
+        color: #fff;
+        padding: 10px;
+        font: 400 14px Inter, sans-serif;
       }
-    }
-    
-    .mute-all-button {
-      border-radius: 5px;
-      border: 1px solid rgba(133, 133, 133, 1);
-      color: #a7a7a7;
-      justify-content: center;
-      padding: 10px;
-      font: 400 14px Inter, sans-serif;
-    }
-    
-    .more-options {
-      justify-content: center;
-      align-items: center;
-      border-radius: 5px;
-      border: 1px solid rgba(75, 85, 99, 0.5);
-      display: flex;
-    }
-    
-    .more-options-icon {
-      aspect-ratio: 1;
-      object-fit: auto;
-      object-position: center;
-      width: 37px;
-    }
-    
-    .conference-controls {
-      justify-content: space-between;
-      border-radius: 10px;
-      border: 1px solid rgba(55, 65, 81, 0.5);
-      background-color: #15181e;
-      display: flex;
-      margin-top: 10px;
-      width: 100%;
-      gap: 20px;
-      padding: 14px;
-    }
-    
-    @media (max-width: 991px) {
+
+      /* @media (max-width: 991px) {
+        .invite-button {
+          white-space: initial;
+        }
+      } */
+
+      .mute-all-button {
+        border-radius: 5px;
+        border: 1px solid rgba(133, 133, 133, 1);
+        color: #a7a7a7;
+        justify-content: center;
+        padding: 10px;
+        font: 400 14px Inter, sans-serif;
+      }
+
+      .more-options {
+        justify-content: center;
+        align-items: center;
+        border-radius: 5px;
+        border: 1px solid rgba(75, 85, 99, 0.5);
+        display: flex;
+      }
+
+      .more-options-icon {
+        aspect-ratio: 1;
+        object-fit: auto;
+        object-position: center;
+        width: 37px;
+      }
+
       .conference-controls {
-        max-width: 100%;
-        flex-wrap: wrap;
+        /* justify-content: space-between; */
+        border-radius: 10px;
+        border: 1px solid rgba(55, 65, 81, 0.5);
+        background-color: #15181e;
+        /* display: flex; */
+        margin-top: 10px;
+        width: 100%;
+        /* gap: 20px; */
+        padding: 14px;
       }
-    }
-    
-    .control-group {
-      display: flex;
-      gap: 20px;
-      justify-content: space-between;
-    }
-    
-    @media (max-width: 991px) {
+
+      /* @media (max-width: 991px) {
+        .conference-controls {
+          max-width: 100%;
+          flex-wrap: wrap;
+        }
+      } */
+
       .control-group {
-        max-width: 100%;
-        flex-wrap: wrap;
+        display: flex;
+        gap: 20px;
+        justify-content: space-between;
       }
-    }
-    
-    .control-item {
-      display: flex;
-      padding-right: 80px;
-      gap: 18px;
-    }
-    
-    @media (max-width: 991px) {
+
+      /* @media (max-width: 991px) {
+        .control-group {
+          max-width: 100%;
+          flex-wrap: wrap;
+        }
+      } */
+
       .control-item {
-        flex-wrap: wrap;
+        display: flex;
+        padding-right: 80px;
+        gap: 18px;
       }
-    }
-    
-    .control-button {
-      justify-content: center;
-      border-radius: 8px;
-      border: 1px solid rgba(52, 57, 64, 1);
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .control-button-content {
-      justify-content: center;
-      display: flex;
-      gap: 10px;
-      padding: 16px;
-    }
-    
-    .control-icon {
-      aspect-ratio: 1;
-      object-fit: auto;
-      object-position: center;
-      width: 24px;
-    }
-    
-    .control-arrow {
-      aspect-ratio: 1;
-      object-fit: auto;
-      object-position: center;
-      width: 12px;
-      margin: auto 0;
-    }
-    
-    .control-text {
-      aspect-ratio: 1.39;
-      object-fit: auto;
-      object-position: center;
-      width: 78px;
-    }
-    
-    .action-buttons {
-      display: flex;
-      gap: 20px;
-    }
-    
-    .action-button {
-      justify-content: center;
-      align-items: center;
-      border-radius: 8px;
-      border: 1px solid rgba(75, 85, 99, 0.5);
-      display: flex;
-      width: 56px;
-      height: 56px;
-    }
-    
-    .action-icon {
-      aspect-ratio: 1;
-      object-fit: auto;
-      object-position: center;
-      width: 56px;
-    }
-    
-    .end-call-button {
-      justify-content: center;
-      align-items: center;
-      border-radius: 5px;
-      background-color: #cb2233;
-      display: flex;
-      width: 56px;
-      height: 56px;
-      padding: 12px;
-    }
-    
-    .end-call-icon {
-      aspect-ratio: 1;
-      object-fit: auto;
-      object-position: center;
-      width: 28px;
-    }
+
+      /* @media (max-width: 991px) {
+        .control-item {
+          flex-wrap: wrap;
+        }
+      } */
+
+      .control-button {
+        justify-content: center;
+        border-radius: 8px;
+        border: 1px solid rgba(52, 57, 64, 1);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .control-button-content {
+        justify-content: center;
+        display: flex;
+        gap: 10px;
+        padding: 16px;
+      }
+
+      .control-icon {
+        aspect-ratio: 1;
+        object-fit: auto;
+        object-position: center;
+        width: 16px;
+        height: 24px;
+      }
+
+      .control-arrow {
+        aspect-ratio: 1;
+        object-fit: auto;
+        object-position: center;
+        width: 12px;
+        margin: auto 0;
+      }
+
+      .control-text {
+        aspect-ratio: 1.39;
+        object-fit: auto;
+        object-position: center;
+        width: 78px;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 20px;
+      }
+
+      .action-button {
+        justify-content: center;
+        align-items: center;
+        border-radius: 8px;
+        border: 1px solid rgba(75, 85, 99, 0.5);
+        display: flex;
+        width: 56px;
+        height: 56px;
+      }
+
+      .action-icon {
+        aspect-ratio: 1;
+        object-fit: auto;
+        object-position: center;
+        width: 16px;
+        height: 24px;
+      }
+
+      .end-call-button {
+        justify-content: center;
+        align-items: center;
+        border-radius: 5px;
+        background-color: #cb2233;
+        display: flex;
+        width: 56px;
+        height: 56px;
+        padding: 12px;
+      }
+
+      .end-call-icon {
+        aspect-ratio: 1;
+        object-fit: auto;
+        object-position: center;
+        width: 16px;
+        height: 24px;
+      }
     </style>
-    
-    <section class="video-conference">
-      <div class="video-grid">
-        <div class="video-column">
-          <div class="video-container">
-            <div class="video-row">
-              <div class="video-item">
-                <div class="video-frame">
-                  <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/8fbd12e47d9cc0fd1a47479df4a0af7ce1bafb455da7b7a0f68a62901113722a?apiKey=6ab41f143a54414da54fad5411713bcc&" class="video-image" alt="Video feed of Ruang Sidang" />
-                  <div class="video-control">
-                    <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/088dc1a51a9ac01bab61bcdd1940c0bcfd1a07f8c3df7ac598ea1cdb1fe19ea7?apiKey=6ab41f143a54414da54fad5411713bcc&" class="video-control-icon" alt="Video control icon" />
-                  </div>
-                  <div class="video-info">
-                    <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/806d47ee55058e9a3f002b9bcfbd79cd8e9ea7aa565373d3a14764bf06a72462?apiKey=6ab41f143a54414da54fad5411713bcc&" class="video-info-icon" alt="Info icon" />
-                    <div class="video-info-text">Ruang Sidang</div>
-                  </div>
-                </div>
-              </div>
-              <div class="video-item">
-                <div class="video-frame">
-                  <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/7fa1789543c3a5d87b19761322fec43165fb24cf2c80a2b01315ec1852cd62c3?apiKey=6ab41f143a54414da54fad5411713bcc&" class="video-image" alt="Video feed of Andi Wijaya" />
-                  <div class="video-control">
-                    <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/2f2084fd7fa047509e292799868ee41f9f70c63e8ee5040a031220772c166dd9?apiKey=6ab41f143a54414da54fad5411713bcc&" class="video-control-icon" alt="Video control icon" />
-                  </div>
-                  <div class="video-info">
-                    <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/37acb6ba9716f728b0a08364765cc4eb31f53dc886b77836b605927232d44f31?apiKey=6ab41f143a54414da54fad5411713bcc&" class="video-info-icon" alt="Info icon" />
-                    <div class="video-info-text">Andi Wijaya</div>
-                  </div>
-                </div>
-              </div>
-              <div class="video-item">
-                <div class="video-frame">
-                  <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/26eae76db59d5047fe18409d6c8330091b2adb034f4d3ad853a7fb0b6df75017?apiKey=6ab41f143a54414da54fad5411713bcc&" class="video-image" alt="Video feed of Budi Santoso" />
-                  <div class="video-control">
-                    <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/960be82798cefa6cfb6dc60a4e0aaf3b99ff0b21300d6c5b3d9f1388e7e1faed?apiKey=6ab41f143a54414da54fad5411713bcc&" class="video-control-icon" alt="Video control icon" />
-                  </div>
-                  <div class="video-info">Budi Santoso</div>
-                </div>
-              </div>
-            </div>
-            <div class="video-row">
-              <div class="video-item">
-                <div class="video-frame">
-                  <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/48e264ecac1547e38a5e9961e8a463ef45120335021ef500f827d0c4ded38800?apiKey=6ab41f143a54414da54fad5411713bcc&" class="video-image" alt="Video feed of Siti Aminah" />
-                  <div class="video-control">
-                    <div class="video-control">
-                      <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4e001af2382fbb88b1ca281127373aef38c7081df179307ceeac3459dc076431?apiKey=6ab41f143a54414da54fad5411713bcc&" class="video-control-icon" alt="Video control icon" />
+  </head>
+
+  <body>
+    <div id="app">
+      <div id="main" class="layout-horizontal">
+        <section class="video-conference">
+          <div class="video-grid">
+            <div class="video-column">
+              <div class="video-container">
+                <div class="video-row">
+                  <div class="video-item">
+                    <div class="video-frame">
+                      <img
+                        loading="lazy"
+                        src="https://cdn.builder.io/api/v1/image/assets/TEMP/8fbd12e47d9cc0fd1a47479df4a0af7ce1bafb455da7b7a0f68a62901113722a?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                        class="video-image"
+                        alt="Video feed of Ruang Sidang"
+                      />
+                      <div class="video-control">
+                        <img
+                          loading="lazy"
+                          src="https://cdn.builder.io/api/v1/image/assets/TEMP/088dc1a51a9ac01bab61bcdd1940c0bcfd1a07f8c3df7ac598ea1cdb1fe19ea7?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                          class="video-control-icon"
+                          alt="Video control icon"
+                        />
+                      </div>
+                      <div class="video-info">
+                        <img
+                          loading="lazy"
+                          src="https://cdn.builder.io/api/v1/image/assets/TEMP/806d47ee55058e9a3f002b9bcfbd79cd8e9ea7aa565373d3a14764bf06a72462?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                          class="video-info-icon"
+                          alt="Info icon"
+                        />
+                        <div class="video-info-text">Ruang Sidang</div>
+                      </div>
                     </div>
-                    <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/955ebe19b6d2aa642fc7818a27afeded0d1fb5410fdf3df4c65d3a59dd5cb2f6?apiKey=6ab41f143a54414da54fad5411713bcc&" class="video-info-icon" alt="Info icon" />
                   </div>
-                  <div class="video-info">Siti Aminah</div>
+                  <div class="video-item">
+                    <div class="video-frame">
+                      <img
+                        loading="lazy"
+                        src="https://cdn.builder.io/api/v1/image/assets/TEMP/7fa1789543c3a5d87b19761322fec43165fb24cf2c80a2b01315ec1852cd62c3?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                        class="video-image"
+                        alt="Video feed of Andi Wijaya"
+                      />
+                      <div class="video-control">
+                        <img
+                          loading="lazy"
+                          src="https://cdn.builder.io/api/v1/image/assets/TEMP/2f2084fd7fa047509e292799868ee41f9f70c63e8ee5040a031220772c166dd9?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                          class="video-control-icon"
+                          alt="Video control icon"
+                        />
+                      </div>
+                      <div class="video-info">
+                        <img
+                          loading="lazy"
+                          src="https://cdn.builder.io/api/v1/image/assets/TEMP/37acb6ba9716f728b0a08364765cc4eb31f53dc886b77836b605927232d44f31?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                          class="video-info-icon"
+                          alt="Info icon"
+                        />
+                        <div class="video-info-text">Andi Wijaya</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="video-item">
+                    <div class="video-frame">
+                      <img
+                        loading="lazy"
+                        src="https://cdn.builder.io/api/v1/image/assets/TEMP/26eae76db59d5047fe18409d6c8330091b2adb034f4d3ad853a7fb0b6df75017?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                        class="video-image"
+                        alt="Video feed of Budi Santoso"
+                      />
+                      <div class="video-control">
+                        <img
+                          loading="lazy"
+                          src="https://cdn.builder.io/api/v1/image/assets/TEMP/960be82798cefa6cfb6dc60a4e0aaf3b99ff0b21300d6c5b3d9f1388e7e1faed?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                          class="video-control-icon"
+                          alt="Video control icon"
+                        />
+                      </div>
+                      <div class="video-info">Budi Santoso</div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div class="video-item">
-                <div class="video-frame">
-                  <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/c0414da7fa35302147c3c5ce86b02798a3eb2d665b87687ea55edfdd3092756e?apiKey=6ab41f143a54414da54fad5411713bcc&" class="video-image" alt="Video feed of Ahmad Firdaus" />
-                  <div class="video-control">
-                    <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/c8f018c363a57557014479777c5a53a1b3b71176e41df8399aeb10a1d84a2fcf?apiKey=6ab41f143a54414da54fad5411713bcc&" class="video-control-icon" alt="Video control icon" />
+                <div class="video-row">
+                  <div class="video-item">
+                    <div class="video-frame">
+                      <img
+                        loading="lazy"
+                        src="https://cdn.builder.io/api/v1/image/assets/TEMP/48e264ecac1547e38a5e9961e8a463ef45120335021ef500f827d0c4ded38800?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                        class="video-image"
+                        alt="Video feed of Siti Aminah"
+                      />
+                      <div class="video-control">
+                        <div class="video-control">
+                          <img
+                            loading="lazy"
+                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/4e001af2382fbb88b1ca281127373aef38c7081df179307ceeac3459dc076431?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                            class="video-control-icon"
+                            alt="Video control icon"
+                          />
+                        </div>
+                        <img
+                          loading="lazy"
+                          src="https://cdn.builder.io/api/v1/image/assets/TEMP/955ebe19b6d2aa642fc7818a27afeded0d1fb5410fdf3df4c65d3a59dd5cb2f6?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                          class="video-info-icon"
+                          alt="Info icon"
+                        />
+                      </div>
+                      <div class="video-info">Siti Aminah</div>
+                    </div>
                   </div>
-                  <div class="video-info">Ahmad Firdaus</div>
-                </div>
-              </div>
-              <div class="video-item">
-                <div class="video-frame">
-                  <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4f9eda6d3bf45aab9a2e5e09f5e011916e925ba03e19eefaf67f88806d6c604c?apiKey=6ab41f143a54414da54fad5411713bcc&" class="video-image" alt="Video feed of Rina Kusuma" />
-                  <div class="video-control">
-                    <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/708380381c80928be5506b1bf9a816c97d02cf48ce47f4f2075468af9373d7bb?apiKey=6ab41f143a54414da54fad5411713bcc&" class="video-control-icon" alt="Video control icon" />
+                  <div class="video-item">
+                    <div class="video-frame">
+                      <img
+                        loading="lazy"
+                        src="https://cdn.builder.io/api/v1/image/assets/TEMP/c0414da7fa35302147c3c5ce86b02798a3eb2d665b87687ea55edfdd3092756e?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                        class="video-image"
+                        alt="Video feed of Ahmad Firdaus"
+                      />
+                      <div class="video-control">
+                        <img
+                          loading="lazy"
+                          src="https://cdn.builder.io/api/v1/image/assets/TEMP/c8f018c363a57557014479777c5a53a1b3b71176e41df8399aeb10a1d84a2fcf?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                          class="video-control-icon"
+                          alt="Video control icon"
+                        />
+                      </div>
+                      <div class="video-info">Ahmad Firdaus</div>
+                    </div>
                   </div>
-                  <div class="video-info">Rina Kusuma</div>
+                  <div class="video-item">
+                    <div class="video-frame">
+                      <img
+                        loading="lazy"
+                        src="https://cdn.builder.io/api/v1/image/assets/TEMP/4f9eda6d3bf45aab9a2e5e09f5e011916e925ba03e19eefaf67f88806d6c604c?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                        class="video-image"
+                        alt="Video feed of Rina Kusuma"
+                      />
+                      <div class="video-control">
+                        <img
+                          loading="lazy"
+                          src="https://cdn.builder.io/api/v1/image/assets/TEMP/708380381c80928be5506b1bf9a816c97d02cf48ce47f4f2075468af9373d7bb?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                          class="video-control-icon"
+                          alt="Video control icon"
+                        />
+                      </div>
+                      <div class="video-info">Rina Kusuma</div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+            <aside class="participant-list">
+              <div class="participant-container">
+                <div class="participant-header">
+                  <div class="participant-count">Anggota (12)</div>
+                  <img
+                    loading="lazy"
+                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/6e8a3fb4a8d0af55e7f2db98784c67d016e00fadd0981fe66d2c9aad23d9e643?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                    class="participant-header-icon"
+                    alt="Participant list icon"
+                  />
+                </div>
+                <div class="participant-search">
+                  <img
+                    loading="lazy"
+                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/4744e4c1f4d4e9121b2a176f9f35fbdc580161a337c6207f597266789242ab44?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                    class="participant-search-icon"
+                    alt="Search icon"
+                  />
+                  <div class="participant-search-text">Cari Anggota</div>
+                </div>
+                <div class="participant-item">
+                  <div class="participant-info">
+                    <div class="participant-avatar">R</div>
+                    <div class="participant-details">
+                      <div class="participant-name">Ruang Sidang</div>
+                      <div class="participant-role">Host, Me</div>
+                    </div>
+                  </div>
+                  <div class="participant-actions">
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/8bea9084044705b071df75ff2e6b7261d72ea7d4c23793dae433158ddd0e55c6?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/791c8c3db59012c22274a0dfef3426fa11e108ba509ca3a23873862574713c43?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/2c7a2806072a0a1f5f7225ec0b76ce6417e7e11b635a57e9ed024f72d6471094?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                  </div>
+                </div>
+                <div class="participant-item">
+                  <div class="participant-info">
+                    <div class="participant-avatar">A</div>
+                    <div class="participant-details">
+                      <div class="participant-name">Andi Wijaya</div>
+                      <div class="participant-role">Co-Host</div>
+                    </div>
+                  </div>
+                  <div class="participant-actions">
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/4d81ce7fb771e69c8a0632c690274f946bf979c169c7a00a174eab50d91899c5?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/791c8c3db59012c22274a0dfef3426fa11e108ba509ca3a23873862574713c43?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/2c7a2806072a0a1f5f7225ec0b76ce6417e7e11b635a57e9ed024f72d6471094?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                  </div>
+                </div>
+                <div class="participant-item">
+                  <div class="participant-info">
+                    <div class="participant-avatar">B</div>
+                    <div class="participant-name">Budi Santoso</div>
+                  </div>
+                  <div class="participant-actions">
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/4854a70f0795888428f62bb22be9f3c073d1309ae2771ae75366afc1ba4b61ea?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/4ded6fd997ee66b4c7cf80414febdbf0e0ad9e3313f9f84522ab59cfe28c8ae1?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/2c7a2806072a0a1f5f7225ec0b76ce6417e7e11b635a57e9ed024f72d6471094?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                  </div>
+                </div>
+                <div class="participant-item">
+                  <div class="participant-info">
+                    <div class="participant-avatar">S</div>
+                    <div class="participant-name">Siti Aminah</div>
+                  </div>
+                  <div class="participant-actions">
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/4854a70f0795888428f62bb22be9f3c073d1309ae2771ae75366afc1ba4b61ea?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/4ded6fd997ee66b4c7cf80414febdbf0e0ad9e3313f9f84522ab59cfe28c8ae1?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/2c7a2806072a0a1f5f7225ec0b76ce6417e7e11b635a57e9ed024f72d6471094?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                  </div>
+                </div>
+                <div class="participant-item">
+                  <div class="participant-info">
+                    <div class="participant-avatar">A</div>
+                    <div class="participant-name">Ahmad Firdaus</div>
+                  </div>
+                  <div class="participant-actions">
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/4854a70f0795888428f62bb22be9f3c073d1309ae2771ae75366afc1ba4b61ea?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/4ded6fd997ee66b4c7cf80414febdbf0e0ad9e3313f9f84522ab59cfe28c8ae1?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/2c7a2806072a0a1f5f7225ec0b76ce6417e7e11b635a57e9ed024f72d6471094?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                  </div>
+                </div>
+                <div class="participant-item">
+                  <div class="participant-info">
+                    <div class="participant-avatar">R</div>
+                    <div class="participant-name">Rina Kusuma</div>
+                  </div>
+                  <div class="participant-actions">
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/4854a70f0795888428f62bb22be9f3c073d1309ae2771ae75366afc1ba4b61ea?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/4ded6fd997ee66b4c7cf80414febdbf0e0ad9e3313f9f84522ab59cfe28c8ae1?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/2c7a2806072a0a1f5f7225ec0b76ce6417e7e11b635a57e9ed024f72d6471094?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                  </div>
+                </div>
+                <div class="participant-item">
+                  <div class="participant-info">
+                    <div class="participant-avatar">E</div>
+                    <div class="participant-name">Eko Prasetyo</div>
+                  </div>
+                  <div class="participant-actions">
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/4854a70f0795888428f62bb22be9f3c073d1309ae2771ae75366afc1ba4b61ea?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/4ded6fd997ee66b4c7cf80414febdbf0e0ad9e3313f9f84522ab59cfe28c8ae1?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/2c7a2806072a0a1f5f7225ec0b76ce6417e7e11b635a57e9ed024f72d6471094?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                  </div>
+                </div>
+                <div class="participant-item">
+                  <div class="participant-info">
+                    <div class="participant-avatar">S</div>
+                    <div class="participant-name">Sri Lestari</div>
+                  </div>
+                  <div class="participant-actions">
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/4854a70f0795888428f62bb22be9f3c073d1309ae2771ae75366afc1ba4b61ea?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/4ded6fd997ee66b4c7cf80414febdbf0e0ad9e3313f9f84522ab59cfe28c8ae1?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/2c7a2806072a0a1f5f7225ec0b76ce6417e7e11b635a57e9ed024f72d6471094?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                  </div>
+                </div>
+                <div class="participant-item">
+                  <div class="participant-info">
+                    <div class="participant-avatar">Y</div>
+                    <div class="participant-name">Yudi Kurniawan</div>
+                  </div>
+                  <div class="participant-actions">
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/4854a70f0795888428f62bb22be9f3c073d1309ae2771ae75366afc1ba4b61ea?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/4ded6fd997ee66b4c7cf80414febdbf0e0ad9e3313f9f84522ab59cfe28c8ae1?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/2c7a2806072a0a1f5f7225ec0b76ce6417e7e11b635a57e9ed024f72d6471094?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                  </div>
+                </div>
+                <div class="participant-item">
+                  <div class="participant-info">
+                    <div class="participant-avatar">I</div>
+                    <div class="participant-name">Intan Permatasari</div>
+                  </div>
+                  <div class="participant-actions">
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/4854a70f0795888428f62bb22be9f3c073d1309ae2771ae75366afc1ba4b61ea?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/4ded6fd997ee66b4c7cf80414febdbf0e0ad9e3313f9f84522ab59cfe28c8ae1?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/2c7a2806072a0a1f5f7225ec0b76ce6417e7e11b635a57e9ed024f72d6471094?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                  </div>
+                </div>
+                <div class="participant-item">
+                  <div class="participant-info">
+                    <div class="participant-avatar">H</div>
+                    <div class="participant-name">Hendra Setiawan</div>
+                  </div>
+                  <div class="participant-actions">
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/4854a70f0795888428f62bb22be9f3c073d1309ae2771ae75366afc1ba4b61ea?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/4ded6fd997ee66b4c7cf80414febdbf0e0ad9e3313f9f84522ab59cfe28c8ae1?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/2c7a2806072a0a1f5f7225ec0b76ce6417e7e11b635a57e9ed024f72d6471094?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                  </div>
+                </div>
+                <div class="participant-item">
+                  <div class="participant-info">
+                    <div class="participant-avatar">T</div>
+                    <div class="participant-name">Triana Kurnita</div>
+                  </div>
+                  <div class="participant-actions">
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/4854a70f0795888428f62bb22be9f3c073d1309ae2771ae75366afc1ba4b61ea?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/4ded6fd997ee66b4c7cf80414febdbf0e0ad9e3313f9f84522ab59cfe28c8ae1?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/2c7a2806072a0a1f5f7225ec0b76ce6417e7e11b635a57e9ed024f72d6471094?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="participant-action-icon"
+                      alt="Action icon"
+                    />
+                  </div>
+                </div>
+                <div class="participant-controls">
+                  <button class="invite-button">Undang</button>
+                  <button class="mute-all-button">Bisukan Semua</button>
+                  <div class="more-options">
+                    <img
+                      loading="lazy"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/444b8195cb2e5a6c54b8270db9d30e35be8bbbd12048cff17752d4851b65e119?apiKey=6ab41f143a54414da54fad5411713bcc&"
+                      class="more-options-icon"
+                      alt="More options icon"
+                    />
+                  </div>
+                </div>
+              </div>
+            </aside>
           </div>
-        </div>
-        <aside class="participant-list">
-          <div class="participant-container">
-            <div class="participant-header">
-              <div class="participant-count">Anggota (12)</div>
-              <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/6e8a3fb4a8d0af55e7f2db98784c67d016e00fadd0981fe66d2c9aad23d9e643?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-header-icon" alt="Participant list icon" />
-            </div>
-            <div class="participant-search">
-              <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4744e4c1f4d4e9121b2a176f9f35fbdc580161a337c6207f597266789242ab44?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-search-icon" alt="Search icon" />
-              <div class="participant-search-text">Cari Anggota</div>
-            </div>
-            <div class="participant-item">
-              <div class="participant-info">
-                <div class="participant-avatar">R</div>
-                <div class="participant-details">
-                  <div class="participant-name">Ruang Sidang</div>
-                  <div class="participant-role">Host, Me</div>
+          <footer class="conference-controls">
+            <div class="row">
+              <div class="col-12">
+                <div class="d-flex justify-content-between gap-2">
+                  <div class="control-item">
+                    <div class="control-button">
+                      <div class="control-button-content">
+                        <img
+                          loading="lazy"
+                          src="/assets/compiled/svg/iconMic.svg"
+                          class="control-icon"
+                          alt="Control icon"
+                        />
+                        <img
+                          loading="lazy"
+                          src="/assets/compiled/svg/iconUp.svg"
+                          class="control-arrow"
+                          alt="Arrow icon"
+                        />
+                      </div>
+                    </div>
+                    <div class="control-button">
+                      <div class="control-button-content">
+                        <img
+                          loading="lazy"
+                          src="/assets/compiled/svg/iconVideo.svg"
+                          class="control-icon"
+                          alt="Control icon"
+                        />
+                        <img
+                          loading="lazy"
+                          src="/assets/compiled/svg/iconUp.svg"
+                          class="control-arrow"
+                          alt="Arrow icon"
+                        />
+                      </div>
+                    </div>
+                    
+                  </div>
+                  <div class="action-buttons">
+                    <div class="action-button">
+                      <img
+                        loading="lazy"
+                        src="/assets/compiled/svg/iconParticipants.svg"
+                        class="action-icon"
+                        alt="Action icon"
+                      />
+                    </div>
+                    <div class="action-button">
+                      <img
+                        loading="lazy"
+                        src="/assets/compiled/svg/iconChat.svg"
+                        class="action-icon"
+                        alt="Action icon"
+                      />
+                    </div>
+                    <div class="action-button">
+                      <img
+                        loading="lazy"
+                        src="/assets/compiled/svg/iconRaiseHand.svg"
+                        class="action-icon"
+                        alt="Action icon"
+                      />
+                    </div>
+                    <div class="action-button">
+                      <img
+                        loading="lazy"
+                        src="/assets/compiled/svg/iconFullscreen.svg"
+                        class="action-icon"
+                        alt="Action icon"
+                      />
+                    </div>
+                    <div class="action-button">
+                      <img
+                        loading="lazy"
+                        src="/assets/compiled/svg/iconSubtitle.svg"
+                        class="action-icon"
+                        alt="Action icon"
+                      />
+                    </div>
+                    <div class="action-button">
+                      <img
+                      loading="lazy"
+                      src="/assets/compiled/svg/iconSetting.svg"
+                      class="action-icon"
+                      alt="Action icon"
+                    />
+                    </div>
+                  </div>
+                  <div class="end-call-button">
+                    <img
+                      loading="lazy"
+                      src="/assets/compiled/svg/iconEndCall.svg"
+                      class="end-call-icon"
+                      alt="End call icon"
+                    />
+                  </div>
                 </div>
+
               </div>
-              <div class="participant-actions">
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/8bea9084044705b071df75ff2e6b7261d72ea7d4c23793dae433158ddd0e55c6?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/791c8c3db59012c22274a0dfef3426fa11e108ba509ca3a23873862574713c43?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/2c7a2806072a0a1f5f7225ec0b76ce6417e7e11b635a57e9ed024f72d6471094?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-              </div>
+             
+              <!-- <div class="control-group">
+               
+              </div> -->
             </div>
-            <div class="participant-item">
-              <div class="participant-info">
-                <div class="participant-avatar">A</div>
-                <div class="participant-details">
-                  <div class="participant-name">Andi Wijaya</div>
-                  <div class="participant-role">Co-Host</div>
-                </div>
-              </div>
-              <div class="participant-actions">
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4d81ce7fb771e69c8a0632c690274f946bf979c169c7a00a174eab50d91899c5?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/791c8c3db59012c22274a0dfef3426fa11e108ba509ca3a23873862574713c43?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/2c7a2806072a0a1f5f7225ec0b76ce6417e7e11b635a57e9ed024f72d6471094?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-              </div>
-            </div>
-            <div class="participant-item">
-              <div class="participant-info">
-                <div class="participant-avatar">B</div>
-                <div class="participant-name">Budi Santoso</div>
-              </div>
-              <div class="participant-actions">
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4854a70f0795888428f62bb22be9f3c073d1309ae2771ae75366afc1ba4b61ea?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4ded6fd997ee66b4c7cf80414febdbf0e0ad9e3313f9f84522ab59cfe28c8ae1?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/2c7a2806072a0a1f5f7225ec0b76ce6417e7e11b635a57e9ed024f72d6471094?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-              </div>
-            </div>
-            <div class="participant-item">
-              <div class="participant-info">
-                <div class="participant-avatar">S</div>
-                <div class="participant-name">Siti Aminah</div>
-              </div>
-              <div class="participant-actions">
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4854a70f0795888428f62bb22be9f3c073d1309ae2771ae75366afc1ba4b61ea?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4ded6fd997ee66b4c7cf80414febdbf0e0ad9e3313f9f84522ab59cfe28c8ae1?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/2c7a2806072a0a1f5f7225ec0b76ce6417e7e11b635a57e9ed024f72d6471094?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-              </div>
-            </div>
-            <div class="participant-item">
-              <div class="participant-info">
-                <div class="participant-avatar">A</div>
-                <div class="participant-name">Ahmad Firdaus</div>
-              </div>
-              <div class="participant-actions">
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4854a70f0795888428f62bb22be9f3c073d1309ae2771ae75366afc1ba4b61ea?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4ded6fd997ee66b4c7cf80414febdbf0e0ad9e3313f9f84522ab59cfe28c8ae1?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/2c7a2806072a0a1f5f7225ec0b76ce6417e7e11b635a57e9ed024f72d6471094?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-              </div>
-            </div>
-            <div class="participant-item">
-              <div class="participant-info">
-                <div class="participant-avatar">R</div>
-                <div class="participant-name">Rina Kusuma</div>
-              </div>
-              <div class="participant-actions">
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4854a70f0795888428f62bb22be9f3c073d1309ae2771ae75366afc1ba4b61ea?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4ded6fd997ee66b4c7cf80414febdbf0e0ad9e3313f9f84522ab59cfe28c8ae1?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/2c7a2806072a0a1f5f7225ec0b76ce6417e7e11b635a57e9ed024f72d6471094?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-              </div>
-            </div>
-            <div class="participant-item">
-              <div class="participant-info">
-                <div class="participant-avatar">E</div>
-                <div class="participant-name">Eko Prasetyo</div>
-              </div>
-              <div class="participant-actions">
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4854a70f0795888428f62bb22be9f3c073d1309ae2771ae75366afc1ba4b61ea?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4ded6fd997ee66b4c7cf80414febdbf0e0ad9e3313f9f84522ab59cfe28c8ae1?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/2c7a2806072a0a1f5f7225ec0b76ce6417e7e11b635a57e9ed024f72d6471094?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-              </div>
-            </div>
-            <div class="participant-item">
-              <div class="participant-info">
-                <div class="participant-avatar">S</div>
-                <div class="participant-name">Sri Lestari</div>
-              </div>
-              <div class="participant-actions">
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4854a70f0795888428f62bb22be9f3c073d1309ae2771ae75366afc1ba4b61ea?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4ded6fd997ee66b4c7cf80414febdbf0e0ad9e3313f9f84522ab59cfe28c8ae1?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/2c7a2806072a0a1f5f7225ec0b76ce6417e7e11b635a57e9ed024f72d6471094?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-              </div>
-            </div>
-            <div class="participant-item">
-              <div class="participant-info">
-                <div class="participant-avatar">Y</div>
-                <div class="participant-name">Yudi Kurniawan</div>
-              </div>
-              <div class="participant-actions">
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4854a70f0795888428f62bb22be9f3c073d1309ae2771ae75366afc1ba4b61ea?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4ded6fd997ee66b4c7cf80414febdbf0e0ad9e3313f9f84522ab59cfe28c8ae1?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/2c7a2806072a0a1f5f7225ec0b76ce6417e7e11b635a57e9ed024f72d6471094?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-              </div>
-            </div>
-            <div class="participant-item">
-              <div class="participant-info">
-                <div class="participant-avatar">I</div>
-                <div class="participant-name">Intan Permatasari</div>
-              </div>
-              <div class="participant-actions">
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4854a70f0795888428f62bb22be9f3c073d1309ae2771ae75366afc1ba4b61ea?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4ded6fd997ee66b4c7cf80414febdbf0e0ad9e3313f9f84522ab59cfe28c8ae1?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/2c7a2806072a0a1f5f7225ec0b76ce6417e7e11b635a57e9ed024f72d6471094?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-              </div>
-            </div>
-            <div class="participant-item">
-              <div class="participant-info">
-                <div class="participant-avatar">H</div>
-                <div class="participant-name">Hendra Setiawan</div>
-              </div>
-              <div class="participant-actions">
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4854a70f0795888428f62bb22be9f3c073d1309ae2771ae75366afc1ba4b61ea?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4ded6fd997ee66b4c7cf80414febdbf0e0ad9e3313f9f84522ab59cfe28c8ae1?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/2c7a2806072a0a1f5f7225ec0b76ce6417e7e11b635a57e9ed024f72d6471094?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-              </div>
-            </div>
-            <div class="participant-item">
-              <div class="participant-info">
-                <div class="participant-avatar">T</div>
-                <div class="participant-name">Triana Kurnita</div>
-              </div>
-              <div class="participant-actions">
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4854a70f0795888428f62bb22be9f3c073d1309ae2771ae75366afc1ba4b61ea?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/4ded6fd997ee66b4c7cf80414febdbf0e0ad9e3313f9f84522ab59cfe28c8ae1?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/2c7a2806072a0a1f5f7225ec0b76ce6417e7e11b635a57e9ed024f72d6471094?apiKey=6ab41f143a54414da54fad5411713bcc&" class="participant-action-icon" alt="Action icon" />
-              </div>
-            </div>
-            <div class="participant-controls">
-              <button class="invite-button">Undang</button>
-              <button class="mute-all-button">Bisukan Semua</button>
-              <div class="more-options">
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/444b8195cb2e5a6c54b8270db9d30e35be8bbbd12048cff17752d4851b65e119?apiKey=6ab41f143a54414da54fad5411713bcc&" class="more-options-icon" alt="More options icon" />
-              </div>
-            </div>
-          </div>
-        </aside>
+          </footer>
+        </section>
       </div>
-      <footer class="conference-controls">
-        <div class="control-group">
-          <div class="control-item">
-            <div class="control-button">
-              <div class="control-button-content">
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/f7a2656aaeb0b7b54615a60c25bcf5ac1152914871ff3cf44eb98bb342a5066d?apiKey=6ab41f143a54414da54fad5411713bcc&" class="control-icon" alt="Control icon" />
-                <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/dd561694b47d6ab081f06706b0d9481686025970f49f5360e303fde7498535f4?apiKey=6ab41f143a54414da54fad5411713bcc&" class="control-arrow" alt="Arrow icon" />
-              </div>
-            </div>
-            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/c19a383e08c00969930e46e7aac41efd08586de7abfd9294b3e287557e61a8b2?apiKey=6ab41f143a54414da54fad5411713bcc&" class="control-text" alt="Control text" />
-          </div>
-          <div class="action-buttons">
-            <div class="action-button">
-              <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/8a06d9d368e57660770b84e2b15edeac639739bdd37b990d38cd3d203e2fad75?apiKey=6ab41f143a54414da54fad5411713bcc&" class="action-icon" alt="Action icon" />
-            </div>
-            <div class="action-button">
-              <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/765b34df31f0ab967caee525f3eba45a2b3a0f9074c9e6f55ed9b11a40059e7a?apiKey=6ab41f143a54414da54fad5411713bcc&" class="action-icon" alt="Action icon" />
-            </div>
-            <div class="action-button">
-              <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/7f12be91dc7bd766ba4d41dd0c7ace69e91e77555f7ceef4e3c22da8015a25a6?apiKey=6ab41f143a54414da54fad5411713bcc&" class="action-icon" alt="Action icon" />
-            </div>
-            <div class="action-button">
-              <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/f121e2ffd0b0cf05eab7d16784ed89a4e1602139277386c940041e6db136afcc?apiKey=6ab41f143a54414da54fad5411713bcc&" class="action-icon" alt="Action icon" />
-            </div>
-            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/543e406a3a7c3ccd9dffa7684a19885e579c622c0dd3d401820730eaaf734295?apiKey=6ab41f143a54414da54fad5411713bcc&" class="action-icon" alt="Action icon" />
-          </div>
-        </div>
-        <div class="end-call-button">
-          <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/619222ead9519d50e1adf9f99b9ea961a979e3f55e71de49aa1dc0c046c88508?apiKey=6ab41f143a54414da54fad5411713bcc&" class="end-call-icon" alt="End call icon" />
-        </div>
-      </footer>
-    </section>
+    </div>
+  </body>
+</html>
