@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Grid Layout</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .container-fluid {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: flex-start;
+            align-items: center;
+        }
+        .btn-group-container {
+            width: 100%;
+            background-color: white;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+        .card-container-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            width: 100%;
+        }
+        .card-container {
+            display: grid;
+            gap: 2px;
+            justify-content: center;
+            align-content: center;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            grid-template-columns: repeat(var(--cols), 1fr);
+        }
+        .card {
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: var(--width);
+            height: var(--height);
+            margin: 0.5px; /* Tiny margin to create a small gap */
+        }
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="btn-group-container">
+            <div class="btn-group mb-4" role="group" aria-label="Card number buttons">
+                <button type="button" class="btn btn-primary" onclick="setCardNumber(5)">5 Grids</button>
+                <button type="button" class="btn btn-primary" onclick="setCardNumber(10)">10 Grids</button>
+                <button type="button" class="btn btn-primary" onclick="setCardNumber(15)">15 Grids</button>
+                <button type="button" class="btn btn-primary" onclick="setCardNumber(20)">20 Grids</button>
+            </div>
+        </div>
+        <div class="card-container-wrapper">
+            <div id="card-container" class="card-container" style="--width: 0px; --height: 0px; --cols: 1;">
+                <!-- Cards will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function generateCard(index) {
+            const card = document.createElement('div');
+            card.classList.add('card');
+            card.innerHTML = `
+                <div class="card-body">
+                    <h5 class="card-title">Card ${index}</h5>
+                    <p class="card-text">This is a description for card ${index}.</p>
+                </div>
+            `;
+            return card;
+        }
+
+        function setCardNumber(number) {
+            const container = document.getElementById('card-container');
+            container.innerHTML = '';
+
+            for (let i = 1; i <= number; i++) {
+                container.appendChild(generateCard(i));
+            }
+
+            recalculateLayout();
+        }
+
+        function recalculateLayout() {
+            const gallery = document.getElementById("card-container");
+            const screenWidth = document.body.getBoundingClientRect().width;
+            const screenHeight = document.body.getBoundingClientRect().height;
+            const videoCount = gallery.getElementsByClassName("card").length;
+
+            function calculateLayout(containerWidth, containerHeight, videoCount) {
+                let bestLayout = {
+                    area: 0,
+                    cols: 0,
+                    rows: 0,
+                    width: 0,
+                    height: 0
+                };
+
+                for (let cols = 1; cols <= videoCount; cols++) {
+                    const rows = Math.ceil(videoCount / cols);
+                    const width = Math.floor(containerWidth / cols);
+                    const height = Math.floor(containerHeight / rows);
+                    const area = width * height;
+
+                    if (area > bestLayout.area) {
+                        bestLayout = {
+                            area,
+                            width,
+                            height,
+                            rows,
+                            cols
+                        };
+                    }
+                }
+                return bestLayout;
+            }
+
+            const { width, height, cols } = calculateLayout(screenWidth, screenHeight, videoCount);
+
+            gallery.style.setProperty("--width", width + "px");
+            gallery.style.setProperty("--height", height + "px");
+            gallery.style.setProperty("--cols", cols + "");
+        }
+
+        window.addEventListener('resize', recalculateLayout);
+
+        // Initialize with 5 cards
+        document.addEventListener('DOMContentLoaded', () => setCardNumber(5));
+    </script>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
