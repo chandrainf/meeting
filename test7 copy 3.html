@@ -30,6 +30,7 @@
         overflow: hidden;
         font-family: Arial, sans-serif;
       }
+
       .container-fluid {
         display: flex;
         flex-direction: column;
@@ -42,7 +43,7 @@
         background-color: white;
         padding: 1rem;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        z-index: 10;
+        /* z-index: 10; */
       }
       .main-content {
         flex: 1;
@@ -219,8 +220,10 @@
       .dropdown-menu:hover {
         background-color: #374151;
       }
-      #exampleModalCenter {
+      .modal-content,
+      .modal-title {
         background-color: #15181e;
+        color: #ffffff;
       }
     </style>
   </head>
@@ -273,7 +276,7 @@
               type="button"
               class="btn btn-outline-primary block"
               data-bs-toggle="modal"
-              data-bs-target="#default"
+              data-bs-target="#exampleModalCenter"
             >
               Launch Modal
             </button>
@@ -305,44 +308,170 @@
             role="document"
           >
             <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalCenterTitle">
-                  Vertically Centered
-                </h5>
-                <button
-                  type="button"
-                  class="close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                >
-                  <i data-feather="x"></i>
-                </button>
-              </div>
               <div class="modal-body">
-                <p>
-                  Croissant jelly-o halvah chocolate sesame snaps. Brownie
-                  caramels candy canes chocolate cake marshmallow icing lollipop
-                  I love. Gummies macaroon donut caramels biscuit topping
-                  danish.
-                </p>
-              </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-light-secondary"
-                  data-bs-dismiss="modal"
-                >
-                  <i class="bx bx-x d-block d-sm-none"></i>
-                  <span class="d-none d-sm-block">Close</span>
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-primary ms-1"
-                  data-bs-dismiss="modal"
-                >
-                  <i class="bx bx-check d-block d-sm-none"></i>
-                  <span class="d-none d-sm-block">Accept</span>
-                </button>
+                <div class="d-flex justify-content-between">
+                  <h5 class="modal-title" id="exampleModalCenterTitle">
+                    Ubah Susunan
+                  </h5>
+                  <button
+                    type="button"
+                    class="close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <i data-feather="x"></i>
+                  </button>
+                </div>
+                <div>
+                  <p>Perubahan akan disimpan untuk rapat selanjutnya</p>
+                </div>
+
+                <div class="row gap-2 mb-4">
+                  <div
+                    class="col-12 d-flex justify-content-between"
+                    style="align-items: center"
+                  >
+                    <div>
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="Secondary"
+                        id="Secondary"
+                        checked
+                      />
+                      <label class="form-check-label" for="Secondary">
+                        Petak
+                      </label>
+                    </div>
+                    <div>
+                      <i class="me-3"
+                        ><img
+                          src="/assets/compiled/svg/iconLayoutGallery.svg"
+                          alt=""
+                          height="38"
+                          width="70"
+                      /></i>
+                    </div>
+                  </div>
+                  <div
+                    class="col-12 d-flex justify-content-between"
+                    style="align-items: center"
+                  >
+                    <div>
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="Secondary"
+                        id="Secondary"
+                        checked
+                      />
+                      <label class="form-check-label" for="Secondary">
+                        Pembicara
+                      </label>
+                    </div>
+                    <div>
+                      <i class="me-3"
+                        ><img
+                          src="/assets/compiled/svg/iconLayoutSpeaker.svg"
+                          alt=""
+                          height="38"
+                          width="70"
+                      /></i>
+                    </div>
+                  </div>
+                  <div
+                    class="col-12 d-flex justify-content-between"
+                    style="align-items: center"
+                  >
+                    <div>
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="Secondary"
+                        id="Secondary"
+                        checked
+                      />
+                      <label class="form-check-label" for="Secondary">
+                        Petak Samping
+                      </label>
+                    </div>
+                    <div>
+                      <i class="me-3"
+                        ><img
+                          src="/assets/compiled/svg/iconLayoutActiveSpeaker.svg"
+                          alt=""
+                          height="38"
+                          width="70"
+                      /></i>
+                    </div>
+                  </div>
+                  <div class="row mt-4">
+                    <label
+                      >Jumlah Petak <br />
+                      Tidak bisa mengubah jumlah petak di tampilan ini</label
+                    >
+
+                    <div class="col-12 d-flex justify-content-between">
+                      <div>
+                        <img
+                          src="/assets/compiled/svg/iconSquare1.svg"
+                          alt=""
+                          height="22"
+                          width="22"
+                        />
+                      </div>
+                      <div class="gap-4">
+                        <input
+                        class="form-check-input"
+                        type="radio"
+                        name="Secondary"
+                        id="Secondary"
+                      />
+                      <label class="form-check-label" for="Secondary">
+                        4
+                      </label>
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="Secondary"
+                        id="Secondary"
+                      />
+                      <label class="form-check-label" for="Secondary">
+                        9
+                      </label>
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="Secondary"
+                        id="Secondary"
+                      />
+                      <label class="form-check-label" for="Secondary">
+                        15
+                      </label>
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="Secondary"
+                        id="Secondary"
+                      />
+                      <label class="form-check-label" for="Secondary">
+                        25
+                      </label>
+
+                      </div>
+
+                      
+                      <div>
+                        <img
+                          src="/assets/compiled/svg/iconSquare2.svg"
+                          alt=""
+                          height="22"
+                          width="22"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
