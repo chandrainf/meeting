@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Active Speaker View</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+
+        #main-container {
+            display: flex;
+            width: 99%;
+            height: 99%;
+        }
+
+        #active-speaker {
+            flex: 2;
+            background-color: #000;
+            margin-right: 10px;
+           
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        #participants-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            margin-left:20px;
+        }
+
+        #other-participants {
+            flex: 1;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+
+        .video-container {
+            background-color: #333;
+            margin-bottom: 10px;
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease;
+        }
+
+        .video-container .content {
+            color: #fff;
+            text-align: center;
+            position: relative;
+            width: 100%;
+           
+        }
+
+        button {
+            width: 100%;
+            height: 40px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .video-container.fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            transform: none;
+        }
+
+        .video-container.active {
+            border: 5px solid #ff0000;
+            transform: scale(1.05);
+        }
+
+        .other-participants-info {
+            position: relative;
+            border-radius: 0 9.106px 0 0;
+            backdrop-filter: blur(15.17715835571289px);
+            border: 2px solid rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.5);
+            align-self: flex-start;
+            display: flex;
+            gap: 4px;
+            font-size: 16px;
+            color: #fff;
+            font-weight: 400;
+            padding: 8px 10px;
+            width: 30%;
+            
+        }
+
+        .other-participants-info-icon {
+            aspect-ratio: 1;
+            object-fit: auto;
+            object-position: center;
+            width: 18px;
+            align-self: flex-start;
+        }
+
+        .other-participants-info-text {
+            font-feature-settings: "clig" off, "liga" off;
+            font-family: Plus Jakarta Sans, sans-serif;
+        }
+
+        .other-participants-control {
+            position: relative;
+            align-items: center;
+            border-radius: 0 10px;
+            backdrop-filter: blur(15.17715835571289px);
+            border: 2px solid rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.5);
+            align-self: flex-end;
+            display: flex;
+            width: 44px;
+            justify-content: center;
+            height: 44px;
+            padding: 0 10px;
+        }
+
+        .other-participants-control-icon {
+            aspect-ratio: 1;
+            object-fit: auto;
+            object-position: center;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="main-container">
+        <div id="active-speaker" class="video-container active">
+            <div class="content">
+                <h1>Active Speaker</h1>
+                <p>This is the active speaker's content.</p>
+                <div class="other-participants-info">
+                    <img src="info-icon.png" alt="Info Icon" class="other-participants-info-icon">
+                    <span class="other-participants-info-text">Active Speaker Info</span>
+                </div>
+            </div>
+        </div>
+        <div id="participants-container">
+            <button id="up-button" class="other-participants-control">
+                <img src="up-icon.png" alt="Up" class="other-participants-control-icon">
+            </button>
+            <div id="other-participants"></div>
+            <button id="down-button" class="other-participants-control">
+                <img src="down-icon.png" alt="Down" class="other-participants-control-icon">
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const activeSpeakerContainer = document.getElementById('active-speaker');
+        const otherParticipantsContainer = document.getElementById('other-participants');
+        const upButton = document.getElementById('up-button');
+        const downButton = document.getElementById('down-button');
+
+        const participantsData = [
+            { title: "Participant 1", content: "This is participant 1's content." },
+            { title: "Participant 2", content: "This is participant 2's content." },
+            { title: "Participant 3", content: "This is participant 3's content." },
+            { title: "Participant 4", content: "This is participant 4's content." },
+            { title: "Participant 5", content: "This is participant 5's content." },
+            { title: "Participant 6", content: "This is participant 6's content." },
+            { title: "Participant 7", content: "This is participant 7's content." }
+        ];
+
+        let startIndex = 0;
+        const maxVisibleParticipants = 5;
+
+        function updateVisibleParticipants() {
+            otherParticipantsContainer.innerHTML = '';
+
+            const visibleParticipants = participantsData.slice(startIndex, startIndex + maxVisibleParticipants);
+            visibleParticipants.forEach((participant, index) => {
+                const container = document.createElement('div');
+                container.classList.add('video-container');
+                container.dataset.index = startIndex + index;
+
+                const content = document.createElement('div');
+                content.classList.add('content');
+
+                const title = document.createElement('h1');
+                title.innerText = participant.title;
+
+                const paragraph = document.createElement('p');
+                paragraph.innerText = participant.content;
+
+                const info = document.createElement('div');
+                info.classList.add('other-participants-info');
+
+                const infoIcon = document.createElement('img');
+                infoIcon.src = 'info-icon.png'; // Replace with your info icon path
+                infoIcon.classList.add('other-participants-info-icon');
+
+                const infoText = document.createElement('span');
+                infoText.classList.add('other-participants-info-text');
+                infoText.innerText = `${participant.title} Info`;
+
+                info.appendChild(infoIcon);
+                info.appendChild(infoText);
+
+                content.appendChild(title);
+                content.appendChild(paragraph);
+                content.appendChild(info);
+                container.appendChild(content);
+
+                container.addEventListener('click', () => {
+                    if (container.classList.contains('fullscreen')) {
+                        container.classList.remove('fullscreen');
+                    } else {
+                        document.querySelectorAll('.video-container').forEach((cont) => {
+                            cont.classList.remove('fullscreen');
+                        });
+                        container.classList.add('fullscreen');
+                    }
+                });
+
+                otherParticipantsContainer.appendChild(container);
+            });
+
+            upButton.disabled = startIndex === 0;
+            downButton.disabled = startIndex >= participantsData.length - maxVisibleParticipants;
+        }
+
+        upButton.addEventListener('click', () => {
+            if (startIndex > 0) {
+                startIndex--;
+                updateVisibleParticipants();
+            }
+        });
+
+        downButton.addEventListener('click', () => {
+            if (startIndex < participantsData.length - maxVisibleParticipants) {
+                startIndex++;
+                updateVisibleParticipants();
+            }
+        });
+
+        function simulateActiveSpeakerChange() {
+            const randomIndex = Math.floor(Math.random() * participantsData.length);
+            const newActiveSpeaker = participantsData[randomIndex];
+
+            activeSpeakerContainer.innerHTML = '';
+
+            const content = document.createElement('div');
+            content.classList.add('content');
+
+            const title = document.createElement('h1');
+            title.innerText = newActiveSpeaker.title;
+
+            const paragraph = document.createElement('p');
+            paragraph.innerText = newActiveSpeaker.content;
+
+            const info = document.createElement('div');
+            info.classList.add('other-participants-info');
+
+            const infoIcon = document.createElement('img');
+            infoIcon.src = 'info-icon.png'; // Replace with your info icon path
+            infoIcon.classList.add('other-participants-info-icon');
+
+            const infoText = document.createElement('span');
+            infoText.classList.add('other-participants-info-text');
+            infoText.innerText = `${newActiveSpeaker.title} Info`;
+
+            info.appendChild(infoIcon);
+            info.appendChild(infoText);
+
+            content.appendChild(title);
+            content.appendChild(paragraph);
+            content.appendChild(info);
+            activeSpeakerContainer.appendChild(content);
+        }
+
+        updateVisibleParticipants();
+        setInterval(simulateActiveSpeakerChange, 5000);
+    </script>
+</body>
+</html>
