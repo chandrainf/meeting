@@ -1,233 +1,300 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Active Speaker View</title>
-    <style>
-      body,
-      html {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: #f0f0f0;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Active Speaker View</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-9X2j2vpx6DqU5nWVGyNlQyIzIRXi9vheHCzPM5s5ImMlKBQq2Km4NVO0JYp27R6rpG8esFmSAA/KnLepr3Unow==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f0f0f0;
+    }
 
-      #main-container {
-        display: flex;
-        width: 90%;
-        height: 90%;
-      }
+    #main-container {
+      display: flex;
+      width: 100%;
+      height: 100%;
+    }
 
-      #active-speaker {
-        flex: 2;
-        background-color: #000;
-        margin-right: 10px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        transition: transform 0.3s ease;
-      }
+    #active-speaker {
+      flex: 2;
+      background-color: #000;
+      margin-right: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: transform 0.3s ease;
+      position: relative; /* Ensure relative positioning for absolute elements */
+      height: 100%; /* Ensure active speaker container fills the height */
+    }
 
-      #participants-container {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: space-between;
-      }
+    #participants-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      height: 100%; /* Ensure participants container fills the height */
+    }
 
-      #other-participants {
-        flex: 1;
-        width: 100%;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around;
-      }
+    #other-participants {
+      flex: 1;
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+    }
 
-      .video-container {
-        background-color: #333;
-        margin-bottom: 10px;
-        flex: 1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-        transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease;
-      }
+    .video-container {
+      background-color: #333;
+      margin-bottom: 10px;
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease;
+      position: relative; /* Ensure relative positioning for absolute elements */
+      height: 100%; /* Ensure each video container fills its parent's height */
+    }
 
-      .video-container .content {
-        color: #fff;
-        text-align: center;
-      }
+    .video-container .content {
+      color: #fff;
+      text-align: center;
+      position: relative;
+      z-index: 1; /* Ensure content is above icons */
+    }
 
-      .video-container .info-icon {
-        width: 18px;
-        align-self: flex-start;
-        font-feature-settings: "clig" off, "liga" off;
-        font-family: Plus Jakarta Sans, sans-serif;
-      }
+    .video-container .mic-icon,
+    .video-container .name-icon {
+      position: absolute;
+      color: #fff;
+      z-index: 2; /* Ensure icons are above content */
+    }
 
-      button {
-        width: 100%;
-        height: 40px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        cursor: pointer;
-      }
+    .video-container .mic-icon.top-right {
+      top: 10px;
+      right: 10px;
+    }
 
-      button:hover {
-        background-color: #0056b3;
-      }
+    .video-container .name-icon.bottom-left {
+      bottom: 10px;
+      left: 10px;
+      display: flex;
+      align-items: center;
+    }
 
-      button:disabled {
-        background-color: #cccccc;
-        cursor: not-allowed;
-      }
+    .video-container .name-icon.bottom-left span {
+      margin-right: 5px;
+    }
 
-      .video-container.fullscreen {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: #000;
-        z-index: 1000;
-        justify-content: center;
-        align-items: center;
-        transform: none;
-      }
+    button {
+      width: 100%;
+      height: 40px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
 
-      .video-container.active {
-        border: 5px solid #ff0000;
-        transform: scale(1.05);
-      }
-    </style>
-  </head>
-  <body>
-    <div id="main-container">
-      <div id="active-speaker" class="video-container active">
-        <div class="content">
-          <h1>Active Speaker</h1>
-          <p>This is the active speaker's content.</p>
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+
+    .video-container.fullscreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #000;
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      transform: none;
+    }
+
+    .video-container.active {
+      border: 5px solid #ff0000;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <div id="main-container">
+    <div id="active-speaker" class="video-container active">
+      <div class="content">
+        <h1>Active Speaker</h1>
+        <p>This is the active speaker's content.</p>
+        <div class="mic-icon top-right"><i class="fas fa-microphone"></i></div>
+        <div class="name-icon bottom-left">
+          <span>Active Speaker</span>
+          <i class="fas fa-user"></i>
         </div>
       </div>
-      <div id="participants-container">
-        <button id="up-button">Up</button>
-        <div id="other-participants"></div>
-        <button id="down-button">Down</button>
-      </div>
     </div>
-    <script>
-      const activeSpeakerContainer = document.getElementById("active-speaker");
-      const otherParticipantsContainer =
-        document.getElementById("other-participants");
-      const upButton = document.getElementById("up-button");
-      const downButton = document.getElementById("down-button");
+    <div id="participants-container">
+      <button id="up-button">Up</button>
+      <div id="other-participants"></div>
+      <button id="down-button">Down</button>
+    </div>
+  </div>
 
-      const participantsData = [
-        { title: "Participant 1", content: "This is participant 1's content." },
-        { title: "Participant 2", content: "This is participant 2's content." },
-        { title: "Participant 3", content: "This is participant 3's content." },
-        { title: "Participant 4", content: "This is participant 4's content." },
-        { title: "Participant 5", content: "This is participant 5's content." },
-        { title: "Participant 6", content: "This is participant 6's content." },
-        { title: "Participant 7", content: "This is participant 7's content." },
-      ];
+  <script>
+    // JavaScript code goes here
+    const activeSpeakerContainer = document.getElementById("active-speaker");
+    const otherParticipantsContainer = document.getElementById("other-participants");
+    const upButton = document.getElementById("up-button");
+    const downButton = document.getElementById("down-button");
 
-      let startIndex = 0;
-      const maxVisibleParticipants = 5;
+    const participantsData = [
+      { title: "Participant 1", content: "This is participant 1's content." },
+      { title: "Participant 2", content: "This is participant 2's content." },
+      { title: "Participant 3", content: "This is participant 3's content." },
+      { title: "Participant 4", content: "This is participant 4's content." },
+      { title: "Participant 5", content: "This is participant 5's content." },
+      { title: "Participant 6", content: "This is participant 6's content." },
+      { title: "Participant 7", content: "This is participant 7's content." },
+    ];
 
-      function updateVisibleParticipants() {
-        otherParticipantsContainer.innerHTML = "";
+    let startIndex = 0;
+    const maxVisibleParticipants = 5;
+    let currentIndex = -1; // Keeps track of the current active speaker index
 
-        const visibleParticipants = participantsData.slice(
-          startIndex,
-          startIndex + maxVisibleParticipants
-        );
-        visibleParticipants.forEach((participant, index) => {
-          const container = document.createElement("div");
-          container.classList.add("video-container");
-          container.dataset.index = startIndex + index;
+    function updateVisibleParticipants() {
+      otherParticipantsContainer.innerHTML = "";
 
-          const content = document.createElement("div");
-          content.classList.add("content");
-
-          const info = document.createElement('div');
-          info.classList.add('info-icon');
-
-          const title = document.createElement("h1");
-          title.innerText = participant.title;
-
-          const paragraph = document.createElement("p");
-          paragraph.innerText = participant.content;
-
-          content.appendChild(title);
-          content.appendChild(paragraph);
-          container.appendChild(content);
-          container.appendChild(content);
-
-          container.addEventListener("click", () => {
-            if (container.classList.contains("fullscreen")) {
-              container.classList.remove("fullscreen");
-            } else {
-              document.querySelectorAll(".video-container").forEach((cont) => {
-                cont.classList.remove("fullscreen");
-              });
-              container.classList.add("fullscreen");
-            }
-          });
-
-          otherParticipantsContainer.appendChild(container);
-        });
-
-        upButton.disabled = startIndex === 0;
-        downButton.disabled =
-          startIndex >= participantsData.length - maxVisibleParticipants;
-      }
-
-      upButton.addEventListener("click", () => {
-        if (startIndex > 0) {
-          startIndex--;
-          updateVisibleParticipants();
-        }
-      });
-
-      downButton.addEventListener("click", () => {
-        if (startIndex < participantsData.length - maxVisibleParticipants) {
-          startIndex++;
-          updateVisibleParticipants();
-        }
-      });
-
-      function simulateActiveSpeakerChange() {
-        const randomIndex = Math.floor(Math.random() * participantsData.length);
-        const newActiveSpeaker = participantsData[randomIndex];
-
-        activeSpeakerContainer.innerHTML = "";
+      const visibleParticipants = participantsData
+        .filter((_, index) => index !== currentIndex) // Exclude the current active speaker
+        .slice(startIndex, startIndex + maxVisibleParticipants);
+      
+      visibleParticipants.forEach((participant, index) => {
+        const container = document.createElement("div");
+        container.classList.add("video-container");
+        container.dataset.index = startIndex + index;
 
         const content = document.createElement("div");
         content.classList.add("content");
 
+        // Top right mic icon
+        const micIconTopRight = document.createElement("div");
+        micIconTopRight.classList.add("mic-icon", "top-right");
+        micIconTopRight.innerHTML = '<i class="fas fa-microphone"></i>';
+
+        // Bottom left name and icon
+        const nameAndIconBottomLeft = document.createElement("div");
+        nameAndIconBottomLeft.classList.add("name-icon", "bottom-left");
+        nameAndIconBottomLeft.innerHTML = `
+          <span>${participant.title}</span>
+          <i class="fas fa-user"></i>
+        `;
+
+        const info = document.createElement("div");
+        info.classList.add("info-icon");
+
         const title = document.createElement("h1");
-        title.innerText = newActiveSpeaker.title;
+        title.innerText = participant.title;
 
         const paragraph = document.createElement("p");
-        paragraph.innerText = newActiveSpeaker.content;
+        paragraph.innerText = participant.content;
 
         content.appendChild(title);
         content.appendChild(paragraph);
-        activeSpeakerContainer.appendChild(content);
-      }
+        content.appendChild(micIconTopRight); // Ensure mic icon is placed after content
+        content.appendChild(nameAndIconBottomLeft); // Ensure name and icon are placed after content
+        container.appendChild(content);
+        container.appendChild(info);
 
-      updateVisibleParticipants();
-      setInterval(simulateActiveSpeakerChange, 5000);
-    </script>
-  </body>
+        container.addEventListener("click", () => {
+          if (container.classList.contains("fullscreen")) {
+            container.classList.remove("fullscreen");
+          } else {
+            document.querySelectorAll(".video-container").forEach((cont) => {
+              cont.classList.remove("fullscreen");
+            });
+            container.classList.add("fullscreen");
+          }
+        });
+
+        otherParticipantsContainer.appendChild(container);
+      });
+
+      upButton.disabled = startIndex === 0;
+      downButton.disabled = startIndex >= participantsData.length - maxVisibleParticipants;
+    }
+
+    upButton.addEventListener("click", () => {
+      if (startIndex > 0) {
+        startIndex--;
+        updateVisibleParticipants();
+      }
+    });
+
+    downButton.addEventListener("click", () => {
+      if (startIndex < participantsData.length - maxVisibleParticipants) {
+        startIndex++;
+        updateVisibleParticipants();
+      }
+    });
+
+    function simulateActiveSpeakerChange() {
+      let newIndex;
+      do {
+        newIndex = Math.floor(Math.random() * participantsData.length);
+      } while (newIndex === currentIndex);
+
+      currentIndex = newIndex;
+      const newActiveSpeaker = participantsData[currentIndex];
+
+      activeSpeakerContainer.innerHTML = "";
+
+      const content = document.createElement("div");
+      content.classList.add("content");
+
+      // Top right mic icon for active speaker
+      const micIconTopRight = document.createElement("div");
+      micIconTopRight.classList.add("mic-icon", "top-right");
+      micIconTopRight.innerHTML = '<i class="fas fa-microphone"></i>';
+
+      // Bottom left name and icon for active speaker
+      const nameAndIconBottomLeft = document.createElement("div");
+      nameAndIconBottomLeft.classList.add("name-icon", "bottom-left");
+      nameAndIconBottomLeft.innerHTML = `
+        <span>${newActiveSpeaker.title}</span>
+        <i class="fas fa-user"></i>
+      `;
+
+      const title = document.createElement("h1");
+      title.innerText = newActiveSpeaker.title;
+
+      const paragraph = document.createElement("p");
+      paragraph.innerText = newActiveSpeaker.content;
+
+      content.appendChild(title);
+      content.appendChild(paragraph);
+      content.appendChild(micIconTopRight); // Ensure mic icon is placed after content
+      content.appendChild(nameAndIconBottomLeft); // Ensure name and icon are placed after content
+      activeSpeakerContainer.appendChild(content);
+
+      updateVisibleParticipants(); // Update visible participants to exclude the new active speaker
+    }
+
+    updateVisibleParticipants();
+    setInterval(simulateActiveSpeakerChange, 5000);
+  </script>
+</body>
 </html>
