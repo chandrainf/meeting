@@ -30,7 +30,12 @@
         overflow: hidden;
         font-family: Arial, sans-serif;
       }
-      .h6, .h5, .h4, .h3, .h2, .h1 {
+      .h6,
+      .h5,
+      .h4,
+      .h3,
+      .h2,
+      .h1 {
         color: #ffffff;
       }
 
@@ -88,20 +93,10 @@
         align-items: center;
         text-align: center;
       }
-      .participant-pane {
-        width: 300px;
-        background-color: #f1f1f1;
-        border-left: 1px solid #ced4da;
-        padding: 1rem;
-        box-sizing: border-box;
-        display: none;
-      }
-      .participant-pane.active {
-        display: block;
-      }
-      .card-container-wrapper.shifted {
-        margin-right: 0; /* No margin between the card container and the participant pane */
-      }
+
+
+
+      
 
       .conference-controls {
         /* justify-content: space-between; */
@@ -195,6 +190,10 @@
         height: 24px;
       }
 
+      .action-button.active {
+        background-color: #2d8cff;
+      }
+
       .end-call-button {
         justify-content: center;
         align-items: center;
@@ -227,6 +226,226 @@
       .modal-title {
         background-color: #15181e;
         color: #ffffff;
+      }
+
+      /* Participant */
+
+      .participant-pane {
+        width: 350px;
+        background-color: #2a2a2a;
+        border-left: 1px solid #ced4da;
+        /* padding: 1rem; */
+        /* box-sizing: border-box; */
+        display: none;
+        overflow: hidden;
+        flex-direction: column;
+      }
+
+
+      .participant-pane.active {
+        display: block;
+      }
+      
+      .chat-header,
+      .chat-footer {
+        padding: 10px;
+        background-color: #444;
+        display: flex;
+        align-items: center;
+      }
+
+      .chat-header h2 {
+        margin: 0;
+        flex-grow: 1;
+      }
+
+      .chat-header input {
+        background-color: #555;
+        border: none;
+        padding: 5px;
+        border-radius: 4px;
+        color: #fff;
+        margin-right: 10px;
+      }
+
+      .chat-header button {
+        background-color: #555;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        color: #fff;
+        cursor: pointer;
+        margin-left: 10px;
+      }
+
+      .chat-list {
+        max-height: 600px;
+        overflow-y: auto;
+      }
+
+      .chat-item {
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #555;
+      }
+
+      .chat-item:last-child {
+        border-bottom: none;
+      }
+
+      .chat-item .avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background-color: #666;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 10px;
+        color: #fff;
+        font-weight: bold;
+      }
+
+      .chat-item .details {
+        flex-grow: 1;
+      }
+
+      .chat-item .icons {
+        display: flex;
+        align-items: center;
+      }
+
+      .chat-item .icons .icon {
+        margin-left: 10px;
+        cursor: pointer;
+      }
+
+      .chat-footer input {
+        flex-grow: 1;
+        background-color: #555;
+        border: none;
+        padding: 10px;
+        border-radius: 4px;
+        color: #fff;
+        margin-right: 10px;
+      }
+
+      .chat-footer button {
+        background-color: #555;
+        border: none;
+        padding: 10px;
+        border-radius: 4px;
+        color: #fff;
+        cursor: pointer;
+        margin-left: 10px;
+      }
+
+
+
+
+      /*Message Pane */
+
+
+      .message-pane {
+        width: 350px;
+        /* box-sizing: border-box; */
+        background-color: #2a2a2a;
+        border-radius: 8px;
+        overflow: hidden;
+        display: none;
+        flex-direction: column;
+        height: 80vh; 
+      }
+      .message-pane.active {
+        display: flex;
+      }
+
+      .messages {
+        flex: 1;
+        padding: 10px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .message {
+        display: flex;
+        align-items: center;
+      }
+
+      .message img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        margin-right: 10px;
+      }
+
+      .message-content {
+        background-color: #333;
+        padding: 10px;
+        border-radius: 5px;
+        max-width: 70%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .message-content span {
+        font-size: 0.8em;
+        color: #bbb;
+      }
+
+      .message.right {
+        justify-content: flex-end;
+        flex-direction: row-reverse;
+      }
+
+      .message.left {
+        justify-content: flex-start;
+      }
+
+      .input-area {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        border-top: 1px solid #444;
+        padding: 10px;
+        background-color: #2a2a2a; /* Ensure input area background matches chat container */
+      }
+
+      input[type="text"] {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #444;
+        color: #f1f1f1;
+      }
+
+      button {
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #2d8cff;
+        color: #fff;
+        cursor: pointer;
+      }
+
+      button#uploadButton,
+      button#emoticonButton {
+        background-color: #444;
+        color: #fff;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      #emojiPicker {
+        position: absolute;
+        bottom: 70px;
+        right: 20px;
       }
     </style>
   </head>
@@ -292,10 +511,43 @@
             </div>
           </div>
           <div class="participant-pane" id="participant-pane">
-            <h4>Participants</h4>
-            <ul id="participant-list">
-              <!-- Participant list items will go here -->
-            </ul>
+            <!-- <div id="participant-list"> -->
+            <!-- <div class="chat-container"> -->
+            <div class="chat-header">
+              <h6>Anggota (<span id="member-count">12</span>)</h6>
+              <input type="text" id="search-input" placeholder="Cari Anggota" />
+            </div>
+            <div class="chat-list" id="chat-list">
+              <!-- Chat members will be dynamically added here -->
+            </div>
+            <div class="chat-footer">
+              <button onclick="inviteMember()">Undang</button>
+              <button onclick="muteAllMics()">Bisukan semua</button> <br />
+              <input
+                type="text"
+                id="new-member-input"
+                placeholder="New Member Name"
+              />
+              <button onclick="addMember()">Add Anggota</button>
+            </div>
+            <!-- </div> -->
+            <!-- </div> -->
+          </div>
+
+          <div class="message-pane" id="message-pane">
+            <div class="messages" id="messages"></div>
+            <div class="input-area">
+              <input
+                type="text"
+                id="messageInput"
+                placeholder="Pesan untuk semua..."
+              />
+              <button id="sendAsSenderButton">Send as Sender</button>
+              <button id="sendAsReceiverButton">Send as Receiver</button>
+              <input type="file" id="fileInput" style="display: none" />
+              <button id="uploadButton">Upload File</button>
+              <button id="emoticonButton">😊</button>
+            </div>
           </div>
         </div>
         <div
@@ -425,45 +677,43 @@
                       </div>
                       <div class="gap-4">
                         <input
-                        class="form-check-input"
-                        type="radio"
-                        name="Secondary"
-                        id="Secondary"
-                      />
-                      <label class="form-check-label" for="Secondary">
-                        4
-                      </label>
-                      <input
-                        class="form-check-input"
-                        type="radio"
-                        name="Secondary"
-                        id="Secondary"
-                      />
-                      <label class="form-check-label" for="Secondary">
-                        9
-                      </label>
-                      <input
-                        class="form-check-input"
-                        type="radio"
-                        name="Secondary"
-                        id="Secondary"
-                      />
-                      <label class="form-check-label" for="Secondary">
-                        15
-                      </label>
-                      <input
-                        class="form-check-input"
-                        type="radio"
-                        name="Secondary"
-                        id="Secondary"
-                      />
-                      <label class="form-check-label" for="Secondary">
-                        25
-                      </label>
-
+                          class="form-check-input"
+                          type="radio"
+                          name="Secondary"
+                          id="Secondary"
+                        />
+                        <label class="form-check-label" for="Secondary">
+                          4
+                        </label>
+                        <input
+                          class="form-check-input"
+                          type="radio"
+                          name="Secondary"
+                          id="Secondary"
+                        />
+                        <label class="form-check-label" for="Secondary">
+                          9
+                        </label>
+                        <input
+                          class="form-check-input"
+                          type="radio"
+                          name="Secondary"
+                          id="Secondary"
+                        />
+                        <label class="form-check-label" for="Secondary">
+                          15
+                        </label>
+                        <input
+                          class="form-check-input"
+                          type="radio"
+                          name="Secondary"
+                          id="Secondary"
+                        />
+                        <label class="form-check-label" for="Secondary">
+                          25
+                        </label>
                       </div>
 
-                      
                       <div>
                         <img
                           src="/assets/compiled/svg/iconSquare2.svg"
@@ -473,197 +723,195 @@
                         />
                       </div>
                     </div>
-                    <div class="col-12 form-switch d-flex justify-content-between mt-3" ">
-                      <h5 style="color: #ffffff;"> Sembunyikan Petak Tanpa Video</h5>
-                      <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked">
-                    </div>
-                  
-                     
-                  </div>
+                    <div class="col-12 form-switch d-flex
+                    justify-content-between mt-3" ">
+                    <h5 style="color: #ffffff">
+                      Sembunyikan Petak Tanpa Video
+                    </h5>
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="flexSwitchCheckChecked"
+                    />
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <footer class="conference-controls">
-          <div class="row">
-            <div class="col-12">
-              <div class="d-flex justify-content-between gap-2">
-                <div class="control-item">
-                  <div class="control-button">
-                    <a class="control-button-content" href="#" onclick="">
-                      <img
-                        loading="lazy"
-                        src="/assets/compiled/svg/iconMic.svg"
-                        class="control-icon"
-                        alt="Control icon"
-                      />
-                      <img
-                        loading="lazy"
-                        src="/assets/compiled/svg/iconUp.svg"
-                        class="control-arrow"
-                        alt="Arrow icon"
-                      />
-                    </a>
-                  </div>
-                  <div class="control-button">
-                    <a class="control-button-content" href="#" onclick="">
-                      <img
-                        loading="lazy"
-                        src="/assets/compiled/svg/iconVideo.svg"
-                        class="control-icon"
-                        alt="Control icon"
-                      />
-                      <img
-                        loading="lazy"
-                        src="/assets/compiled/svg/iconUp.svg"
-                        class="control-arrow"
-                        alt="Arrow icon"
-                      />
-                    </a>
-                  </div>
-                </div>
-                <div class="action-buttons">
-                  <a
-                    class="action-button"
-                    href="#"
-                    onclick="toggleParticipantPane()"
-                  >
-                    <img
-                      loading="lazy"
-                      src="/assets/compiled/svg/iconParticipants.svg"
-                      class="action-icon"
-                      alt="Action icon"
-                  /></a>
-
-                  <a class="action-button" href="#" onclick="">
-                    <img
-                      loading="lazy"
-                      src="/assets/compiled/svg/iconChat.svg"
-                      class="action-icon"
-                      alt="Action icon"
-                  /></a>
-
-                  <a class="action-button" href="#" onclick="">
-                    <img
-                      loading="lazy"
-                      src="/assets/compiled/svg/iconRaiseHand.svg"
-                      class="action-icon"
-                      alt="Action icon"
-                  /></a>
-
-                  <a class="action-button" href="#" onclick="">
-                    <img
-                      loading="lazy"
-                      src="/assets/compiled/svg/iconFullscreen.svg"
-                      class="action-icon"
-                      alt="Action icon"
-                  /></a>
-
-                  <a class="action-button" href="#" onclick="">
-                    <img
-                      loading="lazy"
-                      src="/assets/compiled/svg/iconSubtitle.svg"
-                      class="action-icon"
-                      alt="Action icon"
-                  /></a>
-
-                  <!-- <div class="btn-group dropup me-1 mb-1"> -->
-                  <div class="action-button">
-                    <button
-                      type="button"
-                      class="btn"
-                      data-bs-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                    >
-                      <img
-                        loading="lazy"
-                        src="/assets/compiled/svg/iconSetting.svg"
-                        class="action-icon"
-                        alt="Action icon"
-                      />
-                    </button>
-                    <div class="dropdown-menu">
-                      <!-- <h6 class="dropdown-header">Header</h6> -->
-                      <a class="dropdown-item" href="#" onclick=""
-                        ><i class="me-2"
-                          ><img
-                            src="/assets/compiled/svg/iconSubRecord.svg"
-                            alt=""
-                            height="24"
-                            width="24" /></i
-                        >Mulai Merekam</a
-                      >
-                      <a class="dropdown-item" href="#" onclick=""
-                        ><i class="me-2"
-                          ><img
-                            src="/assets/compiled/svg/iconSubQuality.svg"
-                            alt=""
-                            height="24"
-                            width="24" /></i
-                        >Kualitas Video</a
-                      >
-                      <a class="dropdown-item" href="#" onclick=""
-                        ><i class="me-2"
-                          ><img
-                            src="/assets/compiled/svg/iconSubQuality.svg"
-                            alt=""
-                            height="24"
-                            width="24" /></i
-                        >Layar Penuh</a
-                      >
-                      <a class="dropdown-item" href="#" onclick=""
-                        ><i class="me-2"
-                          ><img
-                            src="/assets/compiled/svg/iconSubChangeLayout.svg"
-                            alt=""
-                            height="24"
-                            width="24" /></i
-                        >Ubah Susunan</a
-                      >
-                      <hr />
-                      <a class="dropdown-item" href="#" onclick=""
-                        ><i class="me-2"
-                          ><img
-                            src="/assets/compiled/svg/iconSubSetting.svg"
-                            alt=""
-                            height="24"
-                            width="24" /></i
-                        >Pengaturan</a
-                      >
-                    </div>
-                  </div>
-
-                  <!-- </div> -->
-
-                  <!-- <a class="action-button" href="#" onclick="">
-                    <img
-                      loading="lazy"
-                      src="/assets/compiled/svg/iconSetting.svg"
-                      class="action-icon"
-                      alt="Action icon"
-                  />
-                </a> -->
-                </div>
-
-                <div class="end-call-button" href="#" onclick="">
+      </div>
+    </div>
+    <footer class="conference-controls">
+      <div class="row">
+        <div class="col-12">
+          <div class="d-flex justify-content-between gap-2">
+            <div class="control-item">
+              <div class="control-button">
+                <a class="control-button-content" href="#" onclick="">
                   <img
                     loading="lazy"
-                    src="/assets/compiled/svg/iconEndCall.svg"
-                    class="end-call-icon"
-                    alt="End call icon"
+                    src="/assets/compiled/svg/iconMic.svg"
+                    class="control-icon"
+                    alt="Control icon"
                   />
+                  <img
+                    loading="lazy"
+                    src="/assets/compiled/svg/iconUp.svg"
+                    class="control-arrow"
+                    alt="Arrow icon"
+                  />
+                </a>
+              </div>
+              <div class="control-button">
+                <a class="control-button-content" href="#" onclick="">
+                  <img
+                    loading="lazy"
+                    src="/assets/compiled/svg/iconVideo.svg"
+                    class="control-icon"
+                    alt="Control icon"
+                  />
+                  <img
+                    loading="lazy"
+                    src="/assets/compiled/svg/iconUp.svg"
+                    class="control-arrow"
+                    alt="Arrow icon"
+                  />
+                </a>
+              </div>
+            </div>
+            <div class="action-buttons">
+              <a
+                class="action-button"
+                href="#"
+                onclick="toggleParticipantPane()"
+              >
+                <img
+                  loading="lazy"
+                  src="/assets/compiled/svg/iconParticipants.svg"
+                  class="action-icon"
+                  alt="Action icon"
+              /></a>
+
+              <a class="action-button" href="#" onclick="toggleMessagePane()">
+                <img
+                  loading="lazy"
+                  src="/assets/compiled/svg/iconChat.svg"
+                  class="action-icon"
+                  alt="Action icon"
+              /></a>
+
+              <a class="action-button" href="#" onclick="">
+                <img
+                  loading="lazy"
+                  src="/assets/compiled/svg/iconRaiseHand.svg"
+                  class="action-icon"
+                  alt="Action icon"
+              /></a>
+
+              <a class="action-button" href="#" onclick="">
+                <img
+                  loading="lazy"
+                  src="/assets/compiled/svg/iconFullscreen.svg"
+                  class="action-icon"
+                  alt="Action icon"
+              /></a>
+
+              <a class="action-button" href="#" onclick="">
+                <img
+                  loading="lazy"
+                  src="/assets/compiled/svg/iconSubtitle.svg"
+                  class="action-icon"
+                  alt="Action icon"
+              /></a>
+
+              <!-- <div class="btn-group dropup me-1 mb-1"> -->
+              <div class="action-button">
+                <button
+                  type="button"
+                  class="btn"
+                  data-bs-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  <img
+                    loading="lazy"
+                    src="/assets/compiled/svg/iconSetting.svg"
+                    class="action-icon"
+                    alt="Action icon"
+                  />
+                </button>
+                <div class="dropdown-menu">
+                  <!-- <h6 class="dropdown-header">Header</h6> -->
+                  <a class="dropdown-item" href="#" onclick=""
+                    ><i class="me-2"
+                      ><img
+                        src="/assets/compiled/svg/iconSubRecord.svg"
+                        alt=""
+                        height="24"
+                        width="24" /></i
+                    >Mulai Merekam</a
+                  >
+                  <a class="dropdown-item" href="#" onclick=""
+                    ><i class="me-2"
+                      ><img
+                        src="/assets/compiled/svg/iconSubQuality.svg"
+                        alt=""
+                        height="24"
+                        width="24" /></i
+                    >Kualitas Video</a
+                  >
+                  <a class="dropdown-item" href="#" onclick=""
+                    ><i class="me-2"
+                      ><img
+                        src="/assets/compiled/svg/iconSubQuality.svg"
+                        alt=""
+                        height="24"
+                        width="24" /></i
+                    >Layar Penuh</a
+                  >
+                  <a class="dropdown-item" href="#" onclick=""
+                    ><i class="me-2"
+                      ><img
+                        src="/assets/compiled/svg/iconSubChangeLayout.svg"
+                        alt=""
+                        height="24"
+                        width="24" /></i
+                    >Ubah Susunan</a
+                  >
+                  <hr />
+                  <a class="dropdown-item" href="#" onclick=""
+                    ><i class="me-2"
+                      ><img
+                        src="/assets/compiled/svg/iconSubSetting.svg"
+                        alt=""
+                        height="24"
+                        width="24" /></i
+                    >Pengaturan</a
+                  >
                 </div>
               </div>
             </div>
+
+            <div class="end-call-button" href="#" onclick="">
+              <img
+                loading="lazy"
+                src="/assets/compiled/svg/iconEndCall.svg"
+                class="end-call-icon"
+                alt="End call icon"
+              />
+            </div>
           </div>
-        </footer>
+        </div>
       </div>
-    </div>
+    </footer>
 
     <script>
+      document.querySelectorAll(".action-button").forEach((button) => {
+        button.addEventListener("click", () => {
+          button.classList.toggle("active");
+        });
+      });
+
       function generateCard(index) {
         const card = document.createElement("div");
         card.classList.add("card");
@@ -705,19 +953,215 @@
         cardContainerWrapper.classList.toggle("shifted");
       }
 
+      function toggleMessagePane() {
+        const messagePane = document.getElementById("message-pane");
+        const cardContainerWrapper = document.getElementById(
+          "card-container-wrapper"
+        );
+        messagePane.classList.toggle("active");
+        cardContainerWrapper.classList.toggle("shifted");
+      }
+
       // Initialize with 4 cards
       document.addEventListener("DOMContentLoaded", () => setCardNumber(4));
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const members = [
+          {
+            name: "Ruang Sidang",
+            role: "Host, Me",
+            mic: true,
+            camera: true,
+            details: false,
+          },
+          {
+            name: "Andi Wijaya",
+            role: "Co-Host",
+            mic: true,
+            camera: true,
+            details: false,
+          },
+          {
+            name: "Budi Santoso",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+          {
+            name: "Siri Aminah",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+          {
+            name: "Ahmad Firdaus",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+          {
+            name: "Rina Kusuma",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+          {
+            name: "Eko Prasetyo",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+          {
+            name: "Sri Lestari",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+          {
+            name: "Yudi Kurniawan",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+          {
+            name: "Intan Permatasari",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+          {
+            name: "Hendra Setiawan",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+          {
+            name: "Triana Kurnita",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+        ];
+
+        const chatList = document.querySelector("#chat-list");
+        const searchInput = document.querySelector("#search-input");
+        const memberCount = document.querySelector("#member-count");
+
+        function displayMembers(filteredMembers) {
+          chatList.innerHTML = "";
+          filteredMembers.forEach((member, index) => {
+            const memberItem = document.createElement("div");
+            memberItem.className = "chat-item";
+
+            const avatar = document.createElement("div");
+            avatar.className = "avatar";
+            avatar.innerText = member.name.charAt(0).toUpperCase();
+
+            const details = document.createElement("div");
+            details.className = "details";
+            details.innerHTML = `<strong>${member.name}</strong><br>${member.role}`;
+
+            const icons = document.createElement("div");
+            icons.className = "icons";
+
+            const micIcon = document.createElement("span");
+            micIcon.className = "icon mic-icon";
+            micIcon.innerHTML = member.mic ? "🎤" : "🔇";
+            micIcon.onclick = () => toggleMic(index);
+            icons.appendChild(micIcon);
+
+            const cameraIcon = document.createElement("span");
+            cameraIcon.className = "icon camera-icon";
+            cameraIcon.innerHTML = member.camera ? "🎥" : "📷";
+            cameraIcon.onclick = () => toggleCamera(index);
+            icons.appendChild(cameraIcon);
+
+            const detailsIcon = document.createElement("span");
+            detailsIcon.className = "icon details-icon";
+            detailsIcon.innerHTML = "ℹ️";
+            detailsIcon.onclick = () => toggleDetails(index);
+            icons.appendChild(detailsIcon);
+
+            memberItem.appendChild(avatar);
+            memberItem.appendChild(details);
+            memberItem.appendChild(icons);
+            chatList.appendChild(memberItem);
+          });
+        }
+
+        function updateMemberCount() {
+          memberCount.innerText = members.length;
+        }
+
+        function toggleMic(index) {
+          members[index].mic = !members[index].mic;
+          displayMembers(members);
+        }
+
+        function toggleCamera(index) {
+          members[index].camera = !members[index].camera;
+          displayMembers(members);
+        }
+
+        function toggleDetails(index) {
+          members[index].details = !members[index].details;
+          displayMembers(members);
+        }
+
+        displayMembers(members);
+        updateMemberCount();
+
+        searchInput.addEventListener("input", function () {
+          const searchTerm = searchInput.value.toLowerCase();
+          const filteredMembers = members.filter((member) =>
+            member.name.toLowerCase().includes(searchTerm)
+          );
+          displayMembers(filteredMembers);
+        });
+
+        window.addMember = function () {
+          const newMemberInput = document.querySelector("#new-member-input");
+          const newName = newMemberInput.value.trim();
+          if (newName === "") return;
+
+          const newMember = {
+            name: newName,
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          };
+          members.push(newMember);
+          displayMembers(members);
+          updateMemberCount();
+          newMemberInput.value = "";
+        };
+
+        window.inviteMember = function () {
+          alert(
+            "Invite button clicked! You can implement your own invite logic."
+          );
+        };
+
+        window.muteAllMics = function () {
+          members.forEach((member) => (member.mic = false));
+          displayMembers(members);
+        };
+      });
     </script>
 
     <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script> -->
     <script src="/assets/compiled/js/app.js"></script>
-    <button
-      type="button"
-      class="btn btn-outline-primary block"
-      data-bs-toggle="modal"
-      data-bs-target="#default"
-    >
-      Launch Modal
-    </button>
+    <script type="module" src="/assets/compiled/js/emoji.js"></script>
   </body>
 </html>

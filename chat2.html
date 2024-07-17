@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat Interface</title>
+    <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.2/dist/index.min.js"></script>
+    <style>
+      <style > body {
+        font-family: Arial, sans-serif;
+        background-color: #181818;
+        color: #f1f1f1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+
+      .chat-container {
+        width: 400px;
+        background-color: #2a2a2a;
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: 90vh; /* Adjust height as needed */
+      }
+
+      .messages {
+        flex: 1;
+        padding: 10px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .message {
+        display: flex;
+        align-items: center;
+      }
+
+      .message img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        margin-right: 10px;
+      }
+
+      .message-content {
+        background-color: #333;
+        padding: 10px;
+        border-radius: 5px;
+        max-width: 70%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .message-content span {
+        font-size: 0.8em;
+        color: #bbb;
+      }
+
+      .message.right {
+        justify-content: flex-end;
+        flex-direction: row-reverse;
+      }
+
+      .message.left {
+        justify-content: flex-start;
+      }
+
+      .input-area {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        border-top: 1px solid #444;
+        padding: 10px;
+        background-color: #2a2a2a; /* Ensure input area background matches chat container */
+      }
+
+      input[type="text"] {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #444;
+        color: #f1f1f1;
+      }
+
+      button {
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #2d8cff;
+        color: #fff;
+        cursor: pointer;
+      }
+
+      button#uploadButton,
+      button#emoticonButton {
+        background-color: #444;
+        color: #fff;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      #emojiPicker {
+        position: absolute;
+        bottom: 70px;
+        right: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="chat-container">
+      <div class="messages" id="messages"></div>
+      <div class="input-area">
+        <input
+          type="text"
+          id="messageInput"
+          placeholder="Pesan untuk semua..."
+        />
+        <button id="sendAsSenderButton">Send as Sender</button>
+        <button id="sendAsReceiverButton">Send as Receiver</button>
+        <input type="file" id="fileInput" style="display: none" />
+        <button id="uploadButton">Upload File</button>
+        <button id="emoticonButton">😊</button>
+      </div>
+    </div>
+    <script>
+      document
+        .getElementById("sendAsSenderButton")
+        .addEventListener("click", () => sendMessage("Sender"));
+      document
+        .getElementById("sendAsReceiverButton")
+        .addEventListener("click", () => sendMessage("Receiver"));
+      document
+        .getElementById("uploadButton")
+        .addEventListener("click", () =>
+          document.getElementById("fileInput").click()
+        );
+      document
+        .getElementById("fileInput")
+        .addEventListener("change", handleFileUpload);
+      document
+        .getElementById("emoticonButton")
+        .addEventListener("click", toggleEmojiPicker);
+
+      const picker = new EmojiButton();
+
+      picker.on("emoji", (selection) => {
+        insertEmoticon(selection.emoji);
+      });
+
+      function sendMessage(role) {
+        const input = document.getElementById("messageInput");
+        const message = input.value.trim();
+        if (message !== "") {
+          displayMessage(role, message);
+          input.value = "";
+        }
+      }
+
+      function displayMessage(sender, text) {
+        const messagesContainer = document.getElementById("messages");
+        const messageElement = document.createElement("div");
+        messageElement.classList.add(
+          "message",
+          sender === "Sender" ? "right" : "left"
+        );
+
+        const avatar = document.createElement("img");
+        avatar.src =
+          sender === "Sender" ? "sender-avatar.png" : "receiver-avatar.png"; // Replace with actual avatar images
+        messageElement.appendChild(avatar);
+
+        const messageContent = document.createElement("div");
+        messageContent.classList.add("message-content");
+
+        const senderInfo = document.createElement("span");
+        senderInfo.textContent = `Dari: ${sender} kepada: ${
+          sender === "Sender" ? "Receiver" : "Sender"
+        } | ${new Date().toLocaleTimeString()}`;
+        messageContent.appendChild(senderInfo);
+
+        const messageText = document.createElement("span");
+        messageText.textContent = text;
+        messageContent.appendChild(messageText);
+
+        messageElement.appendChild(messageContent);
+        messagesContainer.appendChild(messageElement);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+
+      function handleFileUpload(event) {
+        const file = event.target.files[0];
+        if (file) {
+          displayMessage("Sender", `Mengirim file: ${file.name}`);
+        }
+      }
+
+      function toggleEmojiPicker() {
+        picker.togglePicker(document.getElementById("emoticonButton"));
+      }
+
+      function insertEmoticon(emoticon) {
+        const input = document.getElementById("messageInput");
+        input.value += emoticon;
+      }
+    </script>
+  </body>
+</html>
