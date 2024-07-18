@@ -37,23 +37,23 @@
     }
 
     #participants-container {
-      flex: 1;
-      display: flex;
+        flex: 1;
+      width: 100%;
+      /* display: flex; */
       flex-direction: column;
       align-items: center;
-      justify-content: space-between;
-      height: 100%;
+      overflow-y: auto;
+      gap: 10px;
     }
 
     #other-participants {
-      flex: 1;
+        flex: 1;
       width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
       overflow-y: auto;
       gap: 10px;
-      
     }
 
     .video-container {
@@ -100,8 +100,8 @@
     }
 
     button {
-      width: 100%;
-      height: 40px;
+        
+    
       background-color: #007bff;
       color: white;
       border: none;
@@ -150,6 +150,12 @@
       </div>
     </div>
     <div id="participants-container">
+      <div>
+        <button id="6-grid">6 Grid</button>
+        <button id="9-grid">9 Grid</button>
+        <button id="12-grid">12 Grid</button>
+        <button id="16-grid">16 Grid</button>
+      </div>
       <button id="up-button">Up</button>
       <div id="other-participants"></div>
       <button id="down-button">Down</button>
@@ -157,7 +163,6 @@
   </div>
 
   <script>
-    // JavaScript code goes here
     const activeSpeakerContainer = document.getElementById("active-speaker");
     const otherParticipantsContainer = document.getElementById("other-participants");
     const upButton = document.getElementById("up-button");
@@ -171,19 +176,28 @@
       { title: "Participant 5", content: "This is participant 5's content." },
       { title: "Participant 6", content: "This is participant 6's content." },
       { title: "Participant 7", content: "This is participant 7's content." },
+      { title: "Participant 8", content: "This is participant 8's content." },
+      { title: "Participant 9", content: "This is participant 9's content." },
+      { title: "Participant 10", content: "This is participant 10's content." },
+      { title: "Participant 11", content: "This is participant 11's content." },
+      { title: "Participant 12", content: "This is participant 12's content." },
+      { title: "Participant 13", content: "This is participant 13's content." },
+      { title: "Participant 14", content: "This is participant 14's content." },
+      { title: "Participant 15", content: "This is participant 15's content." },
+      { title: "Participant 16", content: "This is participant 16's content." },
     ];
 
     let startIndex = 0;
-    const maxVisibleParticipants = 5;
-    let currentIndex = -1; // Keeps track of the current active speaker index
+    let maxVisibleParticipants = 6;
+    let currentIndex = -1;
 
     function updateVisibleParticipants() {
       otherParticipantsContainer.innerHTML = "";
 
       const visibleParticipants = participantsData
-        .filter((_, index) => index !== currentIndex) // Exclude the current active speaker
+        .filter((_, index) => index !== currentIndex)
         .slice(startIndex, startIndex + maxVisibleParticipants);
-      
+
       visibleParticipants.forEach((participant, index) => {
         const container = document.createElement("div");
         container.classList.add("video-container");
@@ -192,21 +206,16 @@
         const content = document.createElement("div");
         content.classList.add("content");
 
-        // Top right mic icon
         const micIconTopRight = document.createElement("div");
         micIconTopRight.classList.add("mic-icon", "top-right");
         micIconTopRight.innerHTML = '<i class="fas fa-microphone"></i>';
 
-        // Bottom left name and icon
         const nameAndIconBottomLeft = document.createElement("div");
         nameAndIconBottomLeft.classList.add("name-icon", "bottom-left");
         nameAndIconBottomLeft.innerHTML = `
           <span>${participant.title}</span>
           <i class="fas fa-user"></i>
         `;
-
-        const info = document.createElement("div");
-        info.classList.add("info-icon");
 
         const title = document.createElement("h1");
         title.innerText = participant.title;
@@ -216,10 +225,9 @@
 
         content.appendChild(title);
         content.appendChild(paragraph);
-        content.appendChild(micIconTopRight); // Ensure mic icon is placed after content
-        content.appendChild(nameAndIconBottomLeft); // Ensure name and icon are placed after content
+        content.appendChild(micIconTopRight);
+        content.appendChild(nameAndIconBottomLeft);
         container.appendChild(content);
-        container.appendChild(info);
 
         container.addEventListener("click", () => {
           if (container.classList.contains("fullscreen")) {
@@ -241,17 +249,30 @@
 
     upButton.addEventListener("click", () => {
       if (startIndex > 0) {
-        startIndex--;
+        startIndex -= maxVisibleParticipants;
+        if (startIndex < 0) startIndex = 0;
         updateVisibleParticipants();
       }
     });
 
     downButton.addEventListener("click", () => {
       if (startIndex < participantsData.length - maxVisibleParticipants) {
-        startIndex++;
+        startIndex += maxVisibleParticipants;
+        if (startIndex > participantsData.length - maxVisibleParticipants) startIndex = participantsData.length - maxVisibleParticipants;
         updateVisibleParticipants();
       }
     });
+
+    function setGridSize(size) {
+      maxVisibleParticipants = size;
+      startIndex = 0;
+      updateVisibleParticipants();
+    }
+
+    document.getElementById("6-grid").addEventListener("click", () => setGridSize(6));
+    document.getElementById("9-grid").addEventListener("click", () => setGridSize(9));
+    document.getElementById("12-grid").addEventListener("click", () => setGridSize(12));
+    document.getElementById("16-grid").addEventListener("click", () => setGridSize(16));
 
     function simulateActiveSpeakerChange() {
       let newIndex;
@@ -267,12 +288,10 @@
       const content = document.createElement("div");
       content.classList.add("content");
 
-      // Top right mic icon for active speaker
       const micIconTopRight = document.createElement("div");
       micIconTopRight.classList.add("mic-icon", "top-right");
       micIconTopRight.innerHTML = '<i class="fas fa-microphone"></i>';
 
-      // Bottom left name and icon for active speaker
       const nameAndIconBottomLeft = document.createElement("div");
       nameAndIconBottomLeft.classList.add("name-icon", "bottom-left");
       nameAndIconBottomLeft.innerHTML = `
@@ -288,11 +307,11 @@
 
       content.appendChild(title);
       content.appendChild(paragraph);
-      content.appendChild(micIconTopRight); // Ensure mic icon is placed after content
-      content.appendChild(nameAndIconBottomLeft); // Ensure name and icon are placed after content
+      content.appendChild(micIconTopRight);
+      content.appendChild(nameAndIconBottomLeft);
       activeSpeakerContainer.appendChild(content);
 
-      updateVisibleParticipants(); // Update visible participants to exclude the new active speaker
+      updateVisibleParticipants();
     }
 
     updateVisibleParticipants();
@@ -300,3 +319,4 @@
   </script>
 </body>
 </html>
+
