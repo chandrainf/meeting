@@ -87,24 +87,6 @@
         margin-right: 0; /* No margin between the card container and the participant pane */
       }
 
-      .active-speaker-container {
-        width: 90%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 1rem;
-      }
-      .additional-cards-container {
-        width: 10%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        position: relative;
-        overflow: hidden;
-        padding: 1rem;
-      }
       .card {
         background-color: #f8f9fa;
         display: flex;
@@ -116,25 +98,130 @@
         box-sizing: border-box;
         margin-bottom: 10px;
       }
-      .navigation-arrows {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        right: 10px;
+
+      /* Participant */
+
+      .participant-pane {
+        width: 350px;
+        height: 100%;
+        background-color: #2a2a2a;
+        border-left: 1px solid #ced4da;
+        /* padding: 1rem; */
+        /* box-sizing: border-box; */
+        display: none;
+        overflow: hidden;
+        flex-direction: column;
       }
-      .navigation-arrows button {
-        background: #f8f9fa;
-        border: 1px solid #ced4da;
+
+      .participant-pane.active {
+        display: block;
+      }
+
+      .chat-header,
+      .chat-footer {
+        padding: 10px;
+        background-color: #444;
+        display: flex;
+        align-items: center;
+        position: sticky;
+        bottom: 0;
+        
+      }
+
+      .chat-header h2 {
+        margin: 0;
+        flex-grow: 1;
+      }
+
+      .chat-header input {
+        background-color: #555;
+        border: none;
+        padding: 5px;
+        border-radius: 4px;
+        color: #fff;
+        margin-right: 10px;
+      }
+
+      .chat-header button {
+        background-color: #555;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        color: #fff;
+        cursor: pointer;
+        margin-left: 10px;
+      }
+
+      .chat-list {
+        /* max-height: 600px; */
+        /* height: 100%; */
+        overflow-y: auto;
+        /* flex-grow: 1;  */
+        /* Allow the chat list to grow to fill available space */
+        /* max-height: calc(
+          100% - 80px
+        );  */
+        /* Set a maximum height, adjusting for header and footer heights */
+      }
+
+      .chat-item {
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #555;
+      }
+
+      .chat-item:last-child {
+        border-bottom: none;
+      }
+
+      .chat-item .avatar {
         width: 30px;
         height: 30px;
-        font-size: 18px;
-        display: none; /* Initially hide arrows */
+        border-radius: 50%;
+        background-color: #666;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 10px;
+        color: #fff;
+        font-weight: bold;
       }
-      .arrow-up {
-        top: 0;
+
+      .chat-item .details {
+        flex-grow: 1;
       }
-      .arrow-down {
-        bottom: 0;
+
+      .chat-item .icons {
+        display: flex;
+        align-items: center;
+      }
+
+      .chat-item .icons .icon {
+        margin-left: 10px;
+        cursor: pointer;
+      }
+
+      .chat-footer input {
+        flex-grow: 1;
+        background-color: #555;
+        border: none;
+        padding: 10px;
+        border-radius: 4px;
+        color: #fff;
+        margin-right: 10px;
+      }
+
+      .chat-footer button {
+        background-color: #555;
+        border: none;
+        padding: 10px;
+        border-radius: 4px;
+        color: #fff;
+        cursor: pointer;
+        margin: 2px 2px 2px 2px;
+        
+        
       }
     </style>
   </head>
@@ -182,13 +269,6 @@
           >
             Toggle Participants
           </button>
-          <button
-            type="button"
-            class="btn btn-primary"
-            onclick="toggleActiveSpeakerView()"
-          >
-            Active Speaker
-          </button>
         </div>
       </div>
       <div class="main-content">
@@ -197,11 +277,38 @@
             <!-- Cards will be dynamically inserted here -->
           </div>
         </div>
-        <div class="participant-pane" id="participant-pane">
+        <!-- <div class="participant-pane" id="participant-pane">
           <h4>Participants</h4>
           <ul id="participant-list">
-            <!-- Participant list items will go here -->
-          </ul>
+            Participant list items will go here -->
+        <!-- </ul>
+        </div>  -->
+        <div class="participant-pane" id="participant-pane">
+          <!-- <div id="participant-list"> -->
+          <!-- <div class="chat-container"> -->
+          <div class="chat-header">
+            <h6>Anggota (<span id="member-count">12</span>)</h6>
+            <input type="text" id="search-input" placeholder="Cari Anggota" />
+          </div>
+          <div class="chat-list" id="chat-list">
+            <!-- Chat members will be dynamically added here -->
+          </div>
+          <div class="chat-footer">
+            <div class="row">
+              <div class="col-12" style="font-size: small">
+                <button onclick="inviteMember()">Undang</button>
+                <button onclick="muteAllMics()">Bisukan semua</button> <br />
+              </div>
+              <div class="col-12" style="font-size: small">
+                <input
+                  type="text"
+                  id="new-member-input"
+                  placeholder="Anggota Baru"
+                />
+                <button onclick="addMember()">Add Member</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="speaker-content">
@@ -241,7 +348,7 @@
       function adjustGridLayout(number) {
         const container = document.getElementById("card-container");
         let cols, rows;
-        
+
         switch (number) {
           case 6:
             cols = 3;
@@ -280,70 +387,214 @@
       // Initialize with 6 cards
       document.addEventListener("DOMContentLoaded", () => setCardNumber(6));
 
-      function toggleActiveSpeakerView() {
-        const activeSpeakerContainer = document.getElementById(
-          "active-speaker-container"
-        );
-        const additionalCardsContainer = document.getElementById(
-          "additional-cards-container"
-        );
-        const navigationArrows = document.querySelectorAll(
-          ".navigation-arrows button"
-        );
+      document.addEventListener("DOMContentLoaded", function () {
+        const members = [
+          {
+            name: "Ruang Sidang",
+            role: "Host, Me",
+            mic: true,
+            camera: true,
+            details: false,
+          },
+          {
+            name: "Andi Wijaya",
+            role: "Co-Host",
+            mic: true,
+            camera: true,
+            details: false,
+          },
+          {
+            name: "Budi Santoso",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+          {
+            name: "Siri Aminah",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+          {
+            name: "Ahmad Firdaus",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+          {
+            name: "Rina Kusuma",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+          {
+            name: "Eko Prasetyo",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+          {
+            name: "Sri Lestari",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+          {
+            name: "Yudi Kurniawan",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+          {
+            name: "Intan Permatasari",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+          {
+            name: "Hendra Setiawan",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+          {
+            name: "Triana Kurnita",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+        ];
 
-        // Clear containers
-        activeSpeakerContainer.innerHTML = "";
-        additionalCardsContainer.innerHTML = "";
+        const chatList = document.querySelector("#chat-list");
+        const searchInput = document.querySelector("#search-input");
+        const memberCount = document.querySelector("#member-count");
 
-        // Toggle active speaker view mode
-        activeSpeakerContainer.classList.toggle("active-speaker-view");
+        // Function to display members with icons
+        function displayMembers(filteredMembers) {
+          chatList.innerHTML = "";
+          filteredMembers.forEach((member, index) => {
+            const memberItem = document.createElement("div");
+            memberItem.className = "chat-item";
 
-        if (activeSpeakerContainer.classList.contains("active-speaker-view")) {
-          // Active Speaker View mode
-          const cards = document.querySelectorAll(".card");
-          if (cards.length > 0) {
-            activeSpeakerContainer.appendChild(cards[0].cloneNode(true)); // Clone the first card (active speaker)
-            activeSpeakerContainer.querySelector(".card").style.width = "100%";
-            activeSpeakerContainer.querySelector(".card").style.height =
-              "900px"; // Example height
-            activeSpeakerContainer.querySelector(".card").style.order = "-1"; // Active speaker card
-          }
+            const avatar = document.createElement("div");
+            avatar.className = "avatar";
+            avatar.innerText = member.name.charAt(0).toUpperCase();
 
-          // Hide participant pane and adjust layout
-          const participantPane = document.getElementById("participant-pane");
-          const cardContainerWrapper = document.getElementById(
-            "card-container-wrapper"
-          );
-          participantPane.classList.remove("active");
-          cardContainerWrapper.classList.add("shifted");
+            const details = document.createElement("div");
+            details.className = "details";
+            details.innerHTML = `<strong>${member.name}</strong><br>${member.role}`;
 
-          // Show navigation arrows if more than 5 cards
-          if (cards.length > 6) {
-            navigationArrows.forEach(
-              (arrow) => (arrow.style.display = "block")
-            );
-          } else {
-            navigationArrows.forEach((arrow) => (arrow.style.display = "none"));
-          }
-        } else {
-          // Grid View mode (default)
-          const cards = document.querySelectorAll(".card");
-          cards.forEach((card) => {
-            additionalCardsContainer.appendChild(card.cloneNode(true)); // Clone all cards
+            const icons = document.createElement("div");
+            icons.className = "icons";
+
+            const micIcon = document.createElement("span");
+            micIcon.className = "icon mic-icon";
+            micIcon.innerHTML = `<img src="${
+              member.mic
+                ? "/assets/compiled/svg/iconMicActive.svg"
+                : "/assets/compiled/svg/iconMicNonActive.svg"
+            }" alt="Mic Icon">`;
+            micIcon.onclick = () => toggleMic(index);
+            icons.appendChild(micIcon);
+
+            const cameraIcon = document.createElement("span");
+            cameraIcon.className = "icon camera-icon";
+            cameraIcon.innerHTML = `<img src="${
+              member.camera
+                ? "/assets/compiled/svg/iconVideoActive.svg"
+                : "/assets/compiled/svg/iconVideoNonActive.svg"
+            }" alt="Camera Icon">`;
+            cameraIcon.onclick = () => toggleCamera(index);
+            icons.appendChild(cameraIcon);
+
+            const detailsIcon = document.createElement("span");
+            detailsIcon.className = "icon details-icon";
+            detailsIcon.innerHTML = "ℹ️";
+            detailsIcon.onclick = () => toggleDetails(index);
+            icons.appendChild(detailsIcon);
+
+            memberItem.appendChild(avatar);
+            memberItem.appendChild(details);
+            memberItem.appendChild(icons);
+            chatList.appendChild(memberItem);
           });
-
-          // Show participant pane and adjust layout
-          const participantPane = document.getElementById("participant-pane");
-          const cardContainerWrapper = document.getElementById(
-            "card-container-wrapper"
-          );
-          participantPane.classList.add("active");
-          cardContainerWrapper.classList.remove("shifted");
-
-          // Hide navigation arrows
-          navigationArrows.forEach((arrow) => (arrow.style.display = "none"));
         }
-      }
+
+        function updateMemberCount() {
+          memberCount.innerText = members.length;
+        }
+
+        function toggleMic(index) {
+          members[index].mic = !members[index].mic;
+          displayMembers(members);
+        }
+
+        function toggleCamera(index) {
+          members[index].camera = !members[index].camera;
+          displayMembers(members);
+        }
+
+        function toggleDetails(index) {
+          members[index].details = !members[index].details;
+          displayMembers(members);
+        }
+
+        displayMembers(members);
+        updateMemberCount();
+
+        searchInput.addEventListener("input", function () {
+          const searchTerm = searchInput.value.toLowerCase();
+          const filteredMembers = members.filter((member) =>
+            member.name.toLowerCase().includes(searchTerm)
+          );
+          displayMembers(filteredMembers);
+        });
+
+        window.addMember = function () {
+          const newMemberInput = document.querySelector("#new-member-input");
+          const newName = newMemberInput.value.trim();
+          if (newName === "") return;
+
+          const newMember = {
+            name: newName,
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          };
+          members.push(newMember);
+          displayMembers(members);
+          updateMemberCount();
+          newMemberInput.value = "";
+        };
+
+        window.inviteMember = function () {
+          alert(
+            "Invite button clicked! You can implement your own invite logic."
+          );
+        };
+
+        // Function to mute all microphones
+        window.muteAllMics = function () {
+          members.forEach((member) => {
+            member.mic = false; // Set mic to false for all members
+          });
+          displayMembers(members); // Update UI
+        };
+
+        // Initial display of members
+        displayMembers(members);
+      });
     </script>
 
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>

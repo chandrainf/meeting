@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zoom-like Grid Layout</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body,
+      html {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .container-fluid {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        justify-content: flex-start;
+        align-items: center;
+      }
+      .btn-group-container {
+        width: 100%;
+        background-color: white;
+        padding: 1rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+      }
+      .main-content {
+        flex: 1;
+        display: flex;
+        width: 100%;
+        overflow: hidden;
+      }
+      .card-container-wrapper {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        transition: margin-right 0.3s;
+      }
+      .card-container {
+        display: grid;
+        gap: 2px;
+        justify-content: center;
+        align-content: center;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+      }
+      .card {
+        background-color: #f8f9fa;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        border: 1px solid #ced4da;
+        box-sizing: border-box;
+        transition: order 0.3s, width 0.3s;
+      }
+      .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
+      .participant-pane {
+        width: 350px;
+        height: 100%;
+        background-color: #2a2a2a;
+        border-left: 1px solid #ced4da;
+        display: none;
+        overflow: hidden;
+        flex-direction: column;
+      }
+      .participant-pane.active {
+        display: flex;
+      }
+      .chat-header,
+      .chat-footer {
+        padding: 10px;
+        background-color: #444;
+        display: flex;
+        align-items: center;
+      }
+      .chat-header h2 {
+        margin: 0;
+        flex-grow: 1;
+      }
+      .chat-header input {
+        background-color: #555;
+        border: none;
+        padding: 5px;
+        border-radius: 4px;
+        color: #fff;
+        margin-right: 10px;
+      }
+      .chat-header button {
+        background-color: #555;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        color: #fff;
+        cursor: pointer;
+        margin-left: 10px;
+      }
+      .chat-list {
+        overflow-y: auto;
+        flex-grow: 1;
+      }
+      .chat-item {
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #555;
+      }
+      .chat-item:last-child {
+        border-bottom: none;
+      }
+      .chat-item .avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background-color: #666;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 10px;
+        color: #fff;
+        font-weight: bold;
+      }
+      .chat-item .details {
+        flex-grow: 1;
+      }
+      .chat-item .icons {
+        display: flex;
+        align-items: center;
+      }
+      .chat-item .icons .icon {
+        margin-left: 10px;
+        cursor: pointer;
+      }
+      .chat-footer input {
+        flex-grow: 1;
+        background-color: #555;
+        border: none;
+        padding: 10px;
+        border-radius: 4px;
+        color: #fff;
+        margin-right: 10px;
+      }
+      .chat-footer button {
+        background-color: #555;
+        border: none;
+        padding: 10px;
+        border-radius: 4px;
+        color: #fff;
+        cursor: pointer;
+        margin: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="btn-group-container">
+        <div
+          class="btn-group mb-4"
+          role="group"
+          aria-label="Card number buttons"
+        >
+          <button
+            type="button"
+            class="btn btn-primary"
+            onclick="setCardNumber(6)"
+          >
+            6 Grids
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            onclick="setCardNumber(9)"
+          >
+            9 Grids
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            onclick="setCardNumber(12)"
+          >
+            12 Grids
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            onclick="setCardNumber(16)"
+          >
+            16 Grids
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            onclick="toggleParticipantPane()"
+          >
+            Toggle Participants
+          </button>
+        </div>
+      </div>
+      <div class="main-content">
+        <div class="card-container-wrapper" id="card-container-wrapper">
+          <div id="card-container" class="card-container"></div>
+        </div>
+        <div class="participant-pane" id="participant-pane">
+          <div class="chat-header">
+            <h6>Anggota (<span id="member-count">12</span>)</h6>
+            <input type="text" id="search-input" placeholder="Cari Anggota" />
+          </div>
+          <div class="chat-list" id="chat-list"></div>
+          <div class="chat-footer">
+            <div class="row">
+              <div class="col-12" style="font-size: small">
+                <button onclick="inviteMember()">Undang</button>
+                <button onclick="muteAllMics()">Bisukan semua</button>
+              </div>
+              <div class="col-12" style="font-size: small">
+                <input
+                  type="text"
+                  id="new-member-input"
+                  placeholder="Anggota Baru"
+                />
+                <button onclick="addMember()">Add Member</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function generateCard(index) {
+        const card = document.createElement("div");
+        card.classList.add("card");
+        card.innerHTML = `
+          <div class="card-body">
+            <h5 class="card-title">Video ${index}</h5>
+            <p class="card-text">Placeholder for video stream ${index}</p>
+          </div>
+        `;
+        return card;
+      }
+
+      function setCardNumber(number) {
+        const container = document.getElementById("card-container");
+        container.innerHTML = "";
+
+        for (let i = 1; i <= number; i++) {
+          container.appendChild(generateCard(i));
+        }
+
+        adjustGridLayout(number);
+      }
+
+      function adjustGridLayout(number) {
+        const container = document.getElementById("card-container");
+        let cols, rows;
+
+        switch (number) {
+          case 6:
+            cols = 3;
+            rows = 2;
+            break;
+          case 9:
+            cols = 3;
+            rows = 3;
+            break;
+          case 12:
+            cols = 4;
+            rows = 3;
+            break;
+          case 16:
+            cols = 4;
+            rows = 4;
+            break;
+          default:
+            cols = Math.ceil(Math.sqrt(number));
+            rows = Math.ceil(number / cols);
+        }
+
+        container.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+        container.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+      }
+
+      function toggleParticipantPane() {
+        const participantPane = document.getElementById("participant-pane");
+        const cardContainerWrapper = document.getElementById(
+          "card-container-wrapper"
+        );
+        participantPane.classList.toggle("active");
+        cardContainerWrapper.classList.toggle("shifted");
+      }
+
+      document.addEventListener("DOMContentLoaded", () => setCardNumber(6));
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const members = [
+          {
+            name: "Ruang Sidang",
+            role: "Host, Me",
+            mic: true,
+            camera: true,
+            details: false,
+          },
+          {
+            name: "Andi Wijaya",
+            role: "Co-Host",
+            mic: true,
+            camera: true,
+            details: false,
+          },
+          {
+            name: "Budi Santoso",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+          {
+            name: "Siri Aminah",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+          {
+            name: "Ahmad Firdaus",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+          {
+            name: "Rina Kusuma",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+          {
+            name: "Eko Prasetyo",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+          {
+            name: "Sri Lestari",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+          {
+            name: "Yudi Kurniawan",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+          {
+            name: "Intan Permatasari",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+          {
+            name: "Hendra Setiawan",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+          {
+            name: "Triana Kurnita",
+            role: "",
+            mic: true,
+            camera: false,
+            details: false,
+          },
+        ];
+
+        const chatList = document.getElementById("chat-list");
+
+        members.forEach((member) => {
+          const chatItem = document.createElement("div");
+          chatItem.classList.add("chat-item");
+          chatItem.innerHTML = `
+            <div class="avatar">${member.name.charAt(0)}</div>
+            <div class="details">
+              <div class="name">${member.name}</div>
+              <div class="role">${member.role}</div>
+            </div>
+            <div class="icons">
+              <i class="icon mic"><img src="${
+                member.mic
+                  ? "/assets/compiled/svg/iconMicActive.svg"
+                  : "/assets/compiled/svg/iconMicNonActive.svg"
+              }"</i>
+              <i class="icon camera"><img src="${
+                member.camera
+                  ? "/assets/compiled/svg/iconVideoActive.svg"
+                  : "/assets/compiled/svg/iconVideoNonActive.svg"
+              }"</i>
+              <i class="icon details"><img src="${
+                member.details ? "/assets/compiled/svg/iconDetails.svg" : ""
+              }"</i>
+            </div>
+          `;
+          chatList.appendChild(chatItem);
+        });
+      });
+
+      function inviteMember() {
+        alert("Member invited!");
+      }
+
+      // Function to mute all microphones
+      window.muteAllMics = function () {
+        members.forEach((member) => {
+          member.mic = false; // Set mic to false for all members
+        });
+        displayMembers(members); // Update UI
+      };
+
+      function addMember() {
+        const newMemberInput = document.getElementById("new-member-input");
+        const newMemberName = newMemberInput.value.trim();
+        if (newMemberName) {
+          alert(`Added new member: ${newMemberName}`);
+        } else {
+          alert("Please enter a name.");
+          
+        }
+      }
+      
+      // Initial display of members
+      displayMembers(members);
+    </script>
+  </body>
+</html>
