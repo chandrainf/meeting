@@ -4,11 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Zoom-like Grid Layout</title>
-    <!-- <link
-      href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css"
-      rel="stylesheet"
-    /> -->
-
+   
     <link
       rel="shortcut icon"
       href="/assets/compiled/svg/favicon.svg"
@@ -207,22 +203,14 @@
       }
 
       .conference-controls {
-        /* justify-content: space-between; */
         border-radius: 10px;
         border: 1px solid rgba(55, 65, 81, 0.5);
         background-color: #15181e;
-        /* display: flex; */
         margin-top: 10px 0px 0px 0px;
         width: 100%;
-        /* gap: 20px; */
         padding: 14px;
       }
 
-      /* .control-group {
-        display: flex;
-        gap: 20px;
-        justify-content: space-between;
-      } */
 
       .control-item {
         display: flex;
@@ -393,7 +381,6 @@
       }
 
       .message.right {
-        
         justify-content: flex-end;
         /* flex-direction: row-reverse; */
       }
@@ -408,8 +395,8 @@
         gap: 10px;
         border-top: 1px solid #444;
         padding: 10px;
-        background-color: #2a2a2a; /* Ensure input area background matches chat container */
-      }
+        background-color: #2a2a2a;
+      } 
 
       input[type="text"] {
         flex: 1;
@@ -908,7 +895,7 @@
                     alt="Action icon"
                 /></a>
 
-                <!-- <div class="btn-group dropup me-1 mb-1"> -->
+             
                 <div
                   class="action-button"
                   data-bs-toggle="dropdown"
@@ -923,7 +910,6 @@
                   />
 
                   <div class="dropdown-menu">
-                    <!-- <h6 class="dropdown-header">Header</h6> -->
                     <a class="dropdown-item" href="#" onclick=""
                       ><i class="me-2"
                         ><img
@@ -1010,69 +996,69 @@
           camera: true,
           details: false,
         },
-        // {
-        //   name: "Andi Wijaya",
-        //   role: "Co-Host",
-        //   mic: true,
-        //   camera: true,
-        //   details: false,
-        // },
-        // {
-        //   name: "Budi Santoso",
-        //   role: "",
-        //   mic: true,
-        //   camera: false,
-        //   details: false,
-        // },
-        // {
-        //   name: "Siri Aminah",
-        //   role: "",
-        //   mic: true,
-        //   camera: false,
-        //   details: false,
-        // },
-        // {
-        //   name: "Ahmad Firdaus",
-        //   role: "",
-        //   mic: true,
-        //   camera: false,
-        //   details: false,
-        // },
-        // {
-        //   name: "Rina Kusuma",
-        //   role: "",
-        //   mic: true,
-        //   camera: false,
-        //   details: false,
-        // },
-        // {
-        //   name: "Eko Prasetyo",
-        //   role: "",
-        //   mic: true,
-        //   camera: false,
-        //   details: false,
-        // },
-        // {
-        //   name: "Sri Lestari",
-        //   role: "",
-        //   mic: true,
-        //   camera: false,
-        //   details: false,
-        // },
-        // {
-        //   name: "Yudi Kurniawan",
-        //   role: "",
-        //   mic: true,
-        //   camera: false,
-        //   details: false,
-        // },
-        // {
-        //   name: "Intan Permatasari",
-        //   role: "",
-        //   mic: true,
-        //   camera: false,
-        //   details: false,
-        // },
+        {
+          name: "Andi Wijaya",
+          role: "Co-Host",
+          mic: true,
+          camera: true,
+          details: false,
+        },
+        {
+          name: "Budi Santoso",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Siri Aminah",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Ahmad Firdaus",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Rina Kusuma",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Eko Prasetyo",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Sri Lestari",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Yudi Kurniawan",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Intan Permatasari",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
         {
           name: "Hendra Setiawan",
           role: "",
@@ -1156,14 +1142,6 @@
         updatePageIndicator();
       }
 
-      //   function toggleParticipantPane() {
-      //     const participantPane = document.getElementById("participant-pane");
-      //     const cardContainerWrapper = document.getElementById(
-      //       "card-container-wrapper"
-      //     );
-      //     participantPane.classList.toggle("active");
-      //     cardContainerWrapper.classList.toggle("shifted");
-      //   }
 
       function toggleParticipantPane() {
         const participantPane = document.getElementById("participant-pane");
@@ -1360,49 +1338,9 @@
         // Initial display of members
         displayMembers(members);
 
-        // Populate the chat list with members
-        // const chatList = document.getElementById("chat-list");
-        // const searchInput = document.querySelector("#search-input");
-        // const memberCount = document.querySelector("#member-count");
-
-        // members.forEach((member) => {
-        //   const chatItem = document.createElement("div");
-        //   chatItem.classList.add("chat-item");
-        //   chatItem.innerHTML = `
-        //     <div class="avatar">${member.name.charAt(0)}</div>
-        //     <div class="details">
-        //       <div class="name">${member.name}</div>
-        //       <div class="role">${member.role}</div>
-        //     </div>
-        //     <div class="icons">
-        //       <i class="icon mic"><img src="${member.mic ? "/assets/compiled/svg/iconMicActive.svg" : "/assets/compiled/svg/iconMicNonActive.svg"}"</i>
-        //       <i class="icon camera"><img src="${member.camera ? "/assets/compiled/svg/iconVideoActive.svg" : "/assets/compiled/svg/iconVideoNonActive.svg"}"</i>
-        //       <i class="icon details"><img src="${member.details ? "/assets/compiled/svg/iconDetails.svg" : ""}"</i>
-        //     </div>
-        //   `;
-        //   chatList.appendChild(chatItem);
-        // });
-
-        // document.getElementById("member-count").innerText = numberOfMembers;
       });
 
-      // function inviteMember() {
-      //   alert("Member invited!");
-      // }
-
-      // function muteAllMics() {
-      //   alert("All mics muted!");
-      // }
-
-      // function addMember() {
-      //   const newMemberInput = document.getElementById("new-member-input");
-      //   const newMemberName = newMemberInput.value.trim();
-      //   if (newMemberName) {
-      //     alert(`Added new member: ${newMemberName}`);
-      //   } else {
-      //     alert("Please enter a name.");
-      //   }
-      // }
+   
     </script>
   </body>
 </html>

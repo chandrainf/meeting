@@ -211,6 +211,8 @@
           >
             Toggle Participants
           </button>
+          <button onclick="setLayout('first')">First Layout</button>
+          <button onclick="setLayout('second')">Second Layout</button>
         </div>
       </div>
       <div class="main-content">
@@ -244,27 +246,149 @@
     </div>
 
     <script>
-      function generateCard(index) {
+      const members = [
+        {
+          name: "Ruang Sidang",
+          role: "Host, Me",
+          mic: true,
+          camera: true,
+          details: false,
+        },
+        {
+          name: "Andi Wijaya",
+          role: "Co-Host",
+          mic: true,
+          camera: true,
+          details: false,
+        },
+        {
+          name: "Budi Santoso",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Siri Aminah",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Ahmad Firdaus",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Rina Kusuma",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Eko Prasetyo",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Sri Lestari",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Yudi Kurniawan",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Intan Permatasari",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Hendra Setiawan",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Triana Kurnita",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+      ];
+
+      let currentPage = 0;
+      let cardsPerPage = 0;
+      let currentMessagePage = 0;
+      let messageCardsPerPage = 0;
+      let currentLayout = "first";
+
+      function generateCard(member) {
         const card = document.createElement("div");
         card.classList.add("card");
         card.innerHTML = `
-          <div class="card-body">
-            <h5 class="card-title">Video ${index}</h5>
-            <p class="card-text">Placeholder for video stream ${index}</p>
-          </div>
-        `;
+    <div class="card-body">
+      <h5 class="card-title">${member.name}</h5>
+      <p class="card-text">Role: ${member.role}</p>
+    </div>
+  `;
+        return card;
+      }
+
+      function generateMessageCard(member) {
+        const card = document.createElement("div");
+        card.classList.add("message-card");
+        card.innerHTML = `
+    <div class="message-card-body">
+      <h5 class="message-card-title">${member.name}</h5>
+      <p class="message-card-text">Role: ${member.role}</p>
+    </div>
+  `;
         return card;
       }
 
       function setCardNumber(number) {
+        cardsPerPage = number;
+        currentPage = 0;
+        updateGrid();
+        updateNavigationButtons();
+      }
+
+      function setMessageCardNumber(number) {
+        messageCardsPerPage = number;
+        currentMessagePage = 0;
+        updateMessagePane();
+        updateMessageNavigationButtons();
+      }
+
+      function updateGrid() {
         const container = document.getElementById("card-container");
         container.innerHTML = "";
 
-        for (let i = 1; i <= number; i++) {
-          container.appendChild(generateCard(i));
-        }
+        const start = currentPage * cardsPerPage;
+        const end = Math.min(start + cardsPerPage, members.length);
 
-        adjustGridLayout(number);
+        members.slice(start, end).forEach((member) => {
+          container.appendChild(generateCard(member));
+        });
+
+        adjustGridLayout(end - start);
       }
 
       function adjustGridLayout(number) {
@@ -295,163 +419,41 @@
 
         container.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
         container.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+        updatePageIndicator();
       }
 
-      function toggleParticipantPane() {
-        const participantPane = document.getElementById("participant-pane");
-        const cardContainerWrapper = document.getElementById(
-          "card-container-wrapper"
-        );
-        participantPane.classList.toggle("active");
-        cardContainerWrapper.classList.toggle("shifted");
-      }
+      function updateMessagePane() {
+        const container = document.getElementById("card-container");
+        container.innerHTML = "";
 
-      document.addEventListener("DOMContentLoaded", () => setCardNumber(6));
+        const start = currentMessagePage * messageCardsPerPage;
+        const end = Math.min(start + messageCardsPerPage, members.length);
 
-      document.addEventListener("DOMContentLoaded", function () {
-        const members = [
-          {
-            name: "Ruang Sidang",
-            role: "Host, Me",
-            mic: true,
-            camera: true,
-            details: false,
-          },
-          {
-            name: "Andi Wijaya",
-            role: "Co-Host",
-            mic: true,
-            camera: true,
-            details: false,
-          },
-          {
-            name: "Budi Santoso",
-            role: "",
-            mic: true,
-            camera: false,
-            details: false,
-          },
-          {
-            name: "Siri Aminah",
-            role: "",
-            mic: true,
-            camera: false,
-            details: false,
-          },
-          {
-            name: "Ahmad Firdaus",
-            role: "",
-            mic: true,
-            camera: false,
-            details: false,
-          },
-          {
-            name: "Rina Kusuma",
-            role: "",
-            mic: true,
-            camera: false,
-            details: false,
-          },
-          {
-            name: "Eko Prasetyo",
-            role: "",
-            mic: true,
-            camera: false,
-            details: false,
-          },
-          {
-            name: "Sri Lestari",
-            role: "",
-            mic: true,
-            camera: false,
-            details: false,
-          },
-          {
-            name: "Yudi Kurniawan",
-            role: "",
-            mic: true,
-            camera: false,
-            details: false,
-          },
-          {
-            name: "Intan Permatasari",
-            role: "",
-            mic: true,
-            camera: false,
-            details: false,
-          },
-          {
-            name: "Hendra Setiawan",
-            role: "",
-            mic: true,
-            camera: false,
-            details: false,
-          },
-          {
-            name: "Triana Kurnita",
-            role: "",
-            mic: true,
-            camera: false,
-            details: false,
-          },
-        ];
-
-        const chatList = document.getElementById("chat-list");
-
-        members.forEach((member) => {
-          const chatItem = document.createElement("div");
-          chatItem.classList.add("chat-item");
-          chatItem.innerHTML = `
-            <div class="avatar">${member.name.charAt(0)}</div>
-            <div class="details">
-              <div class="name">${member.name}</div>
-              <div class="role">${member.role}</div>
-            </div>
-            <div class="icons">
-              <i class="icon mic"><img src="${
-                member.mic
-                  ? "/assets/compiled/svg/iconMicActive.svg"
-                  : "/assets/compiled/svg/iconMicNonActive.svg"
-              }"</i>
-              <i class="icon camera"><img src="${
-                member.camera
-                  ? "/assets/compiled/svg/iconVideoActive.svg"
-                  : "/assets/compiled/svg/iconVideoNonActive.svg"
-              }"</i>
-              <i class="icon details"><img src="${
-                member.details ? "/assets/compiled/svg/iconDetails.svg" : ""
-              }"</i>
-            </div>
-          `;
-          chatList.appendChild(chatItem);
+        members.slice(start, end).forEach((member) => {
+          container.appendChild(generateMessageCard(member));
         });
-      });
 
-      function inviteMember() {
-        alert("Member invited!");
+        adjustMessagePaneLayout(end - start);
+        updateMessageNavigationButtons();
       }
 
-      // Function to mute all microphones
-      window.muteAllMics = function () {
-        members.forEach((member) => {
-          member.mic = false; // Set mic to false for all members
-        });
-        displayMembers(members); // Update UI
-      };
+      function adjustMessagePaneLayout(number) {
+        const container = document.getElementById("card-container");
+        let cols, rows;
 
-      function addMember() {
-        const newMemberInput = document.getElementById("new-member-input");
-        const newMemberName = newMemberInput.value.trim();
-        if (newMemberName) {
-          alert(`Added new member: ${newMemberName}`);
+        if (number > 5) {
+          cols = 1;
+          rows = Math.ceil(number);
         } else {
-          alert("Please enter a name.");
-          
+          cols = 1;
+          rows = number;
         }
+
+        container.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+        container.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
       }
+
       
-      // Initial display of members
-      displayMembers(members);
     </script>
   </body>
 </html>

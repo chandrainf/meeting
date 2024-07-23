@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zoom-like Grid Layout</title>
+
+    <link rel="stylesheet" href="/assets/compiled/css/app.css" />
+    <link rel="stylesheet" href="/assets/compiled/css/app-dark.css" />
+    <link rel="stylesheet" href="/assets/compiled/css/iconly.css" />
+    <style>
+      body,
+      html {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        font-family: "Jakarta Sans", sans-serif;
+      }
+      .container-fluid {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        justify-content: flex-start;
+        align-items: center;
+      }
+
+      .main-content {
+        flex: 1;
+        display: flex;
+        width: 100%;
+        overflow: hidden;
+        position: relative;
+      }
+      .card-container-wrapper {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        transition: margin-right 0.3s;
+        position: relative;
+      }
+      .card-container {
+        display: grid;
+        gap: 2px;
+        justify-content: center;
+        align-content: center;
+        box-sizing: border-box;
+        align-self: center;
+        height: 100%;
+        width: 100%;
+      }
+      .card {
+        background-color: #f8f9fa;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        border: 1px solid #ced4da;
+        box-sizing: border-box;
+        transition: order 0.3s, width 0.3s;
+      }
+      .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
+      .participant-pane {
+        width: 350px;
+        height: 100%;
+        background-color: #2a2a2a;
+        border-left: 1px solid #ced4da;
+        display: none;
+        overflow: hidden;
+        flex-direction: column;
+      }
+      .participant-pane.active {
+        display: flex;
+      }
+
+      .navigation-buttons {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        padding: 0 1rem;
+        pointer-events: none;
+        z-index: 1;
+      }
+      .navigation-buttons button {
+        pointer-events: all;
+      }
+      .page-indicator {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        pointer-events: none;
+        z-index: 2;
+      }
+
+      .conference-controls {
+        border-radius: 10px;
+        border: 1px solid rgba(55, 65, 81, 0.5);
+        background-color: #15181e;
+        margin-top: 10px;
+        width: 100%;
+        padding: 14px;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 20px;
+      }
+
+      .action-button {
+        justify-content: center;
+        align-items: center;
+        border-radius: 8px;
+        border: 1px solid rgba(75, 85, 99, 0.5);
+        display: flex;
+        width: 56px;
+        height: 56px;
+      }
+
+      .action-icon {
+        aspect-ratio: 1;
+        object-fit: auto;
+        object-position: center;
+        width: 16px;
+        height: 24px;
+      }
+
+      .action-button.active {
+        background-color: #2d8cff;
+      }
+
+      .end-call-button {
+        justify-content: center;
+        align-items: center;
+        border-radius: 5px;
+        background-color: #cb2233;
+        display: flex;
+        width: 56px;
+        height: 56px;
+        padding: 12px;
+      }
+
+      .end-call-icon {
+        aspect-ratio: 1;
+        object-fit: auto;
+        object-position: center;
+        width: 16px;
+        height: 24px;
+      }
+      .dropdown-menu {
+        background-color: #374151;
+      }
+      .dropdown-item {
+        color: #d1d5db;
+        padding: 1;
+      }
+      .dropdown-menu:hover {
+        background-color: #374151;
+      }
+      .modal-content,
+      .modal-title {
+        background-color: #15181e;
+        color: #ffffff;
+      }
+
+      .message-pane {
+        width: 350px;
+        height: 100%;
+        background-color: #2a2a2a;
+        border-left: 1px solid #ced4da;
+        display: none;
+        overflow: hidden;
+        flex-direction: column;
+        position: absolute;
+        right: 0;
+        z-index: 1;
+      }
+      .message-pane.active {
+        display: flex;
+      }
+
+      .main-card {
+        position: absolute;
+        width: calc(100% - 350px);
+        height: 100%;
+        z-index: 0;
+      }
+
+      .message-card-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .message-card-wrapper {
+        display: grid;
+        gap: 2px;
+        justify-content: center;
+        align-content: start;
+        box-sizing: border-box;
+        height: calc(100% - 50px);
+      }
+
+      .card-container-wrapper.shifted {
+        width: calc(100% - 350px);
+      }
+
+      /* Other styles remain the same */
+
+      .card-container-wrapper.shifted {
+        width: calc(100% - 350px);
+      }
+
+      .message-pane {
+        width: 350px;
+        height: 100%;
+        background-color: #2a2a2a;
+        border-left: 1px solid #ced4da;
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        right: 0;
+        z-index: 1;
+      }
+
+      .message-pane.active {
+        display: flex;
+      }
+
+      .message-card-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .message-card-wrapper {
+        display: grid;
+        gap: 2px;
+        justify-content: center;
+        align-content: start;
+        box-sizing: border-box;
+        height: calc(100% - 50px);
+      }
+
+      .navigation-buttons {
+        display: flex;
+        justify-content: center;
+      }
+
+      .navigation-buttons:first-of-type {
+        position: absolute;
+        top: 0;
+        width: 100%;
+      }
+
+      .navigation-buttons:last-of-type {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="main-content">
+        <div class="page-indicator" id="page-indicator"></div>
+        <div class="card-container-wrapper" id="card-container-wrapper">
+          <div class="navigation-buttons">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              id="prev-message-button"
+              onclick="previousPage()"
+            >
+              &#9664;
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              id="next-message-button"
+              onclick="nextPage()"
+            >
+              &#9654;
+            </button>
+          </div>
+          <div id="card-container" class="card-container"></div>
+        </div>
+        <div class="participant-pane" id="participant-pane">
+          <div class="chat-header">
+            <h6>Anggota (<span id="member-count">12</span>)</h6>
+            <input type="text" id="search-input" placeholder="Cari Anggota" />
+          </div>
+          <div class="chat-list" id="chat-list"></div>
+          <div class="chat-footer">
+            <div class="row">
+              <div class="col-12" style="font-size: small">
+                <button onclick="inviteMember()">Undang</button>
+                <button onclick="muteAllMics()">Bisukan semua</button>
+              </div>
+              <div class="col-12" style="font-size: small">
+                <input
+                  type="text"
+                  id="new-member-input"
+                  placeholder="Anggota Baru"
+                />
+                <button onclick="addMember()">Add Member</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="message-pane" id="message-pane">
+          <div class="navigation-buttons">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              id="prev-message-button"
+              onclick="previousMessagePage()"
+            >
+              &#9650;
+            </button>
+          </div>
+          <div id="message-card-container" class="message-card-container"></div>
+          <div class="navigation-buttons">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              id="next-message-button"
+              onclick="nextMessagePage()"
+            >
+              &#9660;
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        class="modal fade"
+        id="exampleModalCenter"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true"
+      ></div>
+      <footer class="conference-controls">
+        <div class="row">
+          <div class="col-12">
+            <div class="d-flex justify-content-between gap-2">
+              <div class="action-buttons">
+                <a
+                  class="action-button"
+                  href="#"
+                  onclick="toggleParticipantPane()"
+                >
+                  <img
+                    loading="lazy"
+                    src="/assets/compiled/svg/iconParticipants.svg"
+                    class="action-icon"
+                    alt="Action icon"
+                /></a>
+
+                <a class="action-button" href="#" onclick="toggleMessagePane()">
+                  <img
+                    loading="lazy"
+                    src="/assets/compiled/svg/iconChat.svg"
+                    class="action-icon"
+                    alt="Action icon"
+                /></a>
+
+                <a class="action-button" href="#" onclick="">
+                  <img
+                    loading="lazy"
+                    src="/assets/compiled/svg/iconRaiseHand.svg"
+                    class="action-icon"
+                    alt="Action icon"
+                /></a>
+
+                <a class="action-button" href="#" onclick="">
+                  <img
+                    loading="lazy"
+                    src="/assets/compiled/svg/iconFullscreen.svg"
+                    class="action-icon"
+                    alt="Action icon"
+                /></a>
+
+                <a class="action-button" href="#" onclick="">
+                  <img
+                    loading="lazy"
+                    src="/assets/compiled/svg/iconSubtitle.svg"
+                    class="action-icon"
+                    alt="Action icon"
+                /></a>
+
+                <!-- <div class="btn-group dropup me-1 mb-1"> -->
+                <div
+                  class="action-button"
+                  data-bs-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  <img
+                    loading="lazy"
+                    src="/assets/compiled/svg/iconSetting.svg"
+                    class="action-icon"
+                    alt="Action icon"
+                  />
+
+                  <div class="dropdown-menu">
+                    <!-- <h6 class="dropdown-header">Header</h6> -->
+                    <a class="dropdown-item" href="#" onclick=""
+                      ><i class="me-2"
+                        ><img
+                          src="/assets/compiled/svg/iconSubRecord.svg"
+                          alt=""
+                          height="24"
+                          width="24" /></i
+                      >Mulai Merekam</a
+                    >
+                    <a class="dropdown-item" href="#" onclick=""
+                      ><i class="me-2"
+                        ><img
+                          src="/assets/compiled/svg/iconSubQuality.svg"
+                          alt=""
+                          height="24"
+                          width="24" /></i
+                      >Kualitas Video</a
+                    >
+                    <a class="dropdown-item" href="#" onclick=""
+                      ><i class="me-2"
+                        ><img
+                          src="/assets/compiled/svg/iconSubQuality.svg"
+                          alt=""
+                          height="24"
+                          width="24" /></i
+                      >Layar Penuh</a
+                    >
+                    <a
+                      class="dropdown-item"
+                      href="#"
+                      onclick=""
+                      data-bs-toggle="modal"
+                      data-bs-target="#exampleModalCenter"
+                    >
+                      <img
+                        src="/assets/compiled/svg/iconSubChangeLayout.svg"
+                        alt=""
+                        height="24"
+                        width="24"
+                      />
+                      Ubah Susunan
+                    </a>
+                    <hr />
+                    <a class="dropdown-item" href="#" onclick=""
+                      ><i class="me-2"
+                        ><img
+                          src="/assets/compiled/svg/iconSubSetting.svg"
+                          alt=""
+                          height="24"
+                          width="24" /></i
+                      >Pengaturan</a
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div class="end-call-button" href="#" onclick="">
+                <img
+                  loading="lazy"
+                  src="/assets/compiled/svg/iconEndCall.svg"
+                  class="end-call-icon"
+                  alt="End call icon"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script src="/assets/compiled/js/app.js"></script>
+    <script type="module" src="/assets/compiled/js/emoji.js"></script>
+    <script>
+      document.querySelectorAll(".action-button").forEach((button) => {
+        button.addEventListener("click", () => {
+          button.classList.toggle("active");
+        });
+      });
+      const members = [
+        {
+          name: "Ruang Sidang",
+          role: "Host, Me",
+          mic: true,
+          camera: true,
+          details: false,
+        },
+        {
+          name: "Andi Wijaya",
+          role: "Co-Host",
+          mic: true,
+          camera: true,
+          details: false,
+        },
+        {
+          name: "Budi Santoso",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Siri Aminah",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Ahmad Firdaus",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Rina Kusuma",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Eko Prasetyo",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Sri Lestari",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Yudi Kurniawan",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Intan Permatasari",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Hendra Setiawan",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Triana Kurnita",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+      ];
+
+      let currentPage = 0;
+      let cardsPerPage = 0;
+
+      function generateCard(member) {
+        const card = document.createElement("div");
+        card.classList.add("card");
+        card.innerHTML = `
+          <div class="card-body">
+            <h5 class="card-title">${member.name}</h5>
+            <p class="card-text">Role: ${member.role}</p>
+          </div>
+        `;
+        return card;
+      }
+
+      function setCardNumber(number) {
+        cardsPerPage = number;
+        currentPage = 0;
+        updateGrid();
+        updateNavigationButtons();
+      }
+
+      function updateGrid() {
+        const container = document.getElementById("card-container");
+        container.innerHTML = "";
+
+        const start = currentPage * cardsPerPage;
+        const end = Math.min(start + cardsPerPage, members.length);
+
+        members.slice(start, end).forEach((member) => {
+          container.appendChild(generateCard(member));
+        });
+
+        adjustGridLayout(end - start);
+      }
+
+      function adjustGridLayout(number) {
+        const container = document.getElementById("card-container");
+        let cols, rows;
+
+        switch (number) {
+          case 6:
+            cols = 3;
+            rows = 2;
+            break;
+          case 9:
+            cols = 3;
+            rows = 3;
+            break;
+          case 12:
+            cols = 4;
+            rows = 3;
+            break;
+          case 16:
+            cols = 4;
+            rows = 4;
+            break;
+          default:
+            cols = Math.ceil(Math.sqrt(number));
+            rows = Math.ceil(number / cols);
+        }
+
+        container.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+        container.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+        updatePageIndicator();
+      }
+
+      function toggleParticipantPane() {
+        const participantPane = document.getElementById("participant-pane");
+        const messagePane = document.getElementById("message-pane");
+        const cardContainerWrapper = document.getElementById(
+          "card-container-wrapper"
+        );
+
+        // Check if messagePane is active, then close it
+        if (messagePane.classList.contains("active")) {
+          messagePane.classList.remove("active");
+          cardContainerWrapper.classList.remove("shifted");
+        }
+
+        // Toggle participantPane
+        participantPane.classList.toggle("active");
+        cardContainerWrapper.classList.toggle("shifted");
+      }
+
+      function toggleMessagePane() {
+        const messagePane = document.getElementById("message-pane");
+        const cardContainerWrapper = document.getElementById(
+          "card-container-wrapper"
+        );
+        const participantPane = document.getElementById("participant-pane");
+
+        // Check if participantPane is active, then close it
+        if (participantPane.classList.contains("active")) {
+          participantPane.classList.remove("active");
+          cardContainerWrapper.classList.remove("shifted");
+        }
+
+        // Toggle messagePane
+        messagePane.classList.toggle("active");
+        cardContainerWrapper.classList.toggle("shifted");
+      }
+      function previousPage() {
+        if (currentPage > 0) {
+          currentPage--;
+          updateGrid();
+          updateNavigationButtons();
+        }
+      }
+
+      function nextPage() {
+        if ((currentPage + 1) * cardsPerPage < members.length) {
+          currentPage++;
+          updateGrid();
+          updateNavigationButtons();
+        }
+      }
+
+      function updateNavigationButtons() {
+        const prevButton = document.getElementById("prev-message-button");
+        const nextButton = document.getElementById("next-message-button");
+
+        prevButton.disabled = currentPage === 0;
+        nextButton.disabled =
+          (currentPage + 1) * cardsPerPage >= members.length;
+      }
+
+      function updatePageIndicator() {
+        const pageIndicator = document.getElementById("page-indicator");
+        const totalPages = Math.ceil(members.length / cardsPerPage);
+        pageIndicator.textContent = `${currentPage + 1} / ${totalPages}`;
+      }
+
+      //Functions for active speaker
+      let currentMessagePage = 0;
+      let messageCardsPerPage = 5;
+
+      function generateMessageCard(member) {
+        const card = document.createElement("div");
+        card.classList.add("card");
+        card.innerHTML = `
+    <div class="card-body">
+      <h5 class="card-title">${member.name}</h5>
+      <p class="card-text">Role: ${member.role}</p>
+    </div>
+  `;
+        return card;
+      }
+
+      function updateMessagePane() {
+        const container = document.getElementById("message-card-container");
+        container.innerHTML = "";
+
+        const start = currentMessagePage * messageCardsPerPage;
+        const end = Math.min(start + messageCardsPerPage, members.length);
+
+        members.slice(start, end).forEach((member) => {
+          container.appendChild(generateMessageCard(member));
+        });
+
+        adjustMessagePaneLayout(end - start);
+      }
+
+      function adjustMessagePaneLayout(number) {
+        const container = document.getElementById("message-card-container");
+        container.style.gridTemplateRows = `repeat(${number}, 1fr)`;
+      }
+
+      function toggleSpeakerPane() {
+        const messagePane = document.getElementById("speaker-pane");
+        const cardContainerWrapper = document.getElementById(
+          "card-container-wrapper"
+        );
+
+        messagePane.classList.toggle("active");
+        cardContainerWrapper.classList.toggle("shifted");
+
+        if (messagePane.classList.contains("active")) {
+          setCardNumber(1);
+          updateMessagePane();
+        } else {
+          setCardNumber(12);
+        }
+      }
+
+      function previousMessagePage() {
+        if (currentMessagePage > 0) {
+          currentMessagePage--;
+          updateMessagePane();
+          updateMessageNavigationButtons();
+        }
+      }
+
+      function nextMessagePage() {
+        if ((currentMessagePage + 1) * messageCardsPerPage < members.length) {
+          currentMessagePage++;
+          updateMessagePane();
+          updateMessageNavigationButtons();
+        }
+      }
+
+      function updateMessageNavigationButtons() {
+        const prevButton = document.getElementById("prev-message-button");
+        const nextButton = document.getElementById("next-message-button");
+
+        prevButton.disabled = currentMessagePage === 0;
+        nextButton.disabled =
+          (currentMessagePage + 1) * messageCardsPerPage >= members.length;
+      }
+    </script>
+  </body>
+</html>

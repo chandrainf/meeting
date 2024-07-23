@@ -206,23 +206,32 @@
         z-index: 2;
       }
 
+      #active-speaker-pane.active + .navigation-buttons {
+        flex-direction: column;
+        align-items: center;
+        top: auto;
+        bottom: 0;
+        transform: none;
+        padding: 1rem 0;
+      }
+
+      #active-speaker-pane.active + .navigation-buttons #prev-button {
+        order: -1;
+        margin-bottom: 1rem;
+      }
+
+      #active-speaker-pane.active + .navigation-buttons #next-button {
+        margin-top: 1rem;
+      }
+
       .conference-controls {
-        /* justify-content: space-between; */
         border-radius: 10px;
         border: 1px solid rgba(55, 65, 81, 0.5);
         background-color: #15181e;
-        /* display: flex; */
         margin-top: 10px 0px 0px 0px;
         width: 100%;
-        /* gap: 20px; */
         padding: 14px;
       }
-
-      /* .control-group {
-        display: flex;
-        gap: 20px;
-        justify-content: space-between;
-      } */
 
       .control-item {
         display: flex;
@@ -373,7 +382,7 @@
         height: 24px;
         border-radius: 50%;
         /* margin-right: 10px; */
-        background-image: url('/assets/compiled/svg/avatarReceiver.svg');
+        background-image: url("/assets/compiled/svg/avatarReceiver.svg");
         background-size: contain;
       }
 
@@ -393,7 +402,6 @@
       }
 
       .message.right {
-        
         justify-content: flex-end;
         /* flex-direction: row-reverse; */
       }
@@ -408,7 +416,7 @@
         gap: 10px;
         border-top: 1px solid #444;
         padding: 10px;
-        background-color: #2a2a2a; /* Ensure input area background matches chat container */
+        background-color: #2a2a2a;
       }
 
       input[type="text"] {
@@ -447,6 +455,62 @@
 
       .form-check-input {
         margin-right: 10px;
+      }
+
+      /* Active Speaker Layout */
+
+      .card-container-wrapper.shifted {
+        width: calc(100% - 350px);
+      }
+
+      .speaker-pane {
+        width: 350px;
+        height: 100%;
+        background-color: #2a2a2a;
+        border-left: 1px solid #ced4da;
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        right: 0;
+        z-index: 1;
+      }
+
+      .speaker-pane.active {
+        display: flex;
+      }
+
+      .speaker-card-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .speaker-card-wrapper {
+        display: grid;
+        gap: 2px;
+        justify-content: center;
+        align-content: start;
+        box-sizing: border-box;
+        height: calc(100% - 50px);
+      }
+
+      .nav-speaker-buttons {
+        display: flex;
+        justify-content: center;
+      }
+
+      .nav-speaker-buttons:first-of-type {
+        position: absolute;
+        top: 0;
+        width: 100%;
+      }
+
+      .nav-speaker-buttons:last-of-type {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
       }
     </style>
   </head>
@@ -519,480 +583,488 @@
             />
           </div>
         </div>
+
+        <div class="speaker-pane" id="speaker-pane">
+          <button
+            id="prev-message-button"
+            class="nav-speaker-buttons"
+            onclick="previousMessagePage()"
+          >
+            Up
+          </button>
+
+          <div id="speaker-card-container" class="speaker-card-container"></div>
+          <button
+            id="next-message-button"
+            class="nav-speaker-buttons"
+            onclick="nextMessagePage()"
+          >
+            Bottom
+          </button>
+        </div>
       </div>
+    </div>
+    <div
+      class="modal fade"
+      id="exampleModalCenter"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalCenterTitle"
+      aria-hidden="true"
+    >
       <div
-        class="modal fade"
-        id="exampleModalCenter"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="exampleModalCenterTitle"
-        aria-hidden="true"
+        class="modal-dialog modal-dialog-centered modal-dialog-centered modal-dialog-scrollable"
+        role="document"
       >
-        <div
-          class="modal-dialog modal-dialog-centered modal-dialog-centered modal-dialog-scrollable"
-          role="document"
-        >
-          <div class="modal-content">
-            <div class="modal-body">
-              <div class="d-flex justify-content-between">
-                <h5 class="modal-title" id="exampleModalCenterTitle">
-                  Ubah Susunan
-                </h5>
-                <button
-                  type="button"
-                  class="close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                >
-                  <i data-feather="x"></i>
-                </button>
+        <div class="modal-content">
+          <div class="modal-body">
+            <div class="d-flex justify-content-between">
+              <h5 class="modal-title" id="exampleModalCenterTitle">
+                Ubah Susunan
+              </h5>
+              <button
+                type="button"
+                class="close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              >
+                <i data-feather="x"></i>
+              </button>
+            </div>
+            <div>
+              <p>Perubahan akan disimpan untuk rapat selanjutnya</p>
+            </div>
+
+            <div class="row gap-2 mb-4">
+              <div
+                class="col-12 d-flex justify-content-between"
+                style="align-items: center"
+              >
+                <div>
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="Secondary"
+                    id="Secondary"
+                    onclick="setCardNumber(6)"
+                  />
+                  <label class="form-check-label" for="Secondary">
+                    Petak
+                  </label>
+                </div>
+                <div>
+                  <i class="me-3"
+                    ><img
+                      src="/assets/compiled/svg/iconLayoutGallery.svg"
+                      alt=""
+                      height="38"
+                      width="70"
+                  /></i>
+                </div>
               </div>
-              <div>
-                <p>Perubahan akan disimpan untuk rapat selanjutnya</p>
+              <div
+                class="col-12 d-flex justify-content-between"
+                style="align-items: center"
+              >
+                <div>
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="Secondary"
+                    id="Secondary"
+                    onclick="toggleSpeakerPane()"
+                  />
+                  <label class="form-check-label" for="Secondary">
+                    Pembicara
+                  </label>
+                </div>
+                <div>
+                  <i class="me-3"
+                    ><img
+                      src="/assets/compiled/svg/iconLayoutSpeaker.svg"
+                      alt=""
+                      height="38"
+                      width="70"
+                  /></i>
+                </div>
               </div>
-
-              <div class="row gap-2 mb-4">
-                <div
-                  class="col-12 d-flex justify-content-between"
-                  style="align-items: center"
+              <div
+                class="col-12 d-flex justify-content-between"
+                style="align-items: center"
+              >
+                <div>
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="Secondary"
+                    id="Secondary"
+                    checked
+                  />
+                  <label class="form-check-label" for="Secondary">
+                    Petak Samping
+                  </label>
+                </div>
+                <div>
+                  <i class="me-3"
+                    ><img
+                      src="/assets/compiled/svg/iconLayoutActiveSpeaker.svg"
+                      alt=""
+                      height="38"
+                      width="70"
+                  /></i>
+                </div>
+              </div>
+              <div class="row mt-4">
+                <label
+                  >Jumlah Petak <br />
+                  Tidak bisa mengubah jumlah petak di tampilan ini</label
                 >
+
+                <div class="col-12 d-flex justify-content-between">
                   <div>
+                    <img
+                      src="/assets/compiled/svg/iconSquare1.svg"
+                      alt=""
+                      height="22"
+                      width="22"
+                    />
+                  </div>
+                  <div class="gap-4">
                     <input
                       class="form-check-input"
                       type="radio"
                       name="Secondary"
                       id="Secondary"
-                      checked
+                      onclick="setCardNumber(6)"
                     />
-                    <label class="form-check-label" for="Secondary">
-                      Petak
-                    </label>
-                  </div>
-                  <div>
-                    <i class="me-3"
-                      ><img
-                        src="/assets/compiled/svg/iconLayoutGallery.svg"
-                        alt=""
-                        height="38"
-                        width="70"
-                    /></i>
-                  </div>
-                </div>
-                <div
-                  class="col-12 d-flex justify-content-between"
-                  style="align-items: center"
-                >
-                  <div>
+                    <label class="form-check-label" for="Secondary"> 6 </label>
                     <input
                       class="form-check-input"
                       type="radio"
                       name="Secondary"
                       id="Secondary"
-                      checked
+                      onclick="setCardNumber(9)"
                     />
-                    <label class="form-check-label" for="Secondary">
-                      Pembicara
-                    </label>
-                  </div>
-                  <div>
-                    <i class="me-3"
-                      ><img
-                        src="/assets/compiled/svg/iconLayoutSpeaker.svg"
-                        alt=""
-                        height="38"
-                        width="70"
-                    /></i>
-                  </div>
-                </div>
-                <div
-                  class="col-12 d-flex justify-content-between"
-                  style="align-items: center"
-                >
-                  <div>
+                    <label class="form-check-label" for="Secondary"> 9 </label>
                     <input
                       class="form-check-input"
                       type="radio"
                       name="Secondary"
                       id="Secondary"
-                      checked
+                      onclick="setCardNumber(12)"
                     />
-                    <label class="form-check-label" for="Secondary">
-                      Petak Samping
-                    </label>
-                  </div>
-                  <div>
-                    <i class="me-3"
-                      ><img
-                        src="/assets/compiled/svg/iconLayoutActiveSpeaker.svg"
-                        alt=""
-                        height="38"
-                        width="70"
-                    /></i>
-                  </div>
-                </div>
-                <div class="row mt-4">
-                  <label
-                    >Jumlah Petak <br />
-                    Tidak bisa mengubah jumlah petak di tampilan ini</label
-                  >
-
-                  <div class="col-12 d-flex justify-content-between">
-                    <div>
-                      <img
-                        src="/assets/compiled/svg/iconSquare1.svg"
-                        alt=""
-                        height="22"
-                        width="22"
-                      />
-                    </div>
-                    <div class="gap-4">
-                      <input
-                        class="form-check-input"
-                        type="radio"
-                        name="Secondary"
-                        id="Secondary"
-                        onclick="setCardNumber(6)"
-                      />
-                      <label class="form-check-label" for="Secondary">
-                        6
-                      </label>
-                      <input
-                        class="form-check-input"
-                        type="radio"
-                        name="Secondary"
-                        id="Secondary"
-                        onclick="setCardNumber(9)"
-                      />
-                      <label class="form-check-label" for="Secondary">
-                        9
-                      </label>
-                      <input
-                        class="form-check-input"
-                        type="radio"
-                        name="Secondary"
-                        id="Secondary"
-                        onclick="setCardNumber(12)"
-                      />
-                      <label class="form-check-label" for="Secondary">
-                        12
-                      </label>
-                      <input
-                        class="form-check-input"
-                        type="radio"
-                        name="Secondary"
-                        id="Secondary"
-                        onclick="setCardNumber(16)"
-                      />
-                      <label class="form-check-label" for="Secondary">
-                        16
-                      </label>
-                    </div>
-
-                    <div>
-                      <img
-                        src="/assets/compiled/svg/iconSquare2.svg"
-                        alt=""
-                        height="22"
-                        width="22"
-                      />
-                    </div>
-                  </div>
-                  <div
-                    class="col-12 form-switch d-flex justify-content-between mt-3"
-                  >
-                    <h5 style="color: #ffffff">
-                      Sembunyikan Petak Tanpa Video
-                    </h5>
+                    <label class="form-check-label" for="Secondary"> 12 </label>
                     <input
                       class="form-check-input"
-                      type="checkbox"
-                      id="flexSwitchCheckChecked"
+                      type="radio"
+                      name="Secondary"
+                      id="Secondary"
+                      onclick="setCardNumber(16)"
+                    />
+                    <label class="form-check-label" for="Secondary"> 16 </label>
+                  </div>
+
+                  <div>
+                    <img
+                      src="/assets/compiled/svg/iconSquare2.svg"
+                      alt=""
+                      height="22"
+                      width="22"
                     />
                   </div>
+                </div>
+                <div
+                  class="col-12 form-switch d-flex justify-content-between mt-3"
+                >
+                  <h5 style="color: #ffffff">Sembunyikan Petak Tanpa Video</h5>
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="flexSwitchCheckChecked"
+                  />
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <footer class="conference-controls">
-        <div class="row">
-          <div class="col-12">
-            <div class="d-flex justify-content-between gap-2">
-              <div class="control-item">
-                <div class="control-button">
-                  <div class="control-button-content" href="#" onclick="">
+    </div>
+    <footer class="conference-controls">
+      <div class="row">
+        <div class="col-12">
+          <div class="d-flex justify-content-between gap-2">
+            <div class="control-item">
+              <div class="control-button">
+                <div class="control-button-content" href="#" onclick="">
+                  <img
+                    loading="lazy"
+                    src="/assets/compiled/svg/iconMic.svg"
+                    class="control-icon"
+                    alt="Control icon"
+                  />
+
+                  <button
+                    type="button"
+                    class="btn"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
                     <img
                       loading="lazy"
-                      src="/assets/compiled/svg/iconMic.svg"
-                      class="control-icon"
-                      alt="Control icon"
+                      src="/assets/compiled/svg/iconUp.svg"
+                      class="control-arrow"
+                      alt="Arrow icon"
                     />
-
-                    <button
-                      type="button"
-                      class="btn"
-                      data-bs-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false"
+                  </button>
+                  <div class="dropdown-menu">
+                    <h6 class="p-3" style="color: #ffffff">Microphone</h6>
+                    <a class="dropdown-item" href="#" onclick="">
+                      <input
+                        type="checkbox"
+                        id="checkbox1"
+                        class="form-check-input"
+                      />Microphone (Steam Streaming Microphone)</a
                     >
-                      <img
-                        loading="lazy"
-                        src="/assets/compiled/svg/iconUp.svg"
-                        class="control-arrow"
-                        alt="Arrow icon"
-                      />
-                    </button>
-                    <div class="dropdown-menu">
-                      <h6 class="p-3" style="color: #ffffff">Microphone</h6>
-                      <a class="dropdown-item" href="#" onclick="">
-                        <input
-                          type="checkbox"
-                          id="checkbox1"
-                          class="form-check-input"
-                        />Microphone (Steam Streaming Microphone)</a
-                      >
-                      <a class="dropdown-item" href="#" onclick=""
-                        ><input
-                          type="checkbox"
-                          id="checkbox2"
-                          class="form-check-input"
-                        />Microphone Array(Realtek High Definition Audio)
-                      </a>
-                      <a class="dropdown-item" href="#" onclick=""
-                        ><input
-                          type="checkbox"
-                          id="checkbox3"
-                          class="form-check-input"
-                        />Same As System(Microphone Array(Realtek High
-                        Definition Audio))
-                      </a>
+                    <a class="dropdown-item" href="#" onclick=""
+                      ><input
+                        type="checkbox"
+                        id="checkbox2"
+                        class="form-check-input"
+                      />Microphone Array(Realtek High Definition Audio)
+                    </a>
+                    <a class="dropdown-item" href="#" onclick=""
+                      ><input
+                        type="checkbox"
+                        id="checkbox3"
+                        class="form-check-input"
+                      />Same As System(Microphone Array(Realtek High Definition
+                      Audio))
+                    </a>
 
-                      <hr />
-                      <h6 class="p-3" style="color: #ffffff">Speaker</h6>
-                      <a class="dropdown-item" href="#" onclick="">
-                        <input
-                          type="checkbox"
-                          id="checkbox4"
-                          class="form-check-input"
-                        />Speakers (Steam High Definition Audio)</a
-                      >
-                      <a class="dropdown-item" href="#" onclick=""
-                        ><input
-                          type="checkbox"
-                          id="checkbox5"
-                          class="form-check-input"
-                        />Speakers Array(Steam Streaming Microphone)
-                      </a>
-                      <a class="dropdown-item" href="#" onclick=""
-                        ><input
-                          type="checkbox"
-                          id="checkbox6"
-                          class="form-check-input"
-                        />Speakers (Realtek Streaming Microphone)
-                      </a>
-                      <a class="dropdown-item" href="#" onclick=""
-                        ><input
-                          type="checkbox"
-                          id="checkbox7"
-                          class="form-check-input me-2"
-                        />Same As System(Speakers(Realtek High Definition
-                        Audio))
-                      </a>
-                    </div>
-                  </div>
-                </div>
-                <div class="control-button">
-                  <div class="control-button-content" href="#" onclick="">
-                    <img
-                      loading="lazy"
-                      src="/assets/compiled/svg/iconVideo.svg"
-                      class="control-icon"
-                      alt="Control icon"
-                    />
-                    <button
-                      type="button"
-                      class="btn"
-                      data-bs-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false"
+                    <hr />
+                    <h6 class="p-3" style="color: #ffffff">Speaker</h6>
+                    <a class="dropdown-item" href="#" onclick="">
+                      <input
+                        type="checkbox"
+                        id="checkbox4"
+                        class="form-check-input"
+                      />Speakers (Steam High Definition Audio)</a
                     >
-                      <img
-                        loading="lazy"
-                        src="/assets/compiled/svg/iconUp.svg"
-                        class="control-arrow"
-                        alt="Arrow icon"
-                      />
-                    </button>
-                    <div class="dropdown-menu">
-                      <a class="dropdown-item" href="#" onclick="">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioDefault"
-                          id="flexRadioDefault1"
-                        />HD WebCam</a
-                      >
-                      <hr />
-                      <a class="dropdown-item" href="#" onclick="">
-                        <input
-                          type="checkbox"
-                          id="checkbox1"
-                          class="form-check-input"
-                        />Kaburkan Latar Belakang</a
-                      >
-                      <a class="dropdown-item" href="#" onclick=""
-                        ><input
-                          type="checkbox"
-                          id="checkbox2"
-                          class="form-check-input"
-                        />Pantulkan Video
-                      </a>
-
-                      <hr />
-                      <a class="dropdown-item" href="#" onclick=""
-                        ><i class="me-2"
-                          ><img
-                            src="/assets/compiled/svg/iconVideoSetting.svg"
-                            alt=""
-                            height="16"
-                            width="20" /></i
-                        >Pengaturan Video</a
-                      >
-                    </div>
+                    <a class="dropdown-item" href="#" onclick=""
+                      ><input
+                        type="checkbox"
+                        id="checkbox5"
+                        class="form-check-input"
+                      />Speakers Array(Steam Streaming Microphone)
+                    </a>
+                    <a class="dropdown-item" href="#" onclick=""
+                      ><input
+                        type="checkbox"
+                        id="checkbox6"
+                        class="form-check-input"
+                      />Speakers (Realtek Streaming Microphone)
+                    </a>
+                    <a class="dropdown-item" href="#" onclick=""
+                      ><input
+                        type="checkbox"
+                        id="checkbox7"
+                        class="form-check-input me-2"
+                      />Same As System(Speakers(Realtek High Definition Audio))
+                    </a>
                   </div>
                 </div>
               </div>
-              <div class="action-buttons">
-                <a
-                  class="action-button"
-                  href="#"
-                  onclick="toggleParticipantPane()"
-                >
+              <div class="control-button">
+                <div class="control-button-content" href="#" onclick="">
                   <img
                     loading="lazy"
-                    src="/assets/compiled/svg/iconParticipants.svg"
-                    class="action-icon"
-                    alt="Action icon"
-                /></a>
-
-                <a class="action-button" href="#" onclick="toggleMessagePane()">
-                  <img
-                    loading="lazy"
-                    src="/assets/compiled/svg/iconChat.svg"
-                    class="action-icon"
-                    alt="Action icon"
-                /></a>
-
-                <a class="action-button" href="#" onclick="">
-                  <img
-                    loading="lazy"
-                    src="/assets/compiled/svg/iconRaiseHand.svg"
-                    class="action-icon"
-                    alt="Action icon"
-                /></a>
-
-                <a class="action-button" href="#" onclick="">
-                  <img
-                    loading="lazy"
-                    src="/assets/compiled/svg/iconFullscreen.svg"
-                    class="action-icon"
-                    alt="Action icon"
-                /></a>
-
-                <a class="action-button" href="#" onclick="">
-                  <img
-                    loading="lazy"
-                    src="/assets/compiled/svg/iconSubtitle.svg"
-                    class="action-icon"
-                    alt="Action icon"
-                /></a>
-
-                <!-- <div class="btn-group dropup me-1 mb-1"> -->
-                <div
-                  class="action-button"
-                  data-bs-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  <img
-                    loading="lazy"
-                    src="/assets/compiled/svg/iconSetting.svg"
-                    class="action-icon"
-                    alt="Action icon"
+                    src="/assets/compiled/svg/iconVideo.svg"
+                    class="control-icon"
+                    alt="Control icon"
                   />
-
+                  <button
+                    type="button"
+                    class="btn"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    <img
+                      loading="lazy"
+                      src="/assets/compiled/svg/iconUp.svg"
+                      class="control-arrow"
+                      alt="Arrow icon"
+                    />
+                  </button>
                   <div class="dropdown-menu">
-                    <!-- <h6 class="dropdown-header">Header</h6> -->
-                    <a class="dropdown-item" href="#" onclick=""
-                      ><i class="me-2"
-                        ><img
-                          src="/assets/compiled/svg/iconSubRecord.svg"
-                          alt=""
-                          height="24"
-                          width="24" /></i
-                      >Mulai Merekam</a
+                    <a class="dropdown-item" href="#" onclick="">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="flexRadioDefault"
+                        id="flexRadioDefault1"
+                      />HD WebCam</a
+                    >
+                    <hr />
+                    <a class="dropdown-item" href="#" onclick="">
+                      <input
+                        type="checkbox"
+                        id="checkbox1"
+                        class="form-check-input"
+                      />Kaburkan Latar Belakang</a
                     >
                     <a class="dropdown-item" href="#" onclick=""
-                      ><i class="me-2"
-                        ><img
-                          src="/assets/compiled/svg/iconSubQuality.svg"
-                          alt=""
-                          height="24"
-                          width="24" /></i
-                      >Kualitas Video</a
-                    >
-                    <a class="dropdown-item" href="#" onclick=""
-                      ><i class="me-2"
-                        ><img
-                          src="/assets/compiled/svg/iconSubQuality.svg"
-                          alt=""
-                          height="24"
-                          width="24" /></i
-                      >Layar Penuh</a
-                    >
-                    <a
-                      class="dropdown-item"
-                      href="#"
-                      onclick=""
-                      data-bs-toggle="modal"
-                      data-bs-target="#exampleModalCenter"
-                    >
-                      <img
-                        src="/assets/compiled/svg/iconSubChangeLayout.svg"
-                        alt=""
-                        height="24"
-                        width="24"
-                      />
-                      Ubah Susunan
+                      ><input
+                        type="checkbox"
+                        id="checkbox2"
+                        class="form-check-input"
+                      />Pantulkan Video
                     </a>
+
                     <hr />
                     <a class="dropdown-item" href="#" onclick=""
                       ><i class="me-2"
                         ><img
-                          src="/assets/compiled/svg/iconSubSetting.svg"
+                          src="/assets/compiled/svg/iconVideoSetting.svg"
                           alt=""
-                          height="24"
-                          width="24" /></i
-                      >Pengaturan</a
+                          height="16"
+                          width="20" /></i
+                      >Pengaturan Video</a
                     >
                   </div>
                 </div>
               </div>
-
-              <div class="end-call-button" href="#" onclick="">
+            </div>
+            <div class="action-buttons">
+              <a
+                class="action-button"
+                href="#"
+                onclick="toggleParticipantPane()"
+              >
                 <img
                   loading="lazy"
-                  src="/assets/compiled/svg/iconEndCall.svg"
-                  class="end-call-icon"
-                  alt="End call icon"
+                  src="/assets/compiled/svg/iconParticipants.svg"
+                  class="action-icon"
+                  alt="Action icon"
+              /></a>
+
+              <a class="action-button" href="#" onclick="toggleMessagePane()">
+                <img
+                  loading="lazy"
+                  src="/assets/compiled/svg/iconChat.svg"
+                  class="action-icon"
+                  alt="Action icon"
+              /></a>
+
+              <a class="action-button" href="#" onclick="">
+                <img
+                  loading="lazy"
+                  src="/assets/compiled/svg/iconRaiseHand.svg"
+                  class="action-icon"
+                  alt="Action icon"
+              /></a>
+
+              <a class="action-button" href="#" onclick="">
+                <img
+                  loading="lazy"
+                  src="/assets/compiled/svg/iconFullscreen.svg"
+                  class="action-icon"
+                  alt="Action icon"
+              /></a>
+
+              <a class="action-button" href="#" onclick="">
+                <img
+                  loading="lazy"
+                  src="/assets/compiled/svg/iconSubtitle.svg"
+                  class="action-icon"
+                  alt="Action icon"
+              /></a>
+
+              <!-- <div class="btn-group dropup me-1 mb-1"> -->
+              <div
+                class="action-button"
+                data-bs-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                <img
+                  loading="lazy"
+                  src="/assets/compiled/svg/iconSetting.svg"
+                  class="action-icon"
+                  alt="Action icon"
                 />
+
+                <div class="dropdown-menu">
+                  <!-- <h6 class="dropdown-header">Header</h6> -->
+                  <a class="dropdown-item" href="#" onclick=""
+                    ><i class="me-2"
+                      ><img
+                        src="/assets/compiled/svg/iconSubRecord.svg"
+                        alt=""
+                        height="24"
+                        width="24" /></i
+                    >Mulai Merekam</a
+                  >
+                  <a class="dropdown-item" href="#" onclick=""
+                    ><i class="me-2"
+                      ><img
+                        src="/assets/compiled/svg/iconSubQuality.svg"
+                        alt=""
+                        height="24"
+                        width="24" /></i
+                    >Kualitas Video</a
+                  >
+                  <a class="dropdown-item" href="#" onclick=""
+                    ><i class="me-2"
+                      ><img
+                        src="/assets/compiled/svg/iconSubQuality.svg"
+                        alt=""
+                        height="24"
+                        width="24" /></i
+                    >Layar Penuh</a
+                  >
+                  <a
+                    class="dropdown-item"
+                    href="#"
+                    onclick=""
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModalCenter"
+                  >
+                    <img
+                      src="/assets/compiled/svg/iconSubChangeLayout.svg"
+                      alt=""
+                      height="24"
+                      width="24"
+                    />
+                    Ubah Susunan
+                  </a>
+                  <hr />
+                  <a class="dropdown-item" href="#" onclick=""
+                    ><i class="me-2"
+                      ><img
+                        src="/assets/compiled/svg/iconSubSetting.svg"
+                        alt=""
+                        height="24"
+                        width="24" /></i
+                    >Pengaturan</a
+                  >
+                </div>
               </div>
+            </div>
+
+            <div class="end-call-button" href="#" onclick="">
+              <img
+                loading="lazy"
+                src="/assets/compiled/svg/iconEndCall.svg"
+                class="end-call-icon"
+                alt="End call icon"
+              />
             </div>
           </div>
         </div>
-      </footer>
-    </div>
+      </div>
+    </footer>
 
     <script src="/assets/compiled/js/app.js"></script>
     <script type="module" src="/assets/compiled/js/emoji.js"></script>
@@ -1010,69 +1082,69 @@
           camera: true,
           details: false,
         },
-        // {
-        //   name: "Andi Wijaya",
-        //   role: "Co-Host",
-        //   mic: true,
-        //   camera: true,
-        //   details: false,
-        // },
-        // {
-        //   name: "Budi Santoso",
-        //   role: "",
-        //   mic: true,
-        //   camera: false,
-        //   details: false,
-        // },
-        // {
-        //   name: "Siri Aminah",
-        //   role: "",
-        //   mic: true,
-        //   camera: false,
-        //   details: false,
-        // },
-        // {
-        //   name: "Ahmad Firdaus",
-        //   role: "",
-        //   mic: true,
-        //   camera: false,
-        //   details: false,
-        // },
-        // {
-        //   name: "Rina Kusuma",
-        //   role: "",
-        //   mic: true,
-        //   camera: false,
-        //   details: false,
-        // },
-        // {
-        //   name: "Eko Prasetyo",
-        //   role: "",
-        //   mic: true,
-        //   camera: false,
-        //   details: false,
-        // },
-        // {
-        //   name: "Sri Lestari",
-        //   role: "",
-        //   mic: true,
-        //   camera: false,
-        //   details: false,
-        // },
-        // {
-        //   name: "Yudi Kurniawan",
-        //   role: "",
-        //   mic: true,
-        //   camera: false,
-        //   details: false,
-        // },
-        // {
-        //   name: "Intan Permatasari",
-        //   role: "",
-        //   mic: true,
-        //   camera: false,
-        //   details: false,
-        // },
+        {
+          name: "Andi Wijaya",
+          role: "Co-Host",
+          mic: true,
+          camera: true,
+          details: false,
+        },
+        {
+          name: "Budi Santoso",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Siri Aminah",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Ahmad Firdaus",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Rina Kusuma",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Eko Prasetyo",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Sri Lestari",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Yudi Kurniawan",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Intan Permatasari",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
         {
           name: "Hendra Setiawan",
           role: "",
@@ -1201,6 +1273,24 @@
         cardContainerWrapper.classList.toggle("shifted");
       }
 
+      function ActiveSpeakerPane() {
+        const messagePane = document.getElementById("active-speaker-pane");
+        const cardContainerWrapper = document.getElementById(
+          "card-container-wrapper"
+        );
+        const participantPane = document.getElementById("participant-pane");
+
+        // Check if participantPane is active, then close it
+        if (participantPane.classList.contains("active")) {
+          participantPane.classList.remove("active");
+          cardContainerWrapper.classList.remove("shifted");
+        }
+
+        // Toggle messagePane
+        messagePane.classList.toggle("active");
+        cardContainerWrapper.classList.toggle("shifted");
+      }
+
       function previousPage() {
         if (currentPage > 0) {
           currentPage--;
@@ -1230,6 +1320,83 @@
         const pageIndicator = document.getElementById("page-indicator");
         const totalPages = Math.ceil(members.length / cardsPerPage);
         pageIndicator.textContent = `${currentPage + 1} / ${totalPages}`;
+      }
+
+      //Functions for active speaker
+      let currentMessagePage = 0;
+      let messageCardsPerPage = 5;
+
+      function generateMessageCard(member) {
+        const card = document.createElement("div");
+        card.classList.add("card");
+        card.innerHTML = `
+    <div class="card-body">
+      <h5 class="card-title">${member.name}</h5>
+      <p class="card-text">Role: ${member.role}</p>
+    </div>
+  `;
+        return card;
+      }
+
+      function updateMessagePane() {
+        const container = document.getElementById("speaker-card-container");
+        container.innerHTML = "";
+
+        const start = currentMessagePage * messageCardsPerPage;
+        const end = Math.min(start + messageCardsPerPage, members.length);
+
+        members.slice(start, end).forEach((member) => {
+          container.appendChild(generateMessageCard(member));
+        });
+
+        adjustMessagePaneLayout(end - start);
+      }
+
+      function adjustMessagePaneLayout(number) {
+        const container = document.getElementById("speaker-card-container");
+        container.style.gridTemplateRows = `repeat(${number}, 1fr)`;
+      }
+
+      function toggleSpeakerPane() {
+        const messagePane = document.getElementById("active-speaker-pane");
+        const cardContainerWrapper = document.getElementById(
+          "card-container-wrapper"
+        );
+
+        messagePane.classList.toggle("active");
+        cardContainerWrapper.classList.toggle("shifted");
+
+        if (messagePane.classList.contains("active")) {
+          setCardNumber(1);
+          updateMessagePane();
+        } else {
+          setCardNumber(12);
+        }
+      }
+
+      function previousMessagePage() {
+        if (currentMessagePage > 0) {
+          currentMessagePage--;
+          updateMessagePane();
+          updateMessageNavigationButtons();
+        }
+      }
+
+      function nextMessagePage() {
+        if ((currentMessagePage + 1) * messageCardsPerPage < members.length) {
+          currentMessagePage++;
+          updateMessagePane();
+          updateMessageNavigationButtons();
+        }
+      }
+
+      function updateMessageNavigationButtons() {
+        const prevButton = document.getElementById("prev-message-button");
+        const nextButton = document.getElementById("next-message-button");
+
+        prevButton.disabled = currentMessagePage === 0;
+        nextButton.disabled =
+          (currentMessagePage + 1) * messageCardsPerPage >= members.length;
       }
 
       document.addEventListener("DOMContentLoaded", function () {
@@ -1385,24 +1552,6 @@
 
         // document.getElementById("member-count").innerText = numberOfMembers;
       });
-
-      // function inviteMember() {
-      //   alert("Member invited!");
-      // }
-
-      // function muteAllMics() {
-      //   alert("All mics muted!");
-      // }
-
-      // function addMember() {
-      //   const newMemberInput = document.getElementById("new-member-input");
-      //   const newMemberName = newMemberInput.value.trim();
-      //   if (newMemberName) {
-      //     alert(`Added new member: ${newMemberName}`);
-      //   } else {
-      //     alert("Please enter a name.");
-      //   }
-      // }
     </script>
   </body>
 </html>

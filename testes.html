@@ -15,285 +15,160 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <style>
-      body,
-      html {
-        height: 100%;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-      }
-      .container-fluid {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        justify-content: flex-start;
-        align-items: center;
-      }
-      .btn-group-container {
-        width: 100%;
-        background-color: white;
-        padding: 1rem;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        z-index: 10;
-      }
-      .main-content {
-        flex: 1;
-        display: flex;
-        width: 100%;
-        overflow: hidden;
-      }
-      .card-container-wrapper {
-        flex: 1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
-        transition: margin-right 0.3s;
-      }
-      .card-container {
-        display: grid;
-        gap: 2px;
-        justify-content: center;
-        align-content: center;
-        width: 100%;
-        height: 100%;
-        box-sizing: border-box;
-      }
-      .card {
-        background-color: #f8f9fa;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        height: 100%;
-        border: 1px solid #ced4da;
-        box-sizing: border-box;
-        transition: order 0.3s, width 0.3s;
-      }
-      .card-body {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-      }
-      .participant-pane {
-        width: 300px;
-        background-color: #f1f1f1;
-        border-left: 1px solid #ced4da;
-        padding: 1rem;
-        box-sizing: border-box;
-        display: none;
-      }
-      .participant-pane.active {
-        display: block;
-      }
-      .card-container-wrapper.shifted {
-        margin-right: 0; /* No margin between the card container and the participant pane */
-      }
-      .active-speaker-container {
-        flex: 2;
-        background-color: #000;
-        margin-right: 10px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        transition: transform 0.3s ease;
-        position: relative;
-        height: 100%;
-      }
-      .additional-cards-container {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: space-between;
-        height: 100%;
-      }
-      .additional-cards {
-        flex: 1;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        overflow-y: auto;
-        gap: 10px;
-      }
-      .video-container {
-        background-color: #333;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-        transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease;
-        position: relative;
-        aspect-ratio: 1 / 1;
-        width: 90%;
-        max-width: 90%;
-      }
-      .video-container .content {
-        color: #fff;
-        text-align: center;
-        position: relative;
-        z-index: 1;
-      }
-      .video-container .mic-icon,
-      .video-container .name-icon {
-        position: absolute;
-        color: #fff;
-        z-index: 2;
-      }
-      .video-container .mic-icon.top-right {
-        top: 10px;
-        right: 10px;
-      }
-      .video-container .name-icon.bottom-left {
-        bottom: 10px;
-        left: 10px;
-        display: flex;
-        align-items: center;
-      }
-      .video-container .name-icon.bottom-left span {
-        margin-right: 5px;
-      }
-      button {
-        width: 100%;
-        height: 40px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        cursor: pointer;
-      }
-      button:hover {
-        background-color: #0056b3;
-      }
-      button:disabled {
-        background-color: #cccccc;
-        cursor: not-allowed;
-      }
-      .video-container.fullscreen {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: #000;
-        z-index: 1000;
-        justify-content: center;
-        align-items: center;
-        transform: none;
-      }
-      .video-container.active {
-        border: 5px solid #ff0000;
-        transform: scale(1.05);
-      }
-    </style>
   </head>
   <body>
     <div class="container-fluid">
-      <div class="btn-group-container">
-        <!-- Buttons to dynamically set number of cards -->
-        <div
-          class="btn-group mb-4"
-          role="group"
-          aria-label="Card number buttons"
-        >
-          <button
-            type="button"
-            class="btn btn-primary"
-            onclick="setCardNumber(6)"
-          >
-            6 Grids
-          </button>
-          <button
-            type="button"
-            class="btn btn-primary"
-            onclick="setCardNumber(9)"
-          >
-            9 Grids
-          </button>
-          <button
-            type="button"
-            class="btn btn-primary"
-            onclick="setCardNumber(12)"
-          >
-            12 Grids
-          </button>
-          <button
-            type="button"
-            class="btn btn-primary"
-            onclick="setCardNumber(16)"
-          >
-            16 Grids
-          </button>
-          <button
-            type="button"
-            class="btn btn-secondary"
-            onclick="toggleParticipantPane()"
-          >
-            Toggle Participants
-          </button>
-          <button
-            type="button"
-            class="btn btn-primary"
-            onclick="toggleActiveSpeakerView()"
-          >
-            Active Speaker
-          </button>
-        </div>
-      </div>
-      <div class="main-content">
-        <div class="card-container-wrapper" id="card-container-wrapper">
-          <div id="card-container" class="card-container">
-            <!-- Cards will be dynamically inserted here -->
-          </div>
-        </div>
-        <div class="participant-pane" id="participant-pane">
-          <h4>Participants</h4>
-          <ul id="participant-list">
-            <!-- Participant list items will go here -->
-          </ul>
-        </div>
-      </div>
-      <div class="speaker-content" id="speaker-content" style="display: none;">
-        <div class="active-speaker-container" id="active-speaker-container">
-          <!-- Active speaker card will be dynamically inserted here -->
-        </div>
-        <div class="additional-cards-container" id="additional-cards-container">
-          <button id="up-button">Up</button>
-          <div id="other-participants" class="additional-cards"></div>
-          <button id="down-button">Down</button>
-        </div>
-      </div>
+      <button onclick="setLayout('first')">First Layout</button>
+      <button onclick="setLayout('second')">Second Layout</button>
+      <div id="card-container"></div>
+
+      <div class="main-content"></div>
     </div>
 
     <script>
-      let numberOfGrids = 9; // Default number of grids
+      const members = [
+        {
+          name: "Ruang Sidang",
+          role: "Host, Me",
+          mic: true,
+          camera: true,
+          details: false,
+        },
+        {
+          name: "Andi Wijaya",
+          role: "Co-Host",
+          mic: true,
+          camera: true,
+          details: false,
+        },
+        {
+          name: "Budi Santoso",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Siri Aminah",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Ahmad Firdaus",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Rina Kusuma",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Eko Prasetyo",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Sri Lestari",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Yudi Kurniawan",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Intan Permatasari",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Hendra Setiawan",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+        {
+          name: "Triana Kurnita",
+          role: "",
+          mic: true,
+          camera: false,
+          details: false,
+        },
+      ];
 
-      function generateCard(index) {
+      let currentPage = 0;
+      let cardsPerPage = 0;
+      let currentMessagePage = 0;
+      let messageCardsPerPage = 0;
+      let currentLayout = "first";
+
+      function generateCard(member) {
         const card = document.createElement("div");
         card.classList.add("card");
         card.innerHTML = `
-                <div class="card-body">
-                    <h5 class="card-title">Video ${index}</h5>
-                    <p class="card-text">Placeholder for video stream ${index}</p>
-                </div>
-            `;
+    <div class="card-body">
+      <h5 class="card-title">${member.name}</h5>
+      <p class="card-text">Role: ${member.role}</p>
+    </div>
+  `;
+        return card;
+      }
+
+      function generateMessageCard(member) {
+        const card = document.createElement("div");
+        card.classList.add("message-card");
+        card.innerHTML = `
+    <div class="message-card-body">
+      <h5 class="message-card-title">${member.name}</h5>
+      <p class="message-card-text">Role: ${member.role}</p>
+    </div>
+  `;
         return card;
       }
 
       function setCardNumber(number) {
-        numberOfGrids = number;
+        cardsPerPage = number;
+        currentPage = 0;
+        updateGrid();
+        updateNavigationButtons();
+      }
+
+      function setMessageCardNumber(number) {
+        messageCardsPerPage = number;
+        currentMessagePage = 0;
+        updateMessagePane();
+        updateMessageNavigationButtons();
+      }
+
+      function updateGrid() {
         const container = document.getElementById("card-container");
         container.innerHTML = "";
 
-        for (let i = 1; i <= number; i++) {
-          container.appendChild(generateCard(i));
-        }
+        const start = currentPage * cardsPerPage;
+        const end = Math.min(start + cardsPerPage, members.length);
 
-        adjustGridLayout(number);
+        members.slice(start, end).forEach((member) => {
+          container.appendChild(generateCard(member));
+        });
+
+        adjustGridLayout(end - start);
       }
 
       function adjustGridLayout(number) {
@@ -320,83 +195,55 @@
           default:
             cols = Math.ceil(Math.sqrt(number));
             rows = Math.ceil(number / cols);
-            break;
+        }
+
+        container.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+        container.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+        updatePageIndicator();
+      }
+
+      function updateMessagePane() {
+        const container = document.getElementById("card-container");
+        container.innerHTML = "";
+
+        const start = currentMessagePage * messageCardsPerPage;
+        const end = Math.min(start + messageCardsPerPage, members.length);
+
+        members.slice(start, end).forEach((member) => {
+          container.appendChild(generateMessageCard(member));
+        });
+
+        adjustMessagePaneLayout(end - start);
+        updateMessageNavigationButtons();
+      }
+
+      function adjustMessagePaneLayout(number) {
+        const container = document.getElementById("card-container");
+        let cols, rows;
+
+        if (number > 5) {
+          cols = 1;
+          rows = Math.ceil(number);
+        } else {
+          cols = 1;
+          rows = number;
         }
 
         container.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
         container.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
       }
 
-      function toggleParticipantPane() {
-        const pane = document.getElementById("participant-pane");
-        const containerWrapper = document.getElementById("card-container-wrapper");
-        pane.classList.toggle("active");
-        containerWrapper.classList.toggle("shifted");
-      }
-
-      function toggleActiveSpeakerView() {
-        const mainContent = document.querySelector(".main-content");
-        const speakerContent = document.getElementById("speaker-content");
-        const cardContainerWrapper = document.getElementById(
-          "card-container-wrapper"
-        );
-
-        mainContent.style.display =
-          mainContent.style.display === "none" ? "flex" : "none";
-        speakerContent.style.display =
-          speakerContent.style.display === "none" ? "flex" : "none";
-        cardContainerWrapper.style.display =
-          cardContainerWrapper.style.display === "none" ? "flex" : "none";
-
-        if (speakerContent.style.display === "flex") {
-          initializeActiveSpeakerView();
+      function setLayout(layout) {
+        currentLayout = layout;
+        if (layout === "first") {
+          setCardNumber(cardsPerPage || 6); // Default to 6 if cardsPerPage is not set
+        } else if (layout === "second") {
+          setMessageCardNumber(messageCardsPerPage || 5); // Default to 5 if messageCardsPerPage is not set
         }
       }
 
-      function initializeActiveSpeakerView() {
-        const activeSpeakerContainer = document.getElementById(
-          "active-speaker-container"
-        );
-        const otherParticipantsContainer = document.getElementById(
-          "other-participants"
-        );
-
-        activeSpeakerContainer.innerHTML = ""; // Clear any existing content
-        otherParticipantsContainer.innerHTML = ""; // Clear any existing content
-
-        const activeSpeakerCard = generateVideoCard("Active Speaker");
-        activeSpeakerContainer.appendChild(activeSpeakerCard);
-
-        // Create other participant cards dynamically based on the number of grids
-        const numberOfParticipants = numberOfGrids - 1; // Exclude the active speaker
-        for (let i = 1; i <= numberOfParticipants; i++) {
-          const videoCard = generateVideoCard(`Participant ${i}`);
-          otherParticipantsContainer.appendChild(videoCard);
-        }
-      }
-
-      function generateVideoCard(name) {
-        const card = document.createElement("div");
-        card.classList.add("video-container");
-        card.innerHTML = `
-            <div class="content">
-                <i class="fas fa-user"></i>
-                <p>${name}</p>
-            </div>
-            <div class="mic-icon top-right"><i class="fas fa-microphone"></i></div>
-            <div class="name-icon bottom-left"><span><i class="fas fa-user"></i></span><span>${name}</span></div>
-        `;
-
-        // Event listeners for fullscreen functionality
-        card.addEventListener("click", () => {
-          card.classList.toggle("fullscreen");
-        });
-
-        return card;
-      }
-
-      // Initialize with a default number of cards
-      setCardNumber(9);
+      // Initial call to set the default layout
+      setLayout("first");
     </script>
   </body>
 </html>
