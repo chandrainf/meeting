@@ -73,6 +73,7 @@
         border: 1px solid #ced4da;
         box-sizing: border-box;
         transition: order 0.3s, width 0.3s;
+        margin: 0;
       }
       .card-body {
         display: flex;
@@ -435,6 +436,115 @@
       .form-check-input {
         margin-right: 10px;
       }
+
+      /* New styles for active speaker and member container */
+      /* .active-speaker-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: calc(100% - 200px);
+        height: 100%;
+        margin: 0 !important;
+        
+      } */
+
+      .active-speaker-container {
+        display: flex;
+        gap: 2px;
+        justify-content: center;
+        align-content: center;
+        box-sizing: border-box;
+        align-self: center;
+        width: calc(100% - 200px);
+        height: 100%;
+        margin: 0 !important;
+        
+      }
+      .active-speaker-container:active {
+        display: flex;
+      }
+
+      /* .card-container {
+        display: grid;
+        gap: 2px;
+        justify-content: center;
+        align-content: center;
+        box-sizing: border-box;
+        align-self: center;
+        height: 100%;
+        width: 100%;
+      } */
+
+      .member-container {
+        display: flex;
+        flex-direction: column;
+        width: 200px;
+        height: 100%;
+        overflow: hidden;
+        box-sizing: border-box;
+        position: relative;
+        justify-content: center;
+        background-color: #15181E;
+      }
+      
+
+      .small-card {
+        background-color: #f8f9fa;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #ced4da;
+        box-sizing: border-box;
+        width: 100%;
+        height: 180px;
+        transition: width 0.3s, height 0.3s;
+        margin: 0 auto; /* Center the small card */
+        border-radius: 5px;
+      }
+
+      .small-card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
+
+      .member-navigation-buttons {
+        position: absolute;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        pointer-events: all;
+        z-index: 1;
+      }
+
+      #prev-member-button {
+        top: 0;
+      }
+
+      #next-member-button {
+        bottom: 0;
+      }
+
+      .member-navigation-buttons button {
+        width: auto;
+        padding: 0.5rem 1rem;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        display: none; /* Initially hide the buttons */
+      }
+
+      /* Show buttons only if there are more pages */
+      .member-navigation-buttons.show button {
+        display: block;
+      }
+      
     </style>
   </head>
   <body>
@@ -461,6 +571,8 @@
             </button>
           </div>
           <div id="card-container" class="card-container"></div>
+          
+          
         </div>
         <div class="participant-pane" id="participant-pane">
           <div class="chat-header">
@@ -506,6 +618,40 @@
             />
           </div>
         </div>
+
+        <div
+          id="active-speaker-section"
+          class="main-content"
+          style="display: none"
+        >
+          <div
+            class="active-speaker-container"
+            id="active-speaker-container"
+          ></div>
+          <div class="member-container" id="member-container">
+            <div class="member-navigation-buttons" id="prev-member-button">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="previousMemberPage()"
+              >
+                &#9650;
+              </button>
+            </div>
+            <div id="member-content"></div>
+            <div class="member-navigation-buttons" id="next-member-button">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="nextMemberPage()"
+              >
+                &#9660;
+              </button>
+            </div>
+          </div>
+        </div>
+
+
       </div>
       <div
         class="modal fade"
@@ -549,7 +695,8 @@
                       type="radio"
                       name="Secondary"
                       id="Secondary"
-                      checked
+                      
+                      
                     />
                     <label class="form-check-label" for="Secondary">
                       Petak
@@ -575,7 +722,7 @@
                       type="radio"
                       name="Secondary"
                       id="Secondary"
-                      checked
+                      onclick="showActiveSpeaker()"
                     />
                     <label class="form-check-label" for="Secondary">
                       Pembicara
@@ -601,7 +748,7 @@
                       type="radio"
                       name="Secondary"
                       id="Secondary"
-                      checked
+                      
                     />
                     <label class="form-check-label" for="Secondary">
                       Petak Samping
@@ -1077,22 +1224,40 @@
 
       let currentPage = 0;
       let cardsPerPage = 0;
+      let currentMemberPage = 0;
 
       function generateCard(member) {
         const card = document.createElement("div");
         card.classList.add("card");
         card.innerHTML = `
-          <div class="card-body">
-            <h5 class="card-title">${member.name}</h5>
-            <p class="card-text">Role: ${member.role}</p>
-          </div>
-        `;
+        <div class="card-body">
+          <h5 class="card-title">${member.name}</h5>
+          <p class="card-text">Role: ${member.role}</p>
+        </div>
+      `;
+        return card;
+      }
+
+      function generateSmallCard(member) {
+        const card = document.createElement("div");
+        card.classList.add("small-card");
+        card.innerHTML = `
+        <div class="small-card-body">
+          <h5 class="card-title">${member.name}</h5>
+          <p class="card-text">Role: ${member.role}</p>
+        </div>
+      `;
         return card;
       }
 
       function setCardNumber(number) {
         cardsPerPage = number;
         currentPage = 0;
+        document.getElementById("active-speaker-section").style.display =
+          "none";
+        document.getElementById("card-container-wrapper").style.display =
+          "flex";
+        document.querySelector(".page-indicator").style.display = "block";
         updateGrid();
         updateNavigationButtons();
       }
@@ -1141,7 +1306,6 @@
         container.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
         updatePageIndicator();
       }
-
 
       function toggleParticipantPane() {
         const participantPane = document.getElementById("participant-pane");
@@ -1208,6 +1372,69 @@
         const pageIndicator = document.getElementById("page-indicator");
         const totalPages = Math.ceil(members.length / cardsPerPage);
         pageIndicator.textContent = `${currentPage + 1} / ${totalPages}`;
+      }
+
+      let activeSpeakerIndex = 0;
+
+      function showActiveSpeaker() {
+        document.getElementById("card-container-wrapper").style.display =
+          "none";
+        document.getElementById("active-speaker-section").style.display =
+          "flex";
+        document.querySelector(".page-indicator").style.display = "none";
+        updateActiveSpeaker();
+        updateMemberContainer();
+      }
+
+      function updateActiveSpeaker() {
+        const container = document.getElementById("active-speaker-container");
+        container.innerHTML = "";
+        const member = members[activeSpeakerIndex];
+        const card = generateCard(member);
+        container.appendChild(card);
+      }
+
+      function updateMemberContainer() {
+        const container = document.getElementById("member-content");
+        container.innerHTML = "";
+        const filteredMembers = members.filter(
+          (_, index) => index !== activeSpeakerIndex
+        );
+        const start = currentMemberPage * 5;
+        const end = Math.min(start + 5, filteredMembers.length);
+
+        filteredMembers.slice(start, end).forEach((member) => {
+          container.appendChild(generateSmallCard(member));
+        });
+
+        updateMemberNavigationButtons(filteredMembers.length);
+      }
+
+      function previousMemberPage() {
+        if (currentMemberPage > 0) {
+          currentMemberPage--;
+          updateMemberContainer();
+        }
+      }
+
+      function nextMemberPage() {
+        if ((currentMemberPage + 1) * 5 < members.length) {
+          currentMemberPage++;
+          updateMemberContainer();
+        }
+      }
+
+      function updateMemberNavigationButtons() {
+        const prevButtonContainer =
+          document.getElementById("prev-member-button");
+        const nextButtonContainer =
+          document.getElementById("next-member-button");
+
+        prevButtonContainer.classList.toggle("show", currentMemberPage > 0);
+        nextButtonContainer.classList.toggle(
+          "show",
+          (currentMemberPage + 1) * 5 < members.length
+        );
       }
 
       document.addEventListener("DOMContentLoaded", function () {
