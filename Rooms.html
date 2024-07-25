@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Zoom-like Grid Layout</title>
-   
+
     <link
       rel="shortcut icon"
       href="/assets/compiled/svg/favicon.svg"
@@ -90,6 +90,7 @@
         display: none;
         overflow: hidden;
         flex-direction: column;
+        border-radius: 8px;
       }
       .participant-pane.active {
         display: flex;
@@ -97,9 +98,26 @@
       .chat-header,
       .chat-footer {
         padding: 10px;
-        background-color: #444;
         display: flex;
         align-items: center;
+        border: 1px solid rgba(55, 65, 81, 0.5);
+        background-color: #15181e;
+      }
+      .chat-header h6 {
+        color: #ffffff !important;
+      }
+
+      .search-input {
+        background-color: #15181e !important;
+        margin: 10px 10px 10 10px;
+      }
+
+      .search-input input {
+        width: 100%;
+      }
+
+      .chat-footer button {
+        background-color: #15181e;
       }
       .chat-header h2 {
         margin: 0;
@@ -125,6 +143,8 @@
       .chat-list {
         overflow-y: auto;
         flex-grow: 1;
+        border: 1px solid rgba(55, 65, 81, 0.5);
+        background-color: #15181e;
       }
       .chat-item {
         padding: 10px;
@@ -211,7 +231,6 @@
         width: 100%;
         padding: 14px;
       }
-
 
       .control-item {
         display: flex;
@@ -327,6 +346,38 @@
         color: #ffffff;
       }
 
+      .member-info {
+        border-radius: 0 9.106px 0 9.106px;
+        backdrop-filter: blur(15.17715835571289px);
+        border: 2px solid rgba(0, 0, 0, 0.5);
+        background-color: rgba(0, 0, 0, 0.5);
+        font-size: 16px;
+        color: #fff;
+        font-weight: 400;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        padding: 8px 10px;
+      }
+
+      .member-info-control {
+        position: absolute;
+        top: 0;
+        right: 0;
+        border-radius: 0 10px;
+        backdrop-filter: blur(15.17715835571289px);
+        border: 2px solid rgba(0, 0, 0, 0.5);
+        background-color: rgba(0, 0, 0, 0.5);
+        width: 44px;
+        height: 44px;
+        padding: 0 10px;
+      }
+
+      .member-info-text {
+        font-feature-settings: "clig" off, "liga" off;
+        font-family: Plus Jakarta Sans, sans-serif;
+      }
+
       /*Message Pane */
 
       .message-pane {
@@ -362,7 +413,7 @@
         height: 24px;
         border-radius: 50%;
         /* margin-right: 10px; */
-        background-image: url('/assets/compiled/svg/avatarReceiver.svg');
+        background-image: url("/assets/compiled/svg/avatarReceiver.svg");
         background-size: contain;
       }
 
@@ -397,7 +448,7 @@
         border-top: 1px solid #444;
         padding: 10px;
         background-color: #2a2a2a;
-      } 
+      }
 
       input[type="text"] {
         flex: 1;
@@ -460,7 +511,6 @@
         width: calc(100% - 200px);
         height: 100%;
         margin: 0 !important;
-        
       }
       .active-speaker-container:active {
         display: flex;
@@ -486,9 +536,8 @@
         box-sizing: border-box;
         position: relative;
         justify-content: center;
-        background-color: #15181E;
+        background-color: #15181e;
       }
-      
 
       .small-card {
         background-color: #f8f9fa;
@@ -544,7 +593,6 @@
       .member-navigation-buttons.show button {
         display: block;
       }
-      
     </style>
   </head>
   <body>
@@ -571,20 +619,44 @@
             </button>
           </div>
           <div id="card-container" class="card-container"></div>
-          
-          
+          <!-- <div id="other-participants"></div> -->
         </div>
         <div class="participant-pane" id="participant-pane">
-          <div class="chat-header">
+          <div class="chat-header d-flex justify-content-between">
             <h6>Anggota (<span id="member-count">12</span>)</h6>
+            <button
+              type="button"
+              class="close"
+              data-bs-dismiss=""
+              onclick="toggleParticipantPane()"
+              aria-label="Close"
+            >
+              <i data-feather="x"></i>
+            </button>
+          </div>
+          <div class="search-input">
             <input type="text" id="search-input" placeholder="Cari Anggota" />
           </div>
+
           <div class="chat-list" id="chat-list"></div>
           <div class="chat-footer">
             <div class="row">
               <div class="col-12" style="font-size: small">
-                <button onclick="inviteMember()">Undang</button>
-                <button onclick="muteAllMics()">Bisukan semua</button>
+                <button
+                  style="background-color: #0047d1"
+                  onclick="inviteMember()"
+                >
+                  Undang
+                </button>
+                <button
+                  style="border: 2px solid #858585"
+                  onclick="muteAllMics()"
+                >
+                  Bisukan semua
+                </button>
+                <button class="px-4" style="border: 2px solid #858585">
+                  <img src="/assets/compiled/svg/iconDetails.svg" />
+                </button>
               </div>
               <div class="col-12" style="font-size: small">
                 <input
@@ -650,8 +722,6 @@
             </div>
           </div>
         </div>
-
-
       </div>
       <div
         class="modal fade"
@@ -695,8 +765,6 @@
                       type="radio"
                       name="Secondary"
                       id="Secondary"
-                      
-                      
                     />
                     <label class="form-check-label" for="Secondary">
                       Petak
@@ -748,7 +816,6 @@
                       type="radio"
                       name="Secondary"
                       id="Secondary"
-                      
                     />
                     <label class="form-check-label" for="Secondary">
                       Petak Samping
@@ -780,6 +847,16 @@
                       />
                     </div>
                     <div class="gap-4">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="Secondary"
+                        id="Secondary"
+                        onclick="setCardNumber(2)"
+                      />
+                      <label class="form-check-label" for="Secondary">
+                        Active
+                      </label>
                       <input
                         class="form-check-input"
                         type="radio"
@@ -1042,7 +1119,6 @@
                     alt="Action icon"
                 /></a>
 
-             
                 <div
                   class="action-button"
                   data-bs-toggle="dropdown"
@@ -1139,6 +1215,7 @@
         {
           name: "Ruang Sidang",
           role: "Host, Me",
+          host: true,
           mic: true,
           camera: true,
           details: false,
@@ -1146,6 +1223,7 @@
         {
           name: "Andi Wijaya",
           role: "Co-Host",
+          host: true,
           mic: true,
           camera: true,
           details: false,
@@ -1153,70 +1231,80 @@
         {
           name: "Budi Santoso",
           role: "",
-          mic: true,
+          host: false,
+          mic: false,
           camera: false,
           details: false,
         },
         {
           name: "Siri Aminah",
           role: "",
-          mic: true,
+          host: false,
+          mic: false,
           camera: false,
           details: false,
         },
         {
           name: "Ahmad Firdaus",
           role: "",
-          mic: true,
+          host: false,
+          mic: false,
           camera: false,
           details: false,
         },
         {
           name: "Rina Kusuma",
           role: "",
-          mic: true,
+          host: false,
+          mic: false,
           camera: false,
           details: false,
         },
         {
           name: "Eko Prasetyo",
           role: "",
-          mic: true,
+          host: false,
+          mic: false,
           camera: false,
           details: false,
         },
         {
           name: "Sri Lestari",
           role: "",
-          mic: true,
+          host: false,
+          mic: false,
           camera: false,
           details: false,
         },
         {
           name: "Yudi Kurniawan",
           role: "",
-          mic: true,
+          host: false,
+          mic: false,
           camera: false,
           details: false,
         },
         {
           name: "Intan Permatasari",
           role: "",
-          mic: true,
+          host: false,
+          mic: false,
           camera: false,
           details: false,
         },
         {
           name: "Hendra Setiawan",
           role: "",
-          mic: true,
+          host: false,
+          mic: false,
           camera: false,
           details: false,
         },
         {
           name: "Triana Kurnita",
           role: "",
-          mic: true,
+          host: false,
+          mic: false,
           camera: false,
           details: false,
         },
@@ -1231,20 +1319,39 @@
         card.classList.add("card");
         card.innerHTML = `
         <div class="card-body">
-          <h5 class="card-title">${member.name}</h5>
+          <div class="member-info"><img src="${
+            member.host ? "/assets/compiled/svg/iconVerified.svg" : ""
+          }">${member.name}</div>
+            <button id="mic-member" class="member-info-control">
+              <img src="${
+                member.mic
+                  ? "/assets/compiled/svg/iconMicActive.svg"
+                  : "/assets/compiled/svg/iconMicNonActive.svg"
+              }" alt="Mic Icon"></button>
           <p class="card-text">Role: ${member.role}</p>
         </div>
       `;
         return card;
       }
 
+      // <h5 class="card-title">${member.name}</h5>
+      // <div class="member-info"></div>
+
       function generateSmallCard(member) {
         const card = document.createElement("div");
         card.classList.add("small-card");
         card.innerHTML = `
         <div class="small-card-body">
-          <h5 class="card-title">${member.name}</h5>
-          <p class="card-text">Role: ${member.role}</p>
+          <div class="member-info"><img src="${
+            member.host ? "/assets/compiled/svg/iconVerified.svg" : ""
+          }">${member.name}</div>
+            <button id="mic-member" class="member-info-control">
+              <img src="${
+                member.mic
+                  ? "/assets/compiled/svg/iconMicActive.svg"
+                  : "/assets/compiled/svg/iconMicNonActive.svg"
+              }" alt="Mic Icon"></button>
+          <p class="small-card-text">Role: ${member.role}</p>
         </div>
       `;
         return card;
@@ -1262,50 +1369,266 @@
         updateNavigationButtons();
       }
 
-      function updateGrid() {
-        const container = document.getElementById("card-container");
-        container.innerHTML = "";
+      // function updateGrid() {
+      //   const container = document.getElementById("card-container");
+      //   container.innerHTML = "";
 
-        const start = currentPage * cardsPerPage;
-        const end = Math.min(start + cardsPerPage, members.length);
+      //   const start = currentPage * cardsPerPage;
+      //   const end = Math.min(start + cardsPerPage, members.length);
 
+      //   members.slice(start, end).forEach((member) => {
+      //     container.appendChild(generateCard(member));
+      //   });
+
+      //   adjustGridLayout(end - start);
+      // }
+
+      // function adjustGridLayout(number) {
+      //   const container = document.getElementById("card-container");
+      //   let cols, rows;
+
+      //   switch (number) {
+      //     case 6:
+      //       cols = 3;
+      //       rows = 2;
+      //       break;
+      //     case 9:
+      //       cols = 3;
+      //       rows = 3;
+      //       break;
+      //     case 12:
+      //       cols = 4;
+      //       rows = 3;
+      //       break;
+      //     case 16:
+      //       cols = 4;
+      //       rows = 4;
+      //       break;
+      //     default:
+      //       cols = Math.ceil(Math.sqrt(number));
+      //       rows = Math.ceil(number / cols);
+      //   }
+
+      //   container.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+      //   container.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+      //   updatePageIndicator();
+      // }
+
+      // function adjustGridLayout(number) {
+      //   const container = document.getElementById("card-container");
+      //   let cols, rows;
+
+      //   switch (number) {
+      //     case 6:
+      //       cols = 3;
+      //       rows = 2;
+      //       break;
+      //     case 9:
+      //       cols = 3;
+      //       rows = 3;
+      //       break;
+      //     case 12:
+      //       cols = 4;
+      //       rows = 3;
+      //       break;
+      //     case 16:
+      //       cols = 4;
+      //       rows = 4;
+      //       break;
+      //     case 2:
+      //       // One card occupying width: calc(100% - 200px) and height: 100%
+      //       // Another card in flex-direction: column size 200px and max 5 cards
+      //       container.style.display = "flex";
+      //       container.style.flexDirection = "row";
+      //       const firstCard = container.children[0];
+      //       const secondCard = container.children[1];
+      //       if (firstCard && secondCard) {
+      //         firstCard.style.width = "calc(100% - 200px)";
+      //         firstCard.style.height = "100%";
+      //         secondCard.style.width = "200px";
+      //         secondCard.style.display = "flex";
+      //         secondCard.style.flexDirection = "column";
+
+      //         // Clear existing children
+      //         secondCard.innerHTML = "";
+
+      //         // Add up to 5 member cards
+      //         for (let i = 0; i < Math.min(members.length, 5); i++) {
+      //           const member = members[i];
+      //           const card = document.createElement("div");
+      //           card.className = "card";
+      //           card.innerHTML = `
+      //                   <div class="card-body">
+      //                       <div class="member-info">
+      //                           <img src="${
+      //                             member.host
+      //                               ? "/assets/compiled/svg/iconVerified.svg"
+      //                               : ""
+      //                           }">
+      //                           ${member.name}
+      //                       </div>
+      //                       <button id="mic-member" class="member-info-control">
+      //                           <img src="${
+      //                             member.mic
+      //                               ? "/assets/compiled/svg/iconMicActive.svg"
+      //                               : "/assets/compiled/svg/iconMicNonActive.svg"
+      //                           }" alt="Mic Icon">
+      //                       </button>
+      //                       <p class="card-text">Role: ${member.role}</p>
+      //                   </div>
+      //               `;
+      //           secondCard.appendChild(card);
+      //         }
+      //       }
+      //       return; // Exit the function since we don't need to set grid properties
+      //     default:
+      //       cols = Math.ceil(Math.sqrt(number));
+      //       rows = Math.ceil(number / cols);
+      //   }
+
+      //   container.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+      //   container.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+      //   updatePageIndicator();
+      // }
+
+//       let currentPage = 0;
+// const cardsPerPage = 5;
+
+function generateCard(member) {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+        <div class="card-body">
+            <div class="member-info">
+                <img src="${member.host ? "/assets/compiled/svg/iconVerified.svg" : ""}">
+                ${member.name}
+            </div>
+            <button id="mic-member" class="member-info-control">
+                <img src="${member.mic ? "/assets/compiled/svg/iconMicActive.svg" : "/assets/compiled/svg/iconMicNonActive.svg"}" alt="Mic Icon">
+            </button>
+            <p class="card-text">Role: ${member.role}</p>
+        </div>
+    `;
+    return card;
+}
+
+function updateGrid() {
+    const container = document.getElementById("card-container");
+    container.innerHTML = "";
+
+    const start = currentPage * cardsPerPage;
+    const end = Math.min(start + cardsPerPage, members.length);
+
+    if (end - start === 2) {
+        const firstCard = document.createElement("div");
+        const secondCard = document.createElement("div");
+        firstCard.id = "first-card";
+        secondCard.id = "second-card";
+
+        // Set up styles for first and second cards
+        firstCard.style.width = "calc(100% - 200px)";
+        firstCard.style.height = "100%";
+        secondCard.style.width = "200px";
+        secondCard.style.display = "flex";
+        secondCard.style.flexDirection = "column";
+
+        // Add prev/next buttons and second card content
+        secondCard.innerHTML = `
+            <button id="prev-button" onclick="previousPage()">Previous</button>
+            <div id="second-card-content"></div>
+            <button id="next-button" onclick="nextPage()">Next</button>
+        `;
+
+        const secondCardContent = document.getElementById("second-card-content");
+
+        members.slice(start, end).forEach((member, index) => {
+            if (index === 0) {
+                firstCard.appendChild(generateCard(member));
+            } else {
+                secondCardContent.appendChild(generateCard(member));
+            }
+        });
+
+        container.appendChild(firstCard);
+        container.appendChild(secondCard);
+
+        updateNavigationButtons();
+    } else {
         members.slice(start, end).forEach((member) => {
-          container.appendChild(generateCard(member));
+            container.appendChild(generateCard(member));
         });
 
         adjustGridLayout(end - start);
-      }
+        updatePageIndicator();
+    }
+}
 
-      function adjustGridLayout(number) {
-        const container = document.getElementById("card-container");
-        let cols, rows;
+function adjustGridLayout(number) {
+    const container = document.getElementById("card-container");
+    let cols, rows;
 
-        switch (number) {
-          case 6:
+    switch (number) {
+        case 6:
             cols = 3;
             rows = 2;
             break;
-          case 9:
+        case 9:
             cols = 3;
             rows = 3;
             break;
-          case 12:
+        case 12:
             cols = 4;
             rows = 3;
             break;
-          case 16:
+        case 16:
             cols = 4;
             rows = 4;
             break;
-          default:
+        case 2:
+            // Handled in updateGrid, no need to set grid properties here
+            return;
+        default:
             cols = Math.ceil(Math.sqrt(number));
             rows = Math.ceil(number / cols);
-        }
+    }
 
-        container.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-        container.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
-        updatePageIndicator();
+    container.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    container.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+}
+
+      function previousPage() {
+        if (currentPage > 0) {
+          currentPage--;
+          updateGrid();
+          updateNavigationButtons();
+        }
       }
+
+      function nextPage() {
+        if ((currentPage + 1) * cardsPerPage < members.length) {
+          currentPage++;
+          updateGrid();
+          updateNavigationButtons();
+        }
+      }
+
+      function updateNavigationButtons() {
+        const prevButton = document.getElementById("prev-button");
+        const nextButton = document.getElementById("next-button");
+
+        prevButton.disabled = currentPage === 0;
+        nextButton.disabled =
+          (currentPage + 1) * cardsPerPage >= members.length;
+      }
+
+      function updatePageIndicator() {
+        const pageIndicator = document.getElementById("page-indicator");
+        const totalPages = Math.ceil(members.length / cardsPerPage);
+        pageIndicator.textContent = `${currentPage + 1} / ${totalPages}`;
+      }
+
+      // Initial call to set up the grid
+      updateGrid();
 
       function toggleParticipantPane() {
         const participantPane = document.getElementById("participant-pane");
@@ -1341,37 +1664,6 @@
         // Toggle messagePane
         messagePane.classList.toggle("active");
         cardContainerWrapper.classList.toggle("shifted");
-      }
-
-      function previousPage() {
-        if (currentPage > 0) {
-          currentPage--;
-          updateGrid();
-          updateNavigationButtons();
-        }
-      }
-
-      function nextPage() {
-        if ((currentPage + 1) * cardsPerPage < members.length) {
-          currentPage++;
-          updateGrid();
-          updateNavigationButtons();
-        }
-      }
-
-      function updateNavigationButtons() {
-        const prevButton = document.getElementById("prev-button");
-        const nextButton = document.getElementById("next-button");
-
-        prevButton.disabled = currentPage === 0;
-        nextButton.disabled =
-          (currentPage + 1) * cardsPerPage >= members.length;
-      }
-
-      function updatePageIndicator() {
-        const pageIndicator = document.getElementById("page-indicator");
-        const totalPages = Math.ceil(members.length / cardsPerPage);
-        pageIndicator.textContent = `${currentPage + 1} / ${totalPages}`;
       }
 
       let activeSpeakerIndex = 0;
@@ -1564,10 +1856,7 @@
 
         // Initial display of members
         displayMembers(members);
-
       });
-
-   
     </script>
   </body>
 </html>

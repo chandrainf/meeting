@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Active Speaker View</title>
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f0f0f0;
+      }
+
+      #main-container {
+        display: flex;
+        width: 90%;
+        height: 90%;
+      }
+
+      #active-speaker {
+        flex: 2;
+        background-color: #000;
+        margin-right: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #participants-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      #other-participants {
+        flex: 1;
+        width: 100%;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+      }
+
+      .video-container {
+        background-color: #333;
+        margin-bottom: 10px;
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .video-container img {
+        max-width: 100%;
+        max-height: 100%;
+      }
+
+      button {
+        width: 100%;
+        height: 40px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      button:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="main-container">
+      <div id="active-speaker" class="video-container active">
+        <img
+          src="https://media.giphy.com/media/3o7aD5t7k4ZofNNbLW/giphy.gif"
+          alt="Active Speaker"
+        />
+      </div>
+      <div id="participants-container">
+        <button id="up-button">Up</button>
+        <div id="other-participants">
+          <div class="video-container">
+            <img
+              src="https://media.giphy.com/media/3o7aD0V4SEl5yzUAM0/giphy.gif"
+              alt="Participant 1"
+            />
+          </div>
+          <div class="video-container">
+            <img
+              src="https://media.giphy.com/media/l0ExmYtbkAhUOMovS/giphy.gif"
+              alt="Participant 2"
+            />
+          </div>
+          <div class="video-container">
+            <img
+              src="https://media.giphy.com/media/3o7aD1LO4YZ0RYI88g/giphy.gif"
+              alt="Participant 3"
+            />
+          </div>
+          <div class="video-container">
+            <img
+              src="https://media.giphy.com/media/3o7aD6XY74fEbqN9Re/giphy.gif"
+              alt="Participant 4"
+            />
+          </div>
+          <div class="video-container">
+            <img
+              src="https://media.giphy.com/media/3o7aD1GcuNUdGQYPtK/giphy.gif"
+              alt="Participant 5"
+            />
+          </div>
+          <div class="video-container">
+            <img
+              src="https://media.giphy.com/media/3o7aD2hjlkoEXC7P1e/giphy.gif"
+              alt="Participant 6"
+            />
+          </div>
+          <div class="video-container">
+            <img
+              src="https://media.giphy.com/media/3o7aD4n82vyubM5x8g/giphy.gif"
+              alt="Participant 7"
+            />
+          </div>
+        </div>
+        <button id="down-button">Down</button>
+      </div>
+    </div>
+    <script>
+      const activeSpeakerContainer = document.getElementById("active-speaker");
+      const participantContainers = document.querySelectorAll(
+        "#other-participants .video-container"
+      );
+      const otherParticipantsContainer =
+        document.getElementById("other-participants");
+      const upButton = document.getElementById("up-button");
+      const downButton = document.getElementById("down-button");
+
+      let startIndex = 0;
+      const maxVisibleParticipants = 5;
+
+      function updateVisibleParticipants() {
+        participantContainers.forEach((participant, index) => {
+          if (
+            index >= startIndex &&
+            index < startIndex + maxVisibleParticipants
+          ) {
+            participant.style.display = "flex";
+          } else {
+            participant.style.display = "none";
+          }
+        });
+
+        upButton.disabled = startIndex === 0;
+        downButton.disabled =
+          startIndex >= participantContainers.length - maxVisibleParticipants;
+      }
+
+      upButton.addEventListener("click", () => {
+        if (startIndex > 0) {
+          startIndex--;
+          updateVisibleParticipants();
+        }
+      });
+
+      downButton.addEventListener("click", () => {
+        if (
+          startIndex <
+          participantContainers.length - maxVisibleParticipants
+        ) {
+          startIndex++;
+          updateVisibleParticipants();
+        }
+      });
+
+      function simulateActiveSpeakerChange() {
+        const randomIndex = Math.floor(
+          Math.random() * participantContainers.length
+        );
+        const newActiveSpeaker = participantContainers[randomIndex];
+
+        if (activeSpeakerContainer.children.length > 0) {
+          otherParticipantsContainer.appendChild(
+            activeSpeakerContainer.children[0]
+          );
+        }
+
+        activeSpeakerContainer.appendChild(
+          newActiveSpeaker.querySelector("img").cloneNode(true)
+        );
+        newActiveSpeaker.style.display = "none";
+        updateVisibleParticipants();
+      }
+
+      updateVisibleParticipants();
+      setInterval(simulateActiveSpeakerChange, 5000);
+    </script>
+  </body>
+</html>
