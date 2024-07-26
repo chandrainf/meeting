@@ -1231,7 +1231,7 @@
         {
           name: "Budi Santoso",
           role: "",
-          host: false,
+          host: true,
           mic: false,
           camera: false,
           details: false,
@@ -1239,7 +1239,7 @@
         {
           name: "Siri Aminah",
           role: "",
-          host: false,
+          host: true,
           mic: false,
           camera: false,
           details: false,
@@ -1310,64 +1310,64 @@
         },
       ];
 
-      let currentPage = 0;
-      let cardsPerPage = 0;
-      let currentMemberPage = 0;
+      // let currentPage = 0;
+      // let cardsPerPage = 0;
+      // let currentMemberPage = 0;
 
-      function generateCard(member) {
-        const card = document.createElement("div");
-        card.classList.add("card");
-        card.innerHTML = `
-        <div class="card-body">
-          <div class="member-info"><img src="${
-            member.host ? "/assets/compiled/svg/iconVerified.svg" : ""
-          }">${member.name}</div>
-            <button id="mic-member" class="member-info-control">
-              <img src="${
-                member.mic
-                  ? "/assets/compiled/svg/iconMicActive.svg"
-                  : "/assets/compiled/svg/iconMicNonActive.svg"
-              }" alt="Mic Icon"></button>
-          <p class="card-text">Role: ${member.role}</p>
-        </div>
-      `;
-        return card;
-      }
+      // function generateCard(member) {
+      //   const card = document.createElement("div");
+      //   card.classList.add("card");
+      //   card.innerHTML = `
+      //   <div class="card-body">
+      //     <div class="member-info"><img src="${
+      //       member.host ? "/assets/compiled/svg/iconVerified.svg" : ""
+      //     }">${member.name}</div>
+      //       <button id="mic-member" class="member-info-control">
+      //         <img src="${
+      //           member.mic
+      //             ? "/assets/compiled/svg/iconMicActive.svg"
+      //             : "/assets/compiled/svg/iconMicNonActive.svg"
+      //         }" alt="Mic Icon"></button>
+      //     <p class="card-text">Role: ${member.role}</p>
+      //   </div>
+      // `;
+      //   return card;
+      // }
 
       // <h5 class="card-title">${member.name}</h5>
       // <div class="member-info"></div>
 
-      function generateSmallCard(member) {
-        const card = document.createElement("div");
-        card.classList.add("small-card");
-        card.innerHTML = `
-        <div class="small-card-body">
-          <div class="member-info"><img src="${
-            member.host ? "/assets/compiled/svg/iconVerified.svg" : ""
-          }">${member.name}</div>
-            <button id="mic-member" class="member-info-control">
-              <img src="${
-                member.mic
-                  ? "/assets/compiled/svg/iconMicActive.svg"
-                  : "/assets/compiled/svg/iconMicNonActive.svg"
-              }" alt="Mic Icon"></button>
-          <p class="small-card-text">Role: ${member.role}</p>
-        </div>
-      `;
-        return card;
-      }
+      // function generateSmallCard(member) {
+      //   const card = document.createElement("div");
+      //   card.classList.add("small-card");
+      //   card.innerHTML = `
+      //   <div class="small-card-body">
+      //     <div class="member-info"><img src="${
+      //       member.host ? "/assets/compiled/svg/iconVerified.svg" : ""
+      //     }">${member.name}</div>
+      //       <button id="mic-member" class="member-info-control">
+      //         <img src="${
+      //           member.mic
+      //             ? "/assets/compiled/svg/iconMicActive.svg"
+      //             : "/assets/compiled/svg/iconMicNonActive.svg"
+      //         }" alt="Mic Icon"></button>
+      //     <p class="small-card-text">Role: ${member.role}</p>
+      //   </div>
+      // `;
+      //   return card;
+      // }
 
-      function setCardNumber(number) {
-        cardsPerPage = number;
-        currentPage = 0;
-        document.getElementById("active-speaker-section").style.display =
-          "none";
-        document.getElementById("card-container-wrapper").style.display =
-          "flex";
-        document.querySelector(".page-indicator").style.display = "block";
-        updateGrid();
-        updateNavigationButtons();
-      }
+      // function setCardNumber(number) {
+      //   cardsPerPage = number;
+      //   currentPage = 0;
+      //   document.getElementById("active-speaker-section").style.display =
+      //     "none";
+      //   document.getElementById("card-container-wrapper").style.display =
+      //     "flex";
+      //   document.querySelector(".page-indicator").style.display = "block";
+      //   updateGrid();
+      //   updateNavigationButtons();
+      // }
 
       // function updateGrid() {
       //   const container = document.getElementById("card-container");
@@ -1491,110 +1491,321 @@
       //   updatePageIndicator();
       // }
 
-//       let currentPage = 0;
-// const cardsPerPage = 5;
+      //       let currentPage = 0;
+      // const cardsPerPage = 5;
 
-function generateCard(member) {
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = `
-        <div class="card-body">
-            <div class="member-info">
-                <img src="${member.host ? "/assets/compiled/svg/iconVerified.svg" : ""}">
-                ${member.name}
-            </div>
-            <button id="mic-member" class="member-info-control">
-                <img src="${member.mic ? "/assets/compiled/svg/iconMicActive.svg" : "/assets/compiled/svg/iconMicNonActive.svg"}" alt="Mic Icon">
-            </button>
-            <p class="card-text">Role: ${member.role}</p>
-        </div>
-    `;
-    return card;
-}
+      // function generateCard(member) {
+      //     const card = document.createElement("div");
+      //     card.className = "card";
+      //     card.innerHTML = `
+      //         <div class="card-body">
+      //             <div class="member-info">
+      //                 <img src="${member.host ? "/assets/compiled/svg/iconVerified.svg" : ""}">
+      //                 ${member.name}
+      //             </div>
+      //             <button id="mic-member" class="member-info-control">
+      //                 <img src="${member.mic ? "/assets/compiled/svg/iconMicActive.svg" : "/assets/compiled/svg/iconMicNonActive.svg"}" alt="Mic Icon">
+      //             </button>
+      //             <p class="card-text">Role: ${member.role}</p>
+      //         </div>
+      //     `;
+      //     return card;
+      // }
 
-function updateGrid() {
-    const container = document.getElementById("card-container");
-    container.innerHTML = "";
+      // function updateGrid() {
+      //     const container = document.getElementById("card-container");
+      //     container.innerHTML = "";
 
-    const start = currentPage * cardsPerPage;
-    const end = Math.min(start + cardsPerPage, members.length);
+      //     const start = currentPage * cardsPerPage;
+      //     const end = Math.min(start + cardsPerPage, members.length);
 
-    if (end - start === 2) {
-        const firstCard = document.createElement("div");
-        const secondCard = document.createElement("div");
-        firstCard.id = "first-card";
-        secondCard.id = "second-card";
+      //     if (end - start === 2) {
+      //         const firstCard = document.createElement("div");
+      //         const secondCard = document.createElement("div");
+      //         firstCard.id = "first-card";
+      //         secondCard.id = "second-card";
 
-        // Set up styles for first and second cards
-        firstCard.style.width = "calc(100% - 200px)";
-        firstCard.style.height = "100%";
-        secondCard.style.width = "200px";
-        secondCard.style.display = "flex";
-        secondCard.style.flexDirection = "column";
+      //         // Set up styles for first and second cards
+      //         firstCard.style.width = "calc(100% - 200px)";
+      //         firstCard.style.height = "100%";
+      //         secondCard.style.width = "200px";
+      //         secondCard.style.display = "flex";
+      //         secondCard.style.flexDirection = "column";
 
-        // Add prev/next buttons and second card content
-        secondCard.innerHTML = `
-            <button id="prev-button" onclick="previousPage()">Previous</button>
-            <div id="second-card-content"></div>
-            <button id="next-button" onclick="nextPage()">Next</button>
-        `;
+      //         // Add prev/next buttons and second card content
+      //         secondCard.innerHTML = `
+      //             <button id="prev-button" onclick="previousPage()">Previous</button>
+      //             <div id="second-card-content"></div>
+      //             <button id="next-button" onclick="nextPage()">Next</button>
+      //         `;
 
-        const secondCardContent = document.getElementById("second-card-content");
+      //         const secondCardContent = document.getElementById("second-card-content");
 
-        members.slice(start, end).forEach((member, index) => {
-            if (index === 0) {
-                firstCard.appendChild(generateCard(member));
-            } else {
-                secondCardContent.appendChild(generateCard(member));
-            }
-        });
+      //         members.slice(start, end).forEach((member, index) => {
+      //             if (index === 0) {
+      //                 firstCard.appendChild(generateCard(member));
+      //             } else {
+      //                 secondCardContent.appendChild(generateCard(member));
+      //             }
+      //         });
 
-        container.appendChild(firstCard);
-        container.appendChild(secondCard);
+      //         container.appendChild(firstCard);
+      //         container.appendChild(secondCard);
 
+      //         updateNavigationButtons();
+      //     } else {
+      //         members.slice(start, end).forEach((member) => {
+      //             container.appendChild(generateCard(member));
+      //         });
+
+      //         adjustGridLayout(end - start);
+      //         updatePageIndicator();
+      //     }
+      // }
+
+      // function adjustGridLayout(number) {
+      //     const container = document.getElementById("card-container");
+      //     let cols, rows;
+
+      //     switch (number) {
+      //         case 6:
+      //             cols = 3;
+      //             rows = 2;
+      //             break;
+      //         case 9:
+      //             cols = 3;
+      //             rows = 3;
+      //             break;
+      //         case 12:
+      //             cols = 4;
+      //             rows = 3;
+      //             break;
+      //         case 16:
+      //             cols = 4;
+      //             rows = 4;
+      //             break;
+      //         case 2:
+      //             // Handled in updateGrid, no need to set grid properties here
+      //             return;
+      //         default:
+      //             cols = Math.ceil(Math.sqrt(number));
+      //             rows = Math.ceil(number / cols);
+      //     }
+
+      //     container.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+      //     container.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+      // }
+
+      // function previousPage() {
+      //   if (currentPage > 0) {
+      //     currentPage--;
+      //     updateGrid();
+      //     updateNavigationButtons();
+      //   }
+      // }
+
+      // function nextPage() {
+      //   if ((currentPage + 1) * cardsPerPage < members.length) {
+      //     currentPage++;
+      //     updateGrid();
+      //     updateNavigationButtons();
+      //   }
+      // }
+
+      // function updateNavigationButtons() {
+      //   const prevButton = document.getElementById("prev-button");
+      //   const nextButton = document.getElementById("next-button");
+
+      //   prevButton.disabled = currentPage === 0;
+      //   nextButton.disabled =
+      //     (currentPage + 1) * cardsPerPage >= members.length;
+      // }
+
+      //       function updateNavigationButtons() {
+      //   const prevButton = document.getElementById("prev-button");
+      //   const nextButton = document.getElementById("next-button");
+
+      //   if (prevButton) {
+      //     prevButton.disabled = currentPage === 0;
+      //   }
+      //   if (nextButton) {
+      //     nextButton.disabled =
+      //       (currentPage + 1) * cardsPerPage >= members.length;
+      //   }
+      // }
+
+      // Call setCardNumber to initialize the cards per page and display
+      // setCardNumber(2);
+
+      // Initial call to set up the grid
+      // updateGrid();
+
+      let currentPage = 0;
+      let cardsPerPage = 0;
+      let currentMemberPage = 0;
+
+      function generateCard(member) {
+        const card = document.createElement("div");
+        card.classList.add("card");
+        card.innerHTML = `
+    <div class="card-body">
+      <div class="member-info"><img src="${
+        member.host ? "/assets/compiled/svg/iconVerified.svg" : ""
+      }">${member.name}</div>
+      <button id="mic-member" class="member-info-control">
+        <img src="${
+          member.mic
+            ? "/assets/compiled/svg/iconMicActive.svg"
+            : "/assets/compiled/svg/iconMicNonActive.svg"
+        }" alt="Mic Icon"></button>
+      <p class="card-text">Role: ${member.role}</p>
+    </div>
+  `;
+        return card;
+      }
+
+      function generateSmallCard(member) {
+        const card = document.createElement("div");
+        card.classList.add("small-card");
+        card.innerHTML = `
+    <div class="small-card-body">
+      <div class="member-info"><img src="${
+        member.host ? "/assets/compiled/svg/iconVerified.svg" : ""
+      }">${member.name}</div>
+      <button id="mic-member" class="member-info-control">
+        <img src="${
+          member.mic
+            ? "/assets/compiled/svg/iconMicActive.svg"
+            : "/assets/compiled/svg/iconMicNonActive.svg"
+        }" alt="Mic Icon"></button>
+      <p class="small-card-text">Role: ${member.role}</p>
+    </div>
+  `;
+        return card;
+      }
+
+      function setCardNumber(number) {
+        cardsPerPage = number;
+        currentPage = 0;
+        document.getElementById("active-speaker-section").style.display =
+          "none";
+        document.getElementById("card-container-wrapper").style.display =
+          "flex";
+        document.querySelector(".page-indicator").style.display =
+          number === 2 ? "none" : "block";
+        updateGrid();
         updateNavigationButtons();
-    } else {
+      }
+
+      function updateGrid() {
+        const container = document.getElementById("card-container");
+        container.innerHTML = "";
+
+        if (cardsPerPage === 2) {
+          adjustGridLayout(2);
+          return;
+        }
+
+        const start = currentPage * cardsPerPage;
+        const end = Math.min(start + cardsPerPage, members.length);
+
         members.slice(start, end).forEach((member) => {
-            container.appendChild(generateCard(member));
+          container.appendChild(generateCard(member));
         });
 
         adjustGridLayout(end - start);
-        updatePageIndicator();
-    }
-}
+      }
 
-function adjustGridLayout(number) {
-    const container = document.getElementById("card-container");
-    let cols, rows;
+      function adjustGridLayout(number) {
+        const container = document.getElementById("card-container");
+        let cols, rows;
 
-    switch (number) {
-        case 6:
-            cols = 3;
-            rows = 2;
-            break;
-        case 9:
-            cols = 3;
-            rows = 3;
-            break;
-        case 12:
-            cols = 4;
-            rows = 3;
-            break;
-        case 16:
-            cols = 4;
-            rows = 4;
-            break;
-        case 2:
-            // Handled in updateGrid, no need to set grid properties here
-            return;
-        default:
-            cols = Math.ceil(Math.sqrt(number));
-            rows = Math.ceil(number / cols);
-    }
+        if (number === 2) {
+          // Handle the special case where the layout is divided into two cards
+          container.style.display = "flex";
+          container.style.flexDirection = "row";
 
-    container.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-    container.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
-}
+          // Clear existing children
+          container.innerHTML = "";
+
+          // First card with host members
+          const hostMembers = members.filter((member) => member.host);
+          const firstCard = document.createElement("div");
+          firstCard.style.width = "calc(100% - 200px)";
+          firstCard.style.height = "100%";
+          hostMembers.forEach((member) => {
+            firstCard.appendChild(generateCard(member));
+          });
+
+          // Second card with non-host members
+          const secondCard = document.createElement("div");
+          secondCard.style.width = "200px";
+          secondCard.style.display = "flex";
+          secondCard.style.flexDirection = "column";
+
+          // Add previous button
+          const prevButton =
+            document.getElementById("prev-button") ||
+            document.createElement("button");
+          prevButton.id = "prev-button";
+          prevButton.innerHTML = "&#9650;";
+          prevButton.onclick = previousPage;
+          prevButton.style.order = 1;
+          prevButton.style.width = "100%";
+          secondCard.appendChild(prevButton);
+
+          // Add up to 5 non-host member cards
+          const nonHostMembers = members.filter((member) => !member.host);
+          const start = currentPage * 5;
+          const end = Math.min(start + 5, nonHostMembers.length);
+          nonHostMembers.slice(start, end).forEach((member) => {
+            const card = generateCard(member);
+            card.style.order = 2;
+            secondCard.appendChild(card);
+          });
+
+          // Add next button
+          const nextButton =
+            document.getElementById("next-button") ||
+            document.createElement("button");
+          nextButton.id = "next-button";
+          nextButton.innerHTML = "&#9660;";
+          nextButton.onclick = nextPage;
+          nextButton.style.order = 3;
+          nextButton.style.width = "100%";
+          secondCard.appendChild(nextButton);
+
+          // Append both cards to the container
+          container.appendChild(firstCard);
+          container.appendChild(secondCard);
+
+          // Update navigation buttons and hide page indicator
+          updateNavigationButtons();
+          document.querySelector(".page-indicator").style.display = "none";
+          return;
+        } else {
+          // Handle the regular grid layout cases
+          cols = Math.ceil(Math.sqrt(number));
+          rows = Math.ceil(number / cols);
+          container.style.display = "grid";
+          container.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+          container.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+
+          // Clear existing children
+          container.innerHTML = "";
+
+          // Add members to the grid
+          const start = currentPage * cardsPerPage;
+          const end = Math.min(start + cardsPerPage, members.length);
+          members.slice(start, end).forEach((member) => {
+            container.appendChild(generateCard(member));
+          });
+
+          // Show page indicator for grid layout
+          document.querySelector(".page-indicator").style.display = "block";
+          updatePageIndicator();
+        }
+      }
 
       function previousPage() {
         if (currentPage > 0) {
@@ -1605,7 +1816,8 @@ function adjustGridLayout(number) {
       }
 
       function nextPage() {
-        if ((currentPage + 1) * cardsPerPage < members.length) {
+        const nonHostMembers = members.filter((member) => !member.host);
+        if ((currentPage + 1) * 5 < nonHostMembers.length) {
           currentPage++;
           updateGrid();
           updateNavigationButtons();
@@ -1616,9 +1828,14 @@ function adjustGridLayout(number) {
         const prevButton = document.getElementById("prev-button");
         const nextButton = document.getElementById("next-button");
 
-        prevButton.disabled = currentPage === 0;
-        nextButton.disabled =
-          (currentPage + 1) * cardsPerPage >= members.length;
+        const nonHostMembers = members.filter((member) => !member.host);
+
+        if (prevButton) {
+          prevButton.disabled = currentPage === 0;
+        }
+        if (nextButton) {
+          nextButton.disabled = (currentPage + 1) * 5 >= nonHostMembers.length;
+        }
       }
 
       function updatePageIndicator() {
@@ -1627,8 +1844,9 @@ function adjustGridLayout(number) {
         pageIndicator.textContent = `${currentPage + 1} / ${totalPages}`;
       }
 
-      // Initial call to set up the grid
+      // Initialize without setting an initial number of cards
       updateGrid();
+      updateNavigationButtons();
 
       function toggleParticipantPane() {
         const participantPane = document.getElementById("participant-pane");
